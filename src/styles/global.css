@@ -181,7 +181,6 @@ img, svg {
 .nav__links {
   display: flex;
   gap: 4px;
-  margin-right: auto;
 }
 
 .nav__link {
@@ -209,18 +208,40 @@ img, svg {
   border-radius: var(--radius-s);
 }
 
-.nav__toggle {
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.nav__toggle,
+.theme-toggle {
   display: none;
   width: 40px;
   height: 40px;
   border-radius: var(--radius-s);
   align-items: center;
   justify-content: center;
-  margin-left: auto;
+  transition: background 0.2s;
 }
 
-.nav__toggle:hover {
+.theme-toggle {
+  display: inline-flex;
+  color: var(--text-2);
+}
+
+.nav__toggle:hover,
+.theme-toggle:hover {
   background: var(--accent-soft);
+  color: var(--text);
+}
+
+/* Revelação circular na troca de tema (View Transitions API) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 .mobile-menu {
@@ -1133,11 +1154,221 @@ img, svg {
   color: var(--on-accent);
 }
 
+.plan > p {
+  min-height: 3.2em;
+}
+
+.plan__pricing {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.plan__from {
+  display: block;
+  font-size: 13px;
+  color: var(--text-3);
+}
+
 .plan__price {
-  font-size: 38px;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 44px;
   font-weight: 600;
   letter-spacing: -0.03em;
-  margin: 12px 0 4px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+}
+
+.plan__currency {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-2);
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+.plan__period {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-3);
+  letter-spacing: 0;
+}
+
+.plan__setup {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text-3);
+  min-height: 1.6em;
+}
+
+.plan__setup strong {
+  color: #16c60c;
+}
+
+.plan > ul {
+  margin: 20px 0;
+  flex: 0;
+}
+
+.care {
+  margin-bottom: 24px;
+  padding: 16px;
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  border: 1px solid var(--border);
+  flex: 1;
+}
+
+.care__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.care__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+
+.care__price {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.care__price small {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-3);
+  margin-left: 2px;
+}
+
+.care__saving {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  color: #16c60c;
+  text-align: right;
+}
+
+.care ul {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: grid;
+  gap: 8px;
+}
+
+.care li {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 14px;
+  color: var(--text-2);
+}
+
+.care li svg {
+  flex: none;
+  margin-top: 4px;
+  color: var(--accent);
+}
+
+.billing__label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+}
+
+.plans__included {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 32px;
+  font-size: 14px;
+  color: var(--text-2);
+  text-align: center;
+}
+
+.plans__included svg {
+  flex: none;
+  color: var(--accent);
+}
+
+/* Chave Mensal / Anual */
+.billing-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: -24px 0 40px;
+}
+
+.billing {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+}
+
+.billing__opt {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-2);
+  transition: color 0.2s;
+}
+
+.billing__opt.is-active {
+  color: var(--text);
+}
+
+.billing__opt > span {
+  position: relative;
+  z-index: 1;
+}
+
+.billing__opt > .billing__pill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: var(--shadow-8);
+}
+
+.billing__save {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #16c60c;
+  color: #fff;
+}
+
+.billing__hint {
+  font-size: 14px;
+  color: var(--text-3);
+  text-align: center;
 }
 
 .plan ul {

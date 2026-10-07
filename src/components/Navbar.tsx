@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-
 import { Menu, X } from 'lucide-react'
 import { brand, nav } from '../content'
 import { ease } from './Reveal'
+import ThemeToggle from './ThemeToggle'
 
 export function Logo() {
   return (
@@ -40,20 +41,23 @@ export default function Navbar() {
             </a>
           ))}
         </nav>
-        <a href="#contato" className="btn btn--primary btn--sm nav__cta">Fale comigo</a>
-        <button className="nav__toggle" aria-label="Abrir menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.span
-              key={open ? 'x' : 'menu'}
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: 90, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              {open ? <X size={22} /> : <Menu size={22} />}
-            </motion.span>
-          </AnimatePresence>
-        </button>
+        <div className="nav__actions">
+          <ThemeToggle />
+          <a href="#contato" className="btn btn--primary btn--sm nav__cta">Fale comigo</a>
+          <button className="nav__toggle" aria-label="Abrir menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={open ? 'x' : 'menu'}
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                {open ? <X size={22} /> : <Menu size={22} />}
+              </motion.span>
+            </AnimatePresence>
+          </button>
+        </div>
       </div>
       <AnimatePresence>
         {open && (

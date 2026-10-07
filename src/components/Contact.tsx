@@ -60,13 +60,11 @@ export default function Contact() {
                 </div>
               </div>
               <div className="field">
-                <select id="service" name="service" defaultValue="Site / Landing page">
-                  <option>Site / Landing page</option>
-                  <option>UI/UX Design</option>
-                  <option>Aplicação Web</option>
-                  <option>E-commerce</option>
+                <select id="service" name="service" defaultValue="Landing Page">
+                  <option>Landing Page</option>
+                  <option>Loja Online</option>
                   <option>Automação</option>
-                  <option>Outro</option>
+                  <option>Outro projeto</option>
                 </select>
                 <label htmlFor="service">Serviço</label>
               </div>

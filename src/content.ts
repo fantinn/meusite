@@ -74,8 +74,81 @@ export const testimonials = [
   { quote: 'Design moderno e performance excelente. Nossos pacientes elogiam a facilidade de agendar.', name: 'Dra. Paula Souza', role: 'Clínica Vita' },
 ]
 
-export const plans = [
-  { name: 'Essencial', price: 'R$ 1.900', desc: 'Para quem precisa de presença online rápida.', features: ['Landing page de 1 página', 'Design responsivo', 'Formulário de contato', 'SEO básico', 'Entrega em até 10 dias'], featured: false },
-  { name: 'Profissional', price: 'R$ 4.900', desc: 'O mais escolhido por pequenas empresas.', features: ['Site até 6 páginas', 'Design personalizado', 'Blog / CMS', 'SEO completo + Analytics', 'Animações e micro-interações', '30 dias de suporte'], featured: true },
-  { name: 'Sob medida', price: 'Consulte', desc: 'Sistemas, e-commerce e automações.', features: ['Escopo personalizado', 'Aplicação full-stack', 'Integrações e APIs', 'Entregas semanais', 'Suporte contínuo'], featured: false },
+// Planos: projeto (pagamento único) + assinatura de manutenção. Valores em reais.
+// - price: valor do projeto, pago uma vez (parcelável em INSTALLMENTS vezes)
+// - care: mensalidade da manutenção no plano mensal (sem fidelidade)
+// - No plano anual (12 meses), a manutenção tem ANNUAL_DISCOUNT.
+export const ANNUAL_DISCOUNT = 0.15
+export const INSTALLMENTS = 10
+
+export type Plan = {
+  icon: LucideIcon
+  name: string
+  desc: string
+  price: number
+  care: number
+  from?: boolean // exibe "a partir de" no preço do projeto
+  features: string[] // o que vem no projeto
+  careFeatures: string[] // o que a manutenção cobre
+  featured?: boolean
+}
+
+export const plans: Plan[] = [
+  {
+    icon: Code2,
+    name: 'Landing Page',
+    desc: 'Uma página de alta conversão para apresentar seu negócio e captar clientes.',
+    price: 1490,
+    care: 89,
+    features: [
+      'Página única com design personalizado',
+      'Botão de WhatsApp e formulário',
+      'SEO básico + Google Analytics',
+      'Entrega em até 10 dias',
+    ],
+    careFeatures: [
+      'Hospedagem, domínio e SSL',
+      '2 alterações de conteúdo por mês',
+      'Suporte por WhatsApp',
+    ],
+  },
+  {
+    icon: ShoppingBag,
+    name: 'Loja Online',
+    desc: 'Loja completa para vender todos os dias, com pagamento e frete integrados.',
+    price: 3990,
+    care: 197,
+    featured: true,
+    features: [
+      'Loja com até 300 produtos',
+      'Pix, cartão e boleto integrados',
+      'Cálculo de frete automático',
+      'Painel de pedidos e estoque',
+    ],
+    careFeatures: [
+      'Hospedagem, domínio, SSL e backups',
+      '4h de ajustes e melhorias por mês',
+      'Relatório mensal de vendas',
+    ],
+  },
+  {
+    icon: Zap,
+    name: 'Automação',
+    desc: 'Robôs e integrações que trabalham por você 24h e eliminam tarefas manuais.',
+    price: 1990,
+    care: 147,
+    from: true,
+    features: [
+      'Até 3 fluxos automatizados',
+      'Integração com WhatsApp, CRM, e-mail e planilhas',
+      'Documentação de cada fluxo',
+    ],
+    careFeatures: [
+      'Servidor e monitoramento 24h',
+      'Correção de falhas e ajustes nos fluxos',
+      'Relatório de horas economizadas',
+    ],
+  },
 ]
+
+export const plansNote = 'O projeto é seu: você paga uma vez pela criação e a manutenção mantém tudo no ar, seguro e atualizado.'
