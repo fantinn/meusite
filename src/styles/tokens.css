@@ -1,0 +1,65 @@
+:root {
+  --font: 'Segoe UI Variable Display', 'Segoe UI Variable', 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+
+  --bg: #ffffff;
+  --bg-alt: #f5f5f5;
+  --surface: #ffffff;
+  --surface-acrylic: rgba(255, 255, 255, 0.72);
+  --text: #1b1b1b;
+  --text-2: #505050;
+  --text-3: #737373;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.14);
+
+  --accent: #0067b8;
+  --accent-hover: #005da6;
+  --accent-soft: rgba(0, 103, 184, 0.08);
+  --on-accent: #ffffff;
+
+  --blob-1: #4f9cf9;
+  --blob-2: #a77bf3;
+  --blob-3: #3ad1d6;
+
+  --radius-s: 6px;
+  --radius: 10px;
+  --radius-l: 16px;
+
+  --shadow-4: 0 2px 4px rgba(0, 0, 0, 0.04), 0 0 2px rgba(0, 0, 0, 0.06);
+  --shadow-8: 0 4px 8px rgba(0, 0, 0, 0.06), 0 0 2px rgba(0, 0, 0, 0.08);
+  --shadow-16: 0 8px 16px rgba(0, 0, 0, 0.08), 0 0 2px rgba(0, 0, 0, 0.08);
+  --shadow-28: 0 14px 28px rgba(0, 0, 0, 0.12), 0 0 8px rgba(0, 0, 0, 0.06);
+  --shadow-64: 0 32px 64px rgba(0, 0, 0, 0.18), 0 0 8px rgba(0, 0, 0, 0.08);
+
+  --ease: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --max: 1200px;
+  --gutter: clamp(16px, 4vw, 40px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f0f10;
+    --bg-alt: #161618;
+    --surface: #1c1c1e;
+    --surface-acrylic: rgba(22, 22, 24, 0.7);
+    --text: #f3f3f3;
+    --text-2: #c2c2c2;
+    --text-3: #9a9a9a;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+
+    --accent: #4cc2ff;
+    --accent-hover: #6ccdff;
+    --accent-soft: rgba(76, 194, 255, 0.1);
+    --on-accent: #001a2b;
+
+    --blob-1: #1f5fbf;
+    --blob-2: #6a3fc2;
+    --blob-3: #0d8c94;
+
+    --shadow-4: 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 2px rgba(0, 0, 0, 0.3);
+    --shadow-8: 0 4px 8px rgba(0, 0, 0, 0.35), 0 0 2px rgba(0, 0, 0, 0.3);
+    --shadow-16: 0 8px 16px rgba(0, 0, 0, 0.4), 0 0 2px rgba(0, 0, 0, 0.3);
+    --shadow-28: 0 14px 28px rgba(0, 0, 0, 0.5), 0 0 8px rgba(0, 0, 0, 0.3);
+    --shadow-64: 0 32px 64px rgba(0, 0, 0, 0.6), 0 0 8px rgba(0, 0, 0, 0.3);
+  }
+}
