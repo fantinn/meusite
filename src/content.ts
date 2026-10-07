@@ -77,9 +77,8 @@ export const testimonials = [
 // Planos: projeto (pagamento único) + assinatura de manutenção. Valores em reais.
 // - price: valor do projeto, pago uma vez (parcelável em INSTALLMENTS vezes)
 // - care: mensalidade da manutenção no plano mensal (sem fidelidade)
-// - No plano anual (12 meses), a manutenção tem ANNUAL_DISCOUNT.
-export const ANNUAL_DISCOUNT = 0.15
-export const INSTALLMENTS = 10
+// - careAnnual: mensalidade da manutenção no plano anual (contrato de 12 meses)
+export const INSTALLMENTS = 5
 
 export type Plan = {
   icon: LucideIcon
@@ -87,6 +86,7 @@ export type Plan = {
   desc: string
   price: number
   care: number
+  careAnnual: number
   from?: boolean // exibe "a partir de" no preço do projeto
   features: string[] // o que vem no projeto
   careFeatures: string[] // o que a manutenção cobre
@@ -98,17 +98,19 @@ export const plans: Plan[] = [
     icon: Code2,
     name: 'Landing Page',
     desc: 'Uma página de alta conversão para apresentar seu negócio e captar clientes.',
-    price: 1490,
-    care: 89,
+    price: 400,
+    care: 39,
+    careAnnual: 29,
+    from: true,
     features: [
       'Página única com design personalizado',
       'Botão de WhatsApp e formulário',
-      'SEO básico + Google Analytics',
-      'Entrega em até 10 dias',
+      'SEO + Google Analytics',
+      'Entrega em até 7 dias',
     ],
     careFeatures: [
       'Hospedagem, domínio e SSL',
-      '2 alterações de conteúdo por mês',
+      '1 alteração de conteúdo por mês',
       'Suporte por WhatsApp',
     ],
   },
@@ -116,37 +118,40 @@ export const plans: Plan[] = [
     icon: ShoppingBag,
     name: 'Loja Online',
     desc: 'Loja completa para vender todos os dias, com pagamento e frete integrados.',
-    price: 3990,
-    care: 197,
+    price: 700,
+    care: 59,
+    careAnnual: 49,
+    from: true,
     featured: true,
     features: [
-      'Loja com até 300 produtos',
-      'Pix, cartão e boleto integrados',
+      'Até 60 produtos cadastrados',
+      'Pix e cartão integrados',
       'Cálculo de frete automático',
       'Painel de pedidos e estoque',
     ],
     careFeatures: [
       'Hospedagem, domínio, SSL e backups',
-      '4h de ajustes e melhorias por mês',
-      'Relatório mensal de vendas',
+      '1h de ajustes por mês',
+      'Suporte por WhatsApp',
     ],
   },
   {
     icon: Zap,
     name: 'Automação',
     desc: 'Robôs e integrações que trabalham por você 24h e eliminam tarefas manuais.',
-    price: 1990,
-    care: 147,
+    price: 500,
+    care: 59,
+    careAnnual: 49,
     from: true,
     features: [
-      'Até 3 fluxos automatizados',
+      '1 fluxo automatizado completo',
       'Integração com WhatsApp, CRM, e-mail e planilhas',
-      'Documentação de cada fluxo',
+      'Documentação do fluxo',
     ],
     careFeatures: [
       'Servidor e monitoramento 24h',
-      'Correção de falhas e ajustes nos fluxos',
-      'Relatório de horas economizadas',
+      'Correção de falhas',
+      'Suporte por WhatsApp',
     ],
   },
 ]

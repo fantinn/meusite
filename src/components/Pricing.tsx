@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, RefreshCw, ShieldCheck } from 'lucide-react'
-import { ANNUAL_DISCOUNT, INSTALLMENTS, plans, plansNote, type Plan } from '../content'
+import { INSTALLMENTS, plans, plansNote, type Plan } from '../content'
 import Card from './Card'
 import Reveal, { SectionHead, ease, fadeUp, stagger } from './Reveal'
 
@@ -9,8 +9,7 @@ type Billing = 'monthly' | 'annual'
 
 const brl = (v: number) => v.toLocaleString('pt-BR', { maximumFractionDigits: 0 })
 
-const careFor = (p: Plan, billing: Billing) =>
-  billing === 'annual' ? Math.round(p.care * (1 - ANNUAL_DISCOUNT)) : p.care
+const careFor = (p: Plan, billing: Billing) => (billing === 'annual' ? p.careAnnual : p.care)
 
 function BillingSwitch({ value, onChange }: { value: Billing; onChange: (b: Billing) => void }) {
   const options: { id: Billing; label: string }[] = [
@@ -23,7 +22,7 @@ function BillingSwitch({ value, onChange }: { value: Billing; onChange: (b: Bill
         <button key={o.id} role="radio" aria-checked={value === o.id} className={`billing__opt${value === o.id ? ' is-active' : ''}`} onClick={() => onChange(o.id)}>
           {value === o.id && <motion.span layoutId="billing-pill" className="billing__pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
           <span>{o.label}</span>
-          {o.id === 'annual' && <span className="billing__save">-{Math.round(ANNUAL_DISCOUNT * 100)}%</span>}
+          {o.id === 'annual' && <span className="billing__save">economize</span>}
         </button>
       ))}
     </div>
@@ -56,7 +55,7 @@ export default function Pricing() {
         <SectionHead
           kicker="Planos"
           title="Seu projeto pronto, e sempre funcionando."
-          text="Você paga a criação uma única vez (dá pra parcelar) e escolhe o plano de manutenção, com hospedagem, domínio, segurança e suporte inclusos."
+          text="Você paga a criação uma única vez e mantém tudo no ar com uma manutenção que cabe no bolso: hospedagem, domínio, segurança e suporte inclusos."
           center
         />
 
@@ -73,7 +72,7 @@ export default function Pricing() {
               transition={{ duration: 0.25 }}
             >
               {billing === 'annual'
-                ? `Contrato de 12 meses com ${Math.round(ANNUAL_DISCOUNT * 100)}% de desconto na manutenção.`
+                ? 'Contrato de 12 meses com mensalidade menor na manutenção.'
                 : 'Sem fidelidade: cancele a manutenção quando quiser.'}
             </motion.p>
           </AnimatePresence>
@@ -83,7 +82,7 @@ export default function Pricing() {
           {plans.map((p) => {
             const Icon = p.icon
             const care = careFor(p, billing)
-            const yearlySaving = (p.care - careFor(p, 'annual')) * 12
+            const yearlySaving = (p.care - p.careAnnual) * 12
             return (
               <Card key={p.name} className={`plan${p.featured ? ' is-featured' : ''}`} variants={fadeUp}>
                 {p.featured && <span className="plan__badge">Mais popular</span>}
