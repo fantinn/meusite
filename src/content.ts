@@ -58,10 +58,10 @@ export type Project = {
 }
 
 export const projects: Project[] = [
-  { id: 'p1', title: 'Portal Financeiro', category: 'Aplicação Web', text: 'Dashboard com gráficos em tempo real, relatórios e controle de acesso por perfil para uma consultoria financeira.', result: '+40% de produtividade da equipe', gradient: 'linear-gradient(135deg,#0067b8,#004e8c)' },
-  { id: 'p2', title: 'Pedro Design', category: 'Site / Portfólio', text: 'Site para designer de posicionamento visual: apresentação dos serviços, planos mensais, projetos em destaque e contato direto pelo WhatsApp.', gradient: 'linear-gradient(135deg,#2b2b2b,#4a4a4a)', image: '/projects/pdrdesign.jpg', url: 'https://pdrdesign.com.br' },
-  { id: 'p3', title: 'PryzeGear', category: 'Landing Page', text: 'Landing page de uma comunidade de periféricos e setups high-end: apresentação da marca, níveis de setup e chamada para o grupo VIP de ofertas no WhatsApp.', gradient: 'linear-gradient(135deg,#1d4f7c,#0b2e4f)', image: '/projects/pryzegear.jpg', url: 'https://www.pryzegear.com.br' },
-  { id: 'p4', title: 'Fluxo Ops', category: 'Automação', text: 'Automação de onboarding de clientes integrando CRM, e-mail e planilhas.', result: '12h/semana economizadas', gradient: 'linear-gradient(135deg,#5a6570,#2f363d)' },
+  { id: 'p1', title: 'ListaJota', category: 'Página de Vendas', text: 'Página de vendas de uma lista de fornecedores de multimarcas: prova social, prévia da planilha de contatos, bônus, depoimentos, dúvidas frequentes e compra com acesso imediato.', gradient: 'linear-gradient(135deg,#4ade80,#16a34a 50%,#052e16)', image: '/projects/listajota.jpg', url: 'https://fantinn.github.io/ListaJota/' },
+  { id: 'p2', title: 'Pedro Design', category: 'Site / Portfólio', text: 'Site para designer de posicionamento visual: apresentação dos serviços, planos mensais, projetos em destaque e contato direto pelo WhatsApp.', gradient: 'linear-gradient(135deg,#ff8a1f,#c2410c 55%,#1a0a02)', image: '/projects/pdrdesign.jpg', url: 'https://pdrdesign.com.br' },
+  { id: 'p3', title: 'PryzeGear', category: 'Landing Page', text: 'Landing page de uma comunidade de periféricos e setups high-end: apresentação da marca, níveis de setup e chamada para o grupo VIP de ofertas no WhatsApp.', gradient: 'linear-gradient(135deg,#a78bfa,#7c3aed 50%,#1e0b3d)', image: '/projects/pryzegear.jpg', url: 'https://www.pryzegear.com.br' },
+  { id: 'p4', title: 'LFNC', category: 'Página de Vendas', text: 'Página de vendas de lista de fornecedores com contador de oferta, bônus exclusivos, preço parcelado, perguntas frequentes e área de membros para liberar o acesso após a compra.', gradient: 'linear-gradient(135deg,#60a5fa,#1d4ed8 50%,#020617)', image: '/projects/listafnc.jpg', url: 'https://listafnc.com.br' },
 ]
 
 export const stats = [
