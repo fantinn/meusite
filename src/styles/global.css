@@ -325,22 +325,48 @@ img, svg {
 }
 
 /* Escurece um pouco o lado do texto (legibilidade) e funde o fim do céu com o fundo da página. */
+.sky-bg__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .sky-bg::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
+}
+
+.hero .sky-bg::after {
   background:
     linear-gradient(180deg, transparent 72%, var(--bg) 100%),
-    linear-gradient(90deg, rgba(4, 30, 60, 0.42), rgba(4, 30, 60, 0.12) 55%, rgba(4, 30, 60, 0) 80%);
+    linear-gradient(90deg, rgba(4, 30, 60, 0.28), rgba(4, 30, 60, 0.06) 50%, rgba(4, 30, 60, 0) 75%);
 }
 
 /* No céu de dia as nuvens são claras: sombra um pouco mais forte do lado do texto. */
-:root:not([data-theme='dark']) .sky-bg::after {
+:root:not([data-theme='dark']) .hero .sky-bg::after {
   background:
-    linear-gradient(180deg, rgba(4, 30, 60, 0.18), transparent 20%, transparent 72%, var(--bg) 100%),
-    linear-gradient(90deg, rgba(4, 30, 60, 0.55), rgba(4, 30, 60, 0.22) 50%, rgba(4, 30, 60, 0) 78%);
+    linear-gradient(180deg, transparent 80%, var(--bg) 100%),
+    linear-gradient(90deg, rgba(4, 30, 60, 0.38), rgba(4, 30, 60, 0.12) 50%, rgba(4, 30, 60, 0) 75%);
+}
+
+/* No celular o texto ocupa a largura toda: só um véu leve atrás dele, para as nuvens continuarem aparecendo. */
+@media (max-width: 860px) {
+  .hero .sky-bg::after,
+  :root:not([data-theme='dark']) .hero .sky-bg::after {
+    background:
+      linear-gradient(180deg, rgba(4, 30, 60, 0.2), rgba(4, 30, 60, 0.14) 55%, rgba(4, 30, 60, 0) 75%, var(--bg) 100%);
+  }
+}
+
+.hero h1,
+.hero__sub,
+.hero .eyebrow {
+  text-shadow: 0 1px 3px rgba(4, 30, 60, 0.35), 0 2px 24px rgba(4, 30, 60, 0.45);
 }
 
 .hero h1,
@@ -1779,9 +1805,20 @@ img, svg {
   50% { background-position: 100% 50%; }
 }
 
-.cta > * {
+.cta > *:not(.flow-bg) {
   position: relative;
   z-index: 1;
+  transform: translateZ(0);
+}
+
+/* Ondas de luz em canvas (FlowBackground) */
+.flow-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

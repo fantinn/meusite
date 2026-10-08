@@ -3,7 +3,7 @@ import { ArrowRight, Sparkles } from 'lucide-react'
 import type { MouseEvent } from 'react'
 import { hero } from '../content'
 import { ease } from './Reveal'
-import SkyBackground from './SkyBackground'
+import CloudShader from './CloudShader'
 
 const ACCENT_FROM = 3 // índice da palavra onde começa o destaque em gradiente
 
@@ -32,7 +32,7 @@ export default function Hero() {
 
   return (
     <section className="hero" onMouseMove={onMove} onMouseLeave={() => { mx.set(0); my.set(0) }}>
-      <SkyBackground />
+      <CloudShader />
 
       <motion.div className="container hero__inner" style={{ opacity: fade, y: lift }}>
         <div>
