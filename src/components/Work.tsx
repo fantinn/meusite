@@ -8,10 +8,16 @@ function Cover({ p }: { p: Project }) {
   return (
     <motion.div className="project__cover" layoutId={`cover-${p.id}`}>
       <div className="project__cover-inner" style={{ background: p.gradient }} />
-      <motion.div className="project__mock" whileHover={{ y: -8 }} transition={{ type: 'spring', stiffness: 260, damping: 22 }}>
-        <div className="skeleton" />
-        <div className="skeleton" style={{ width: '80%' }} />
-        <div className="skeleton" style={{ width: '60%' }} />
+      <motion.div className={`project__mock${p.image ? ' project__mock--image' : ''}`} whileHover={{ y: -8 }} transition={{ type: 'spring', stiffness: 260, damping: 22 }}>
+        {p.image ? (
+          <img src={p.image} alt={`Site ${p.title}`} loading="lazy" />
+        ) : (
+          <>
+            <div className="skeleton" />
+            <div className="skeleton" style={{ width: '80%' }} />
+            <div className="skeleton" style={{ width: '60%' }} />
+          </>
+        )}
       </motion.div>
     </motion.div>
   )
@@ -70,7 +76,14 @@ export default function Work() {
                   <div className="project__cat">{active.category}</div>
                   <motion.h3 layoutId={`title-${active.id}`} style={{ fontSize: 28, fontWeight: 600 }}>{active.title}</motion.h3>
                   <p>{active.text}</p>
-                  <span className="modal__result"><TrendingUp size={16} /> {active.result}</span>
+                  <div className="modal__actions">
+                    {active.result && <span className="modal__result"><TrendingUp size={16} /> {active.result}</span>}
+                    {active.url && (
+                      <a className="btn btn--primary" href={active.url} target="_blank" rel="noreferrer">
+                        Ver site no ar <ArrowUpRight size={16} />
+                      </a>
+                    )}
+                  </div>
                 </motion.div>
               </motion.div>
             </div>

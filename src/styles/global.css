@@ -292,33 +292,88 @@ img, svg {
   overflow: hidden;
 }
 
-.hero__blobs {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  filter: blur(90px);
-  opacity: 0.35;
+/* Céu com nuvens (SkyBackground / Vanta Clouds). Enquanto o 3D carrega, aparece o degradê de céu do .hero. */
+.hero {
+  background: linear-gradient(180deg, #3d8fd1, #8fbbe2);
 }
 
-.blob {
-  position: absolute;
-  border-radius: 50%;
+.hero h1 {
+  color: #fff;
 }
 
-.blob--1 { width: 520px; height: 520px; background: var(--blob-1); top: -120px; right: -80px; }
-.blob--2 { width: 420px; height: 420px; background: var(--blob-2); top: 220px; right: 260px; }
-.blob--3 { width: 360px; height: 360px; background: var(--blob-3); bottom: -120px; left: -80px; }
+/* No topo (ainda sobre o céu) o menu fica branco; ao rolar volta às cores normais. */
+.nav:not(.is-scrolled) .logo,
+.nav:not(.is-scrolled) .nav__link,
+.nav:not(.is-scrolled) .nav__link:hover,
+.nav:not(.is-scrolled) .theme-toggle,
+.nav:not(.is-scrolled) .nav__toggle {
+  color: #fff;
+}
 
-.hero__grid-bg {
+.nav:not(.is-scrolled) .nav__pill {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+:root[data-theme='dark'] .hero {
+  background: linear-gradient(180deg, #0d3163, #1d3d66);
+}
+
+.sky-bg {
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(var(--border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse at 30% 40%, #000 0%, transparent 70%);
-  -webkit-mask-image: radial-gradient(ellipse at 30% 40%, #000 0%, transparent 70%);
+  z-index: 0;
+}
+
+/* Escurece um pouco o lado do texto (legibilidade) e funde o fim do céu com o fundo da página. */
+.sky-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 72%, var(--bg) 100%),
+    linear-gradient(90deg, rgba(4, 30, 60, 0.42), rgba(4, 30, 60, 0.12) 55%, rgba(4, 30, 60, 0) 80%);
+}
+
+/* No céu de dia as nuvens são claras: sombra um pouco mais forte do lado do texto. */
+:root:not([data-theme='dark']) .sky-bg::after {
+  background:
+    linear-gradient(180deg, rgba(4, 30, 60, 0.18), transparent 20%, transparent 72%, var(--bg) 100%),
+    linear-gradient(90deg, rgba(4, 30, 60, 0.55), rgba(4, 30, 60, 0.22) 50%, rgba(4, 30, 60, 0) 78%);
+}
+
+.hero h1,
+.hero__sub {
+  text-shadow: 0 2px 20px rgba(4, 30, 60, 0.3);
+}
+
+.hero__sub {
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.hero h1 .accent {
+  background: linear-gradient(90deg, #9fdcff, #e3f4ff) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
+
+.hero .eyebrow {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.hero .btn--ghost {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.hero .btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .hero__inner {
@@ -946,6 +1001,28 @@ img, svg {
 
 .project__mock .skeleton:first-child {
   width: 40%;
+}
+
+/* Card com print do site: a "janela" mostra a imagem em vez das linhas de esqueleto */
+.project__mock--image {
+  padding: 0;
+  overflow: hidden;
+  background: #111;
+}
+
+.project__mock--image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
 }
 
 .project__body {
@@ -1702,32 +1779,9 @@ img, svg {
   50% { background-position: 100% 50%; }
 }
 
-.cta > *:not(.sky-bg) {
+.cta > * {
   position: relative;
   z-index: 1;
-  transform: translateZ(0);
-}
-
-/* Céu com nuvens (SkyBackground / Vanta Clouds). Antes de carregar, o degradê azul aparece por baixo. */
-.sky-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-
-/* Sombra suave no centro para o texto branco ficar legível sobre as nuvens claras. */
-.sky-bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: radial-gradient(ellipse 60% 55% at 50% 50%, rgba(4, 30, 60, 0.38), rgba(4, 30, 60, 0) 100%);
-}
-
-.cta h2,
-.cta p {
-  text-shadow: 0 2px 18px rgba(4, 30, 60, 0.35);
 }
 
 @media (prefers-reduced-motion: reduce) {

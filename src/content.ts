@@ -46,12 +46,21 @@ export const services: Service[] = [
   { icon: Search, title: 'SEO & Performance', text: 'Auditoria técnica e melhorias para carregar rápido e aparecer no Google.', tags: ['Core Web Vitals', 'Auditoria'] },
 ]
 
-export type Project = { id: string; title: string; category: string; text: string; result: string; gradient: string }
+export type Project = {
+  id: string
+  title: string
+  category: string
+  text: string
+  result?: string
+  gradient: string
+  image?: string // print do site, mostrado dentro da janela do card
+  url?: string // link do site no ar
+}
 
 export const projects: Project[] = [
   { id: 'p1', title: 'Portal Financeiro', category: 'Aplicação Web', text: 'Dashboard com gráficos em tempo real, relatórios e controle de acesso por perfil para uma consultoria financeira.', result: '+40% de produtividade da equipe', gradient: 'linear-gradient(135deg,#0067b8,#004e8c)' },
-  { id: 'p2', title: 'Loja Aurora', category: 'E-commerce', text: 'Loja virtual com checkout em uma página, integração de frete e painel administrativo simplificado.', result: '2,3x mais conversões', gradient: 'linear-gradient(135deg,#2b2b2b,#4a4a4a)' },
-  { id: 'p3', title: 'Clínica Vita', category: 'Landing Page', text: 'Site institucional com agendamento online, blog e otimização local de SEO.', result: '1º lugar no Google local', gradient: 'linear-gradient(135deg,#1d4f7c,#0b2e4f)' },
+  { id: 'p2', title: 'Pedro Design', category: 'Site / Portfólio', text: 'Site para designer de posicionamento visual: apresentação dos serviços, planos mensais, projetos em destaque e contato direto pelo WhatsApp.', gradient: 'linear-gradient(135deg,#2b2b2b,#4a4a4a)', image: '/projects/pdrdesign.jpg', url: 'https://pdrdesign.com.br' },
+  { id: 'p3', title: 'PryzeGear', category: 'Landing Page', text: 'Landing page de uma comunidade de periféricos e setups high-end: apresentação da marca, níveis de setup e chamada para o grupo VIP de ofertas no WhatsApp.', gradient: 'linear-gradient(135deg,#1d4f7c,#0b2e4f)', image: '/projects/pryzegear.jpg', url: 'https://www.pryzegear.com.br' },
   { id: 'p4', title: 'Fluxo Ops', category: 'Automação', text: 'Automação de onboarding de clientes integrando CRM, e-mail e planilhas.', result: '12h/semana economizadas', gradient: 'linear-gradient(135deg,#5a6570,#2f363d)' },
 ]
 

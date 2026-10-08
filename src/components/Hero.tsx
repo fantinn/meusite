@@ -3,6 +3,7 @@ import { ArrowRight, Sparkles } from 'lucide-react'
 import type { MouseEvent } from 'react'
 import { hero } from '../content'
 import { ease } from './Reveal'
+import SkyBackground from './SkyBackground'
 
 const ACCENT_FROM = 3 // índice da palavra onde começa o destaque em gradiente
 
@@ -16,8 +17,6 @@ export default function Hero() {
   const rotX = useTransform(sy, [-0.5, 0.5], [-6, 6])
   const fx = useTransform(sx, [-0.5, 0.5], [-24, 24])
   const fy = useTransform(sy, [-0.5, 0.5], [-24, 24])
-  const bx = useTransform(sx, [-0.5, 0.5], [40, -40])
-  const by = useTransform(sy, [-0.5, 0.5], [40, -40])
 
   const { scrollY } = useScroll()
   const fade = useTransform(scrollY, [0, 500], [1, 0])
@@ -33,12 +32,7 @@ export default function Hero() {
 
   return (
     <section className="hero" onMouseMove={onMove} onMouseLeave={() => { mx.set(0); my.set(0) }}>
-      <motion.div className="hero__blobs" style={{ x: bx, y: by }} aria-hidden>
-        <motion.div className="blob blob--1" animate={{ x: [0, -40, 20, 0], y: [0, 30, -20, 0], scale: [1, 1.08, 0.96, 1] }} transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }} />
-        <motion.div className="blob blob--2" animate={{ x: [0, 50, -30, 0], y: [0, -40, 20, 0], scale: [1, 0.92, 1.06, 1] }} transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }} />
-        <motion.div className="blob blob--3" animate={{ x: [0, 30, -20, 0], y: [0, -30, 30, 0] }} transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }} />
-      </motion.div>
-      <div className="hero__grid-bg" aria-hidden />
+      <SkyBackground />
 
       <motion.div className="container hero__inner" style={{ opacity: fade, y: lift }}>
         <div>

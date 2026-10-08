@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 
-// Céu com nuvens 3D (Vanta Clouds + three.js) no fundo do CTA.
-// - Carrega o three.js só quando o bloco está chegando na tela (não pesa o início do site)
+// Céu com nuvens 3D (Vanta Clouds + three.js) no fundo do hero.
+// - Carrega o three.js à parte, depois do resto da página (o degradê de céu aparece enquanto isso)
 // - Céu de dia no modo claro e céu noturno no modo escuro, trocando junto com o tema
 // - As nuvens reagem ao mouse; respeita "reduzir movimento" do sistema
 const SKIES = {
