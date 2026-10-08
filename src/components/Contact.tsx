@@ -25,6 +25,12 @@ export default function Contact() {
     <section id="contato" className="section">
       <div className="container">
         <Reveal className="cta">
+          {/* Fundo animado: manchas de luz em tons de azul passeando devagar */}
+          <div className="cta__bg" aria-hidden>
+            <motion.span className="cta__glow cta__glow--1" animate={{ x: ['0%', '60%', '20%', '0%'], y: ['0%', '30%', '-20%', '0%'] }} transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }} />
+            <motion.span className="cta__glow cta__glow--2" animate={{ x: ['0%', '-50%', '-10%', '0%'], y: ['0%', '-25%', '25%', '0%'] }} transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }} />
+            <motion.span className="cta__glow cta__glow--3" animate={{ x: ['0%', '40%', '-30%', '0%'], scale: [1, 1.3, 0.9, 1] }} transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }} />
+          </div>
           <motion.span className="cta__ring" style={{ width: 420, height: 420, top: -200, right: -120 }} animate={{ rotate: 360, scale: [1, 1.1, 1] }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }} />
           <motion.span className="cta__ring" style={{ width: 300, height: 300, bottom: -160, left: -60 }} animate={{ scale: [1, 1.15, 1] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} />
           <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.03em', lineHeight: 1.1 }}>Vamos tirar sua ideia do papel?</h2>
