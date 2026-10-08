@@ -895,87 +895,6 @@ img, svg {
   color: var(--text-2);
 }
 
-/* ---------- Process ---------- */
-.process {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 32px;
-}
-
-.process__track,
-.process__fill {
-  position: absolute;
-  top: 23px;
-  left: 24px;
-  right: 24px;
-  height: 2px;
-  background: var(--border-strong);
-}
-
-.process__fill {
-  background: linear-gradient(90deg, var(--accent), var(--blob-2));
-  transform-origin: 0 50%;
-  transform: scaleX(var(--p, 0));
-}
-
-.step__num {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--surface);
-  border: 2px solid var(--accent);
-  color: var(--accent);
-  font-weight: 700;
-  margin-bottom: 24px;
-  box-shadow: 0 0 0 6px var(--bg-alt);
-}
-
-.step h3 {
-  font-size: 19px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.step p {
-  color: var(--text-2);
-  font-size: 15px;
-}
-
-@media (max-width: 860px) {
-  .process {
-    grid-template-columns: 1fr;
-    gap: 40px;
-    padding-left: 72px;
-  }
-  .process__track,
-  .process__fill {
-    top: 24px;
-    bottom: 24px;
-    left: 23px;
-    right: auto;
-    width: 2px;
-    height: auto;
-  }
-  .process__fill {
-    transform-origin: 50% 0;
-    transform: scaleY(var(--p, 0));
-  }
-  .step__num {
-    position: absolute;
-    left: 0;
-    margin: 0;
-  }
-  .step {
-    position: relative;
-    margin-left: -72px;
-    padding-left: 72px;
-  }
-}
-
 /* ---------- Work ---------- */
 .work {
   display: grid;
@@ -1783,19 +1702,32 @@ img, svg {
   50% { background-position: 100% 50%; }
 }
 
-.cta > *:not(.flow-bg) {
+.cta > *:not(.sky-bg) {
   position: relative;
   z-index: 1;
+  transform: translateZ(0);
 }
 
-/* Ondas de luz em canvas (FlowBackground) */
-.flow-bg {
+/* Céu com nuvens (SkyBackground / Vanta Clouds). Antes de carregar, o degradê azul aparece por baixo. */
+.sky-bg {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
   z-index: 0;
+}
+
+/* Sombra suave no centro para o texto branco ficar legível sobre as nuvens claras. */
+.sky-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   pointer-events: none;
+  background: radial-gradient(ellipse 60% 55% at 50% 50%, rgba(4, 30, 60, 0.38), rgba(4, 30, 60, 0) 100%);
+}
+
+.cta h2,
+.cta p {
+  text-shadow: 0 2px 18px rgba(4, 30, 60, 0.35);
 }
 
 @media (prefers-reduced-motion: reduce) {

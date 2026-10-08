@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, CheckCircle2, Linkedin, Mail, MessageCircle } from 'lucide-react'
 import { brand } from '../content'
-import FlowBackground from './FlowBackground'
+import SkyBackground from './SkyBackground'
 import Reveal, { SectionHead, ease } from './Reveal'
 
 const channels = [
@@ -27,7 +27,7 @@ export default function Contact() {
     <section id="contato" className="section">
       <div className="container">
         <Reveal className="cta">
-          <FlowBackground />
+          <SkyBackground />
           <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.03em', lineHeight: 1.1 }}>Vamos tirar sua ideia do papel?</h2>
           <p>Conte um pouco sobre o seu projeto e receba uma proposta em até 24 horas.</p>
           <motion.a href="#form" className="btn btn--primary" whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>

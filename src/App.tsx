@@ -6,7 +6,6 @@ import LogosStrip from './components/LogosStrip'
 import Statement from './components/Statement'
 import ScrollMarquee from './components/ScrollMarquee'
 import Services from './components/Services'
-import Process from './components/Process'
 import Work from './components/Work'
 import Stats from './components/Stats'
 import Testimonials from './components/Testimonials'
@@ -25,7 +24,6 @@ export default function App() {
         <LogosStrip />
         <Statement />
         <Services />
-        <Process />
         <Work />
         <ScrollMarquee />
         <Stats />

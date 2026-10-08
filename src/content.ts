@@ -16,7 +16,6 @@ export const brand = {
 
 export const nav = [
   { label: 'Serviços', href: '#servicos' },
-  { label: 'Processo', href: '#processo' },
   { label: 'Projetos', href: '#projetos' },
   { label: 'Planos', href: '#planos' },
   { label: 'Contato', href: '#contato' },
@@ -45,13 +44,6 @@ export const services: Service[] = [
   { icon: ShoppingBag, title: 'E-commerce', text: 'Lojas virtuais com checkout fluido, integrações de pagamento e gestão simplificada.', tags: ['Pagamentos', 'Estoque', 'Analytics'] },
   { icon: Zap, title: 'Automação', text: 'Elimine tarefas repetitivas com integrações, bots e fluxos automatizados.', tags: ['Integrações', 'Bots', 'Workflows'] },
   { icon: Search, title: 'SEO & Performance', text: 'Auditoria técnica e melhorias para carregar rápido e aparecer no Google.', tags: ['Core Web Vitals', 'Auditoria'] },
-]
-
-export const process = [
-  { title: 'Descoberta', text: 'Uma conversa para entender seu negócio, objetivos e público.' },
-  { title: 'Design', text: 'Wireframes e protótipo navegável para você validar antes do código.' },
-  { title: 'Desenvolvimento', text: 'Construção com entregas semanais e acompanhamento transparente.' },
-  { title: 'Lançamento', text: 'Publicação, testes finais e suporte para o seu projeto decolar.' },
 ]
 
 export type Project = { id: string; title: string; category: string; text: string; result: string; gradient: string }
