@@ -4,7 +4,8 @@
 // POST /api/checkout
 //   { plan: 'landing' | 'loja' | 'automacao', kind: 'project' }                      -> projeto (Pix ou cartão em até INSTALLMENTS x)
 //   { plan: ..., kind: 'care', billing: 'monthly' | 'annual' }                        -> assinatura de manutenção (cartão recorrente)
-import { INSTALLMENTS, isPlanId, pricing } from '../src/pricing'
+// Extensão .js obrigatória: no servidor o Node roda ESM puro (vira src/pricing.js depois de compilar).
+import { INSTALLMENTS, isPlanId, pricing } from '../src/pricing.js'
 
 const API_BASE = process.env.ASAAS_ENV === 'production' ? 'https://api.asaas.com' : 'https://api-sandbox.asaas.com'
 

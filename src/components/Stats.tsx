@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { animate, motion, useInView } from 'framer-motion'
+import { animate, useInView } from 'framer-motion'
 import { stats } from '../content'
-import { fadeUp, stagger } from './Reveal'
+import { ScrollItem } from './Reveal'
 
 function Counter({ to, suffix }: { to: number; suffix: string }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -21,14 +21,14 @@ export default function Stats() {
   return (
     <section className="section" style={{ paddingTop: 0 }}>
       <div className="container">
-        <motion.div className="stats" variants={stagger(0.1)} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }}>
-          {stats.map((s) => (
-            <motion.div key={s.label} className="stat" variants={fadeUp}>
+        <div className="stats">
+          {stats.map((s, i) => (
+            <ScrollItem key={s.label} className="stat" index={i} distance={50}>
               <Counter to={s.value} suffix={s.suffix} />
               <div className="stat__label">{s.label}</div>
-            </motion.div>
+            </ScrollItem>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   )

@@ -5,7 +5,7 @@ import { INSTALLMENTS, plans, plansNote, type Plan } from '../content'
 import { startCheckout, type Billing } from '../checkout'
 import type { PlanId } from '../pricing'
 import Card from './Card'
-import Reveal, { SectionHead, ease, fadeUp, stagger } from './Reveal'
+import Reveal, { ScrollItem, SectionHead, ease } from './Reveal'
 
 export function CheckoutButton({ plan, kind = 'project', billing, className, children }: {
   plan: PlanId
@@ -103,13 +103,14 @@ export default function Pricing() {
           </AnimatePresence>
         </Reveal>
 
-        <motion.div className="plans" variants={stagger(0.12)} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }}>
-          {plans.map((p) => {
+        <div className="plans">
+          {plans.map((p, i) => {
             const Icon = p.icon
             const care = careFor(p, billing)
             const yearlySaving = (p.care - p.careAnnual) * 12
             return (
-              <Card key={p.name} className={`plan${p.featured ? ' is-featured' : ''}`} variants={fadeUp}>
+              <ScrollItem key={p.name} index={i} tilt>
+              <Card className={`plan${p.featured ? ' is-featured' : ''}`} style={{ height: '100%' }}>
                 {p.featured && <span className="plan__badge">Mais popular</span>}
                 <div className="card__icon"><Icon size={24} /></div>
                 <h3>{p.name}</h3>
@@ -157,9 +158,10 @@ export default function Pricing() {
                   Quero esse plano
                 </CheckoutButton>
               </Card>
+              </ScrollItem>
             )
           })}
-        </motion.div>
+        </div>
 
         <Reveal className="plans__included" delay={0.1}>
           <ShieldCheck size={18} />

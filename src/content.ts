@@ -56,10 +56,10 @@ export const process = [
 export type Project = { id: string; title: string; category: string; text: string; result: string; gradient: string }
 
 export const projects: Project[] = [
-  { id: 'p1', title: 'Portal Financeiro', category: 'Aplicação Web', text: 'Dashboard com gráficos em tempo real, relatórios e controle de acesso por perfil para uma consultoria financeira.', result: '+40% de produtividade da equipe', gradient: 'linear-gradient(135deg,#0067b8,#4f6bed)' },
-  { id: 'p2', title: 'Loja Aurora', category: 'E-commerce', text: 'Loja virtual com checkout em uma página, integração de frete e painel administrativo simplificado.', result: '2,3x mais conversões', gradient: 'linear-gradient(135deg,#8661c5,#e3008c)' },
-  { id: 'p3', title: 'Clínica Vita', category: 'Landing Page', text: 'Site institucional com agendamento online, blog e otimização local de SEO.', result: '1º lugar no Google local', gradient: 'linear-gradient(135deg,#00b294,#0099bc)' },
-  { id: 'p4', title: 'Fluxo Ops', category: 'Automação', text: 'Automação de onboarding de clientes integrando CRM, e-mail e planilhas.', result: '12h/semana economizadas', gradient: 'linear-gradient(135deg,#ff8c00,#e81123)' },
+  { id: 'p1', title: 'Portal Financeiro', category: 'Aplicação Web', text: 'Dashboard com gráficos em tempo real, relatórios e controle de acesso por perfil para uma consultoria financeira.', result: '+40% de produtividade da equipe', gradient: 'linear-gradient(135deg,#0067b8,#004e8c)' },
+  { id: 'p2', title: 'Loja Aurora', category: 'E-commerce', text: 'Loja virtual com checkout em uma página, integração de frete e painel administrativo simplificado.', result: '2,3x mais conversões', gradient: 'linear-gradient(135deg,#2b2b2b,#4a4a4a)' },
+  { id: 'p3', title: 'Clínica Vita', category: 'Landing Page', text: 'Site institucional com agendamento online, blog e otimização local de SEO.', result: '1º lugar no Google local', gradient: 'linear-gradient(135deg,#1d4f7c,#0b2e4f)' },
+  { id: 'p4', title: 'Fluxo Ops', category: 'Automação', text: 'Automação de onboarding de clientes integrando CRM, e-mail e planilhas.', result: '12h/semana economizadas', gradient: 'linear-gradient(135deg,#5a6570,#2f363d)' },
 ]
 
 export const stats = [

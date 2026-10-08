@@ -165,7 +165,7 @@ img, svg {
   width: 30px;
   height: 30px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #0067b8, #8661c5);
+  background: var(--accent);
   color: #fff;
   font-size: 12px;
   font-weight: 700;
@@ -295,8 +295,8 @@ img, svg {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  filter: blur(80px);
-  opacity: 0.55;
+  filter: blur(90px);
+  opacity: 0.35;
 }
 
 .blob {
@@ -640,6 +640,38 @@ img, svg {
   margin-top: 16px;
   font-size: 17px;
   color: var(--text-2);
+}
+
+.kicker__line {
+  display: block;
+  width: 48px;
+  height: 2px;
+  margin: -6px 0 18px;
+  background: var(--accent);
+  transform-origin: 0 50%;
+}
+
+.section__head--center .kicker__line {
+  margin-inline: auto;
+  transform-origin: 50% 50%;
+}
+
+/* ---------- Statement (texto que acende no scroll) ---------- */
+.statement {
+  padding: clamp(100px, 16vw, 200px) 0 clamp(40px, 6vw, 80px);
+}
+
+.statement__text {
+  max-width: 1000px;
+  font-size: clamp(32px, 5.4vw, 64px);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+.statement__word {
+  display: inline-block;
+  margin-right: 0.25em;
 }
 
 /* ---------- Cards (reveal highlight) ---------- */
@@ -1615,7 +1647,7 @@ img, svg {
   overflow: hidden;
   border-radius: 24px;
   padding: clamp(40px, 7vw, 72px);
-  background: linear-gradient(135deg, #0067b8, #4f6bed 50%, #8661c5);
+  background: linear-gradient(135deg, #0067b8, #004e8c);
   color: #fff;
   text-align: center;
 }

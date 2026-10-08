@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useSpring } from 'framer-motion'
 import { process } from '../content'
-import { SectionHead, fadeUp, stagger } from './Reveal'
+import { ScrollItem, SectionHead } from './Reveal'
 
 export default function Process() {
   const ref = useRef<HTMLDivElement>(null)
@@ -16,24 +16,17 @@ export default function Process() {
           title="Um processo simples, transparente e sem surpresas."
           text="Você acompanha cada etapa e sabe exatamente o que está sendo feito."
         />
-        <motion.div
-          ref={ref}
-          className="process"
-          variants={stagger(0.15)}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-80px' }}
-        >
+        <div ref={ref} className="process">
           <div className="process__track" aria-hidden />
           <motion.div className="process__fill" style={{ ['--p' as string]: p }} aria-hidden />
           {process.map((s, i) => (
-            <motion.div key={s.title} className="step" variants={fadeUp}>
+            <ScrollItem key={s.title} className="step" index={i} distance={60}>
               <motion.div className="step__num" whileHover={{ scale: 1.1 }}>{String(i + 1).padStart(2, '0')}</motion.div>
               <h3>{s.title}</h3>
               <p>{s.text}</p>
-            </motion.div>
+            </ScrollItem>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   )
