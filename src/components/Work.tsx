@@ -1,24 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUpRight, TrendingUp, X } from 'lucide-react'
 import { projects, type Project } from '../content'
-import { Parallax, SectionHead, ease } from './Reveal'
+import { SectionHead, ease } from './Reveal'
 
-function Cover({ p, parallax = false }: { p: Project; parallax?: boolean }) {
-  // Parallax: o fundo da capa anda mais devagar que a página enquanto rola.
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
-  const bgY = useTransform(scrollYProgress, [0, 1], parallax ? ['-18%', '18%'] : ['0%', '0%'])
-  const mockY = useTransform(scrollYProgress, [0, 1], parallax ? [60, -30] : [0, 0])
+function Cover({ p }: { p: Project }) {
   return (
-    <motion.div ref={ref} className="project__cover" layoutId={`cover-${p.id}`}>
-      <motion.div className="project__cover-inner" style={{ background: p.gradient, y: bgY, inset: parallax ? '-20% 0' : 0 }} />
-      <motion.div style={{ y: mockY, position: 'absolute', inset: 0 }}>
+    <motion.div className="project__cover" layoutId={`cover-${p.id}`}>
+      <div className="project__cover-inner" style={{ background: p.gradient }} />
       <motion.div className="project__mock" whileHover={{ y: -8 }} transition={{ type: 'spring', stiffness: 260, damping: 22 }}>
         <div className="skeleton" />
         <div className="skeleton" style={{ width: '80%' }} />
         <div className="skeleton" style={{ width: '60%' }} />
-      </motion.div>
       </motion.div>
     </motion.div>
   )
@@ -43,16 +36,16 @@ export default function Work() {
       <div className="container">
         <SectionHead kicker="Projetos" title="Resultados reais para negócios reais." text="Alguns trabalhos recentes. Clique para ver os detalhes." />
         <div className="work">
-          {projects.map((p, i) => (
-            <Parallax key={p.id} speed={i % 2 ? 110 : 30}>
+          {projects.map((p) => (
             <motion.button
+              key={p.id}
               className="project"
               layoutId={`card-${p.id}`}
               onClick={() => setActive(p)}
               whileHover={{ y: -6, boxShadow: 'var(--shadow-28)' }}
               transition={{ type: 'spring', stiffness: 300, damping: 26 }}
             >
-              <Cover p={p} parallax />
+              <Cover p={p} />
               <div className="project__body">
                 <div>
                   <div className="project__cat">{p.category}</div>
@@ -61,7 +54,6 @@ export default function Work() {
                 <span className="project__arrow"><ArrowUpRight size={18} /></span>
               </div>
             </motion.button>
-            </Parallax>
           ))}
         </div>
       </div>

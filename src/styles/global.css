@@ -742,6 +742,30 @@ img, svg {
   transform-origin: 0 50%;
 }
 
+.testimonial-card {
+  display: flex;
+  flex-direction: column;
+  width: clamp(300px, 36vw, 460px);
+}
+
+.testimonial-card__icon {
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.testimonial-card blockquote {
+  margin: 0 0 auto;
+  font-size: clamp(18px, 1.6vw, 21px);
+  line-height: 1.45;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.testimonial-card .testimonial__author {
+  justify-content: flex-start;
+  margin-top: 28px;
+}
+
 /* ---------- Letreiro gigante (move com o scroll) ---------- */
 .smarquee {
   padding: clamp(40px, 8vw, 100px) 0;
