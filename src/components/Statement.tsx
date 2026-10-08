@@ -7,23 +7,23 @@ function Word({ word, index, total, progress }: { word: string; index: number; t
   const start = index / total
   const end = start + 1 / total
   const opacity = useTransform(progress, [start, end], [0.12, 1])
-  const y = useTransform(progress, [start, end], [12, 0])
-  return <motion.span className="statement__word" style={{ opacity, y }}>{word}</motion.span>
+  return <motion.span className="statement__word" style={{ opacity }}>{word}</motion.span>
 }
 
-// Frase grande que vai "acendendo" palavra por palavra conforme o scroll.
+// A frase fica fixa no centro da tela e acende palavra por palavra enquanto você rola.
 export default function Statement() {
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 85%', 'end 45%'] })
+  const ref = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] })
+  const scale = useTransform(scrollYProgress, [0, 0.85, 1], [0.92, 1, 1.04])
   const words = TEXT.split(' ')
   return (
-    <section className="statement">
-      <div className="container">
-        <p ref={ref} className="statement__text" aria-label={TEXT}>
+    <section ref={ref} className="statement">
+      <div className="statement__sticky">
+        <motion.p className="container statement__text" style={{ scale }} aria-label={TEXT}>
           {words.map((w, i) => (
             <Word key={i} word={w} index={i} total={words.length} progress={scrollYProgress} />
           ))}
-        </p>
+        </motion.p>
       </div>
     </section>
   )

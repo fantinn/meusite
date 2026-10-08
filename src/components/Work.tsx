@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
 import { ArrowUpRight, TrendingUp, X } from 'lucide-react'
 import { projects, type Project } from '../content'
-import { ScrollItem, SectionHead, ease } from './Reveal'
+import { Parallax, SectionHead, ease } from './Reveal'
 
 function Cover({ p, parallax = false }: { p: Project; parallax?: boolean }) {
   // Parallax: o fundo da capa anda mais devagar que a página enquanto rola.
@@ -44,7 +44,7 @@ export default function Work() {
         <SectionHead kicker="Projetos" title="Resultados reais para negócios reais." text="Alguns trabalhos recentes. Clique para ver os detalhes." />
         <div className="work">
           {projects.map((p, i) => (
-            <ScrollItem key={p.id} index={i % 2} distance={120}>
+            <Parallax key={p.id} speed={i % 2 ? 110 : 30}>
             <motion.button
               className="project"
               layoutId={`card-${p.id}`}
@@ -61,7 +61,7 @@ export default function Work() {
                 <span className="project__arrow"><ArrowUpRight size={18} /></span>
               </div>
             </motion.button>
-            </ScrollItem>
+            </Parallax>
           ))}
         </div>
       </div>

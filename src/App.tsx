@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import LogosStrip from './components/LogosStrip'
 import Statement from './components/Statement'
+import ScrollMarquee from './components/ScrollMarquee'
 import Services from './components/Services'
 import Process from './components/Process'
 import Work from './components/Work'
@@ -26,6 +27,7 @@ export default function App() {
         <Services />
         <Process />
         <Work />
+        <ScrollMarquee />
         <Stats />
         <Testimonials />
         <Pricing />

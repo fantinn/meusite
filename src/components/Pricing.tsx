@@ -5,7 +5,7 @@ import { INSTALLMENTS, plans, plansNote, type Plan } from '../content'
 import { startCheckout, type Billing } from '../checkout'
 import type { PlanId } from '../pricing'
 import Card from './Card'
-import Reveal, { ScrollItem, SectionHead, ease } from './Reveal'
+import Reveal, { Parallax, SectionHead, ease } from './Reveal'
 
 export function CheckoutButton({ plan, kind = 'project', billing, className, children }: {
   plan: PlanId
@@ -109,7 +109,7 @@ export default function Pricing() {
             const care = careFor(p, billing)
             const yearlySaving = (p.care - p.careAnnual) * 12
             return (
-              <ScrollItem key={p.name} index={i} tilt>
+              <Parallax key={p.name} speed={[40, 0, 40][i]}>
               <Card className={`plan${p.featured ? ' is-featured' : ''}`} style={{ height: '100%' }}>
                 {p.featured && <span className="plan__badge">Mais popular</span>}
                 <div className="card__icon"><Icon size={24} /></div>
@@ -158,7 +158,7 @@ export default function Pricing() {
                   Quero esse plano
                 </CheckoutButton>
               </Card>
-              </ScrollItem>
+              </Parallax>
             )
           })}
         </div>

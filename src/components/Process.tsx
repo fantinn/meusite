@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useSpring } from 'framer-motion'
 import { process } from '../content'
-import { ScrollItem, SectionHead } from './Reveal'
+import { Parallax, SectionHead } from './Reveal'
 
 export default function Process() {
   const ref = useRef<HTMLDivElement>(null)
@@ -20,11 +20,11 @@ export default function Process() {
           <div className="process__track" aria-hidden />
           <motion.div className="process__fill" style={{ ['--p' as string]: p }} aria-hidden />
           {process.map((s, i) => (
-            <ScrollItem key={s.title} className="step" index={i} distance={60}>
+            <Parallax key={s.title} className="step" speed={20 + i * 18}>
               <motion.div className="step__num" whileHover={{ scale: 1.1 }}>{String(i + 1).padStart(2, '0')}</motion.div>
               <h3>{s.title}</h3>
               <p>{s.text}</p>
-            </ScrollItem>
+            </Parallax>
           ))}
         </div>
       </div>

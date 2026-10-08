@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { animate, useInView } from 'framer-motion'
 import { stats } from '../content'
-import { ScrollItem } from './Reveal'
+import { Parallax } from './Reveal'
 
 function Counter({ to, suffix }: { to: number; suffix: string }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -23,10 +23,10 @@ export default function Stats() {
       <div className="container">
         <div className="stats">
           {stats.map((s, i) => (
-            <ScrollItem key={s.label} className="stat" index={i} distance={50}>
+            <Parallax key={s.label} className="stat" speed={i % 2 ? 50 : 15}>
               <Counter to={s.value} suffix={s.suffix} />
               <div className="stat__label">{s.label}</div>
-            </ScrollItem>
+            </Parallax>
           ))}
         </div>
       </div>

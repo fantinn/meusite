@@ -19,7 +19,8 @@ body {
   color: var(--text);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* clip (e não hidden) para não quebrar position: sticky das seções fixas */
+  overflow-x: clip;
 }
 
 h1, h2, h3, h4, p {
@@ -656,13 +657,20 @@ img, svg {
   transform-origin: 50% 50%;
 }
 
-/* ---------- Statement (texto que acende no scroll) ---------- */
+/* ---------- Statement (texto fixo que acende no scroll) ---------- */
 .statement {
-  padding: clamp(100px, 16vw, 200px) 0 clamp(40px, 6vw, 80px);
+  height: 260vh;
+}
+
+.statement__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
 }
 
 .statement__text {
-  max-width: 1000px;
   font-size: clamp(32px, 5.4vw, 64px);
   line-height: 1.15;
   font-weight: 600;
@@ -672,6 +680,85 @@ img, svg {
 .statement__word {
   display: inline-block;
   margin-right: 0.25em;
+}
+
+/* ---------- Scroll horizontal (Serviços) ---------- */
+.hscroll {
+  position: relative;
+}
+
+.hscroll__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 40px;
+  overflow: hidden;
+}
+
+.hscroll__head h2 {
+  max-width: 720px;
+  font-size: clamp(30px, 4.2vw, 46px);
+  line-height: 1.12;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.hscroll__track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  padding: 0 max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter)));
+}
+
+.hscroll__card {
+  width: clamp(280px, 30vw, 380px);
+  min-height: 300px;
+}
+
+.hscroll__num {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--border-strong);
+}
+
+.hscroll__bar {
+  height: 2px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.hscroll__bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: 0 50%;
+}
+
+/* ---------- Letreiro gigante (move com o scroll) ---------- */
+.smarquee {
+  padding: clamp(40px, 8vw, 100px) 0;
+  overflow: hidden;
+}
+
+.smarquee__row {
+  white-space: nowrap;
+  font-size: clamp(48px, 9vw, 120px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.smarquee__row.is-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--border-strong);
 }
 
 /* ---------- Cards (reveal highlight) ---------- */
@@ -1092,16 +1179,14 @@ img, svg {
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  border-radius: var(--radius-l);
-  overflow: hidden;
-  background: var(--border);
-  border: 1px solid var(--border);
+  gap: 16px;
 }
 
 .stat {
   background: var(--surface);
   padding: 36px 28px;
+  border-radius: var(--radius-l);
+  border: 1px solid var(--border);
 }
 
 .stat__value {
