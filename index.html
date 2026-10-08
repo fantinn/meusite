@@ -7,20 +7,8 @@
     <title>Gabriel Fantin — Desenvolvimento & Design</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%230067b8'/><stop offset='1' stop-color='%23004e8c'/></linearGradient></defs><rect width='32' height='32' rx='8' fill='url(%23g)'/><text x='16' y='21' font-family='Segoe UI,Arial' font-size='13' font-weight='700' fill='white' text-anchor='middle'>GF</text></svg>" />
     <script>
-      // Aplica o tema antes de renderizar para evitar "flash" de cor errada.
-      (function () {
-        var saved = null
-        try { saved = localStorage.getItem('theme') } catch (e) {}
-        var mq = window.matchMedia('(prefers-color-scheme: dark)')
-        var apply = function () {
-          document.documentElement.dataset.theme = saved || (mq.matches ? 'dark' : 'light')
-        }
-        apply()
-        mq.addEventListener('change', function () {
-          try { saved = localStorage.getItem('theme') } catch (e) {}
-          apply()
-        })
-      })()
+      // O site sempre abre no modo claro; o botão de tema troca para o escuro só durante a visita.
+      document.documentElement.dataset.theme = 'light'
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

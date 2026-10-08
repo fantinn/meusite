@@ -23,7 +23,7 @@ export const nav = [
 
 export const hero = {
   eyebrow: 'Disponível para novos projetos',
-  title: 'Experiências digitais que fazem sua empresa crescer.',
+  title: 'Sites que transformam visitas em clientes.',
   subtitle:
     'Sites, sistemas e interfaces rápidas, bonitas e pensadas para converter. Do conceito ao lançamento, com atenção a cada detalhe.',
   primary: { label: 'Solicitar orçamento', href: '#contato' },
