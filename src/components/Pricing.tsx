@@ -1,11 +1,36 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Check, RefreshCw, ShieldCheck } from 'lucide-react'
+import { Check, Loader2, RefreshCw, ShieldCheck } from 'lucide-react'
 import { INSTALLMENTS, plans, plansNote, type Plan } from '../content'
+import { startCheckout, type Billing } from '../checkout'
+import type { PlanId } from '../pricing'
 import Card from './Card'
 import Reveal, { SectionHead, ease, fadeUp, stagger } from './Reveal'
 
-type Billing = 'monthly' | 'annual'
+export function CheckoutButton({ plan, kind = 'project', billing, className, children }: {
+  plan: PlanId
+  kind?: 'project' | 'care'
+  billing?: Billing
+  className: string
+  children: ReactNode
+}) {
+  const [loading, setLoading] = useState(false)
+  const go = async () => {
+    setLoading(true)
+    try {
+      await startCheckout(plan, kind, billing)
+    } catch {
+      // Sem checkout disponível (ex.: API não configurada): leva para o formulário de contato.
+      setLoading(false)
+      document.getElementById('contato')?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+  return (
+    <motion.button className={className} onClick={go} disabled={loading} whileTap={{ scale: 0.97 }}>
+      {loading ? <><Loader2 size={18} className="spin" /> Abrindo pagamento…</> : children}
+    </motion.button>
+  )
+}
 
 const brl = (v: number) => v.toLocaleString('pt-BR', { maximumFractionDigits: 0 })
 
@@ -128,9 +153,9 @@ export default function Pricing() {
                   </ul>
                 </div>
 
-                <motion.a href="#contato" className={`btn ${p.featured ? 'btn--primary' : 'btn--ghost'}`} whileTap={{ scale: 0.97 }}>
+                <CheckoutButton plan={p.id} className={`btn ${p.featured ? 'btn--primary' : 'btn--ghost'}`}>
                   Quero esse plano
-                </motion.a>
+                </CheckoutButton>
               </Card>
             )
           })}

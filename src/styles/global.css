@@ -988,6 +988,74 @@ img, svg {
   z-index: 2;
 }
 
+.pay-result {
+  position: relative;
+  padding: 40px 32px 32px;
+  text-align: center;
+}
+
+.pay-result h3 {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 16px 0 8px;
+}
+
+.pay-result p {
+  color: var(--text-2);
+  margin-bottom: 12px;
+}
+
+.pay-result small {
+  display: block;
+  margin-top: 12px;
+  color: var(--text-3);
+}
+
+.pay-result__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+}
+
+.pay-result__icon.is-ok {
+  background: rgba(22, 198, 12, 0.12);
+  color: #16c60c;
+}
+
+.pay-result__icon.is-warn {
+  background: rgba(255, 140, 0, 0.12);
+  color: #ff8c00;
+}
+
+.pay-result__options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pay-result .modal__close {
+  background: var(--bg-alt);
+  color: var(--text);
+}
+
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.btn:disabled {
+  opacity: 0.8;
+  cursor: progress;
+}
+
 /* ---------- Stats ---------- */
 .stats {
   display: grid;

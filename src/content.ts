@@ -1,6 +1,7 @@
 // Edite aqui os textos do site.
 import type { LucideIcon } from 'lucide-react'
 import { Code2, Palette, Smartphone, Zap, Search, ShoppingBag } from 'lucide-react'
+import { pricing, type PlanId, type PlanPricing } from './pricing'
 
 export const brand = {
   name: 'Gabriel Fantin',
@@ -74,19 +75,15 @@ export const testimonials = [
   { quote: 'Design moderno e performance excelente. Nossos pacientes elogiam a facilidade de agendar.', name: 'Dra. Paula Souza', role: 'Clínica Vita' },
 ]
 
-// Planos: projeto (pagamento único) + assinatura de manutenção. Valores em reais.
-// - price: valor do projeto, pago uma vez (parcelável em INSTALLMENTS vezes)
-// - care: mensalidade da manutenção no plano mensal (sem fidelidade)
-// - careAnnual: mensalidade da manutenção no plano anual (contrato de 12 meses)
-export const INSTALLMENTS = 5
+// Planos: projeto (pagamento único) + assinatura de manutenção.
+// Os valores ficam em src/pricing.ts (compartilhado com a API de checkout).
+export { INSTALLMENTS } from './pricing'
 
-export type Plan = {
+export type Plan = PlanPricing & {
+  id: PlanId
   icon: LucideIcon
   name: string
   desc: string
-  price: number
-  care: number
-  careAnnual: number
   from?: boolean // exibe "a partir de" no preço do projeto
   features: string[] // o que vem no projeto
   careFeatures: string[] // o que a manutenção cobre
@@ -95,12 +92,11 @@ export type Plan = {
 
 export const plans: Plan[] = [
   {
+    ...pricing.landing,
+    id: 'landing',
     icon: Code2,
     name: 'Landing Page',
     desc: 'Uma página de alta conversão para apresentar seu negócio e captar clientes.',
-    price: 400,
-    care: 39,
-    careAnnual: 29,
     from: true,
     features: [
       'Página única com design personalizado',
@@ -115,12 +111,11 @@ export const plans: Plan[] = [
     ],
   },
   {
+    ...pricing.loja,
+    id: 'loja',
     icon: ShoppingBag,
     name: 'Loja Online',
     desc: 'Loja completa para vender todos os dias, com pagamento e frete integrados.',
-    price: 700,
-    care: 59,
-    careAnnual: 49,
     from: true,
     featured: true,
     features: [
@@ -136,12 +131,11 @@ export const plans: Plan[] = [
     ],
   },
   {
+    ...pricing.automacao,
+    id: 'automacao',
     icon: Zap,
     name: 'Automação',
     desc: 'Robôs e integrações que trabalham por você 24h e eliminam tarefas manuais.',
-    price: 500,
-    care: 59,
-    careAnnual: 49,
     from: true,
     features: [
       '1 fluxo automatizado completo',

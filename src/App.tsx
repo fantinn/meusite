@@ -11,6 +11,7 @@ import Testimonials from './components/Testimonials'
 import Pricing from './components/Pricing'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
+import PaymentResult from './components/PaymentResult'
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
         <Contact />
       </main>
       <Footer />
+      <PaymentResult />
     </MotionConfig>
   )
 }
