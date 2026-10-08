@@ -8,7 +8,8 @@ export const brand = {
   short: 'GF',
   role: 'Desenvolvimento & Design',
   email: 'contato@seudominio.com',
-  whatsapp: 'https://wa.me/5500000000000',
+  whatsappNumber: '5527992864820', // formato internacional, só números (55 + DDD + número)
+  whatsappLabel: '(27) 99286-4820',
   linkedin: 'https://www.linkedin.com/',
   github: 'https://github.com/',
 }

@@ -1605,9 +1605,9 @@ img, svg {
 /* ---------- Contact ---------- */
 .contact {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 56px;
-  align-items: start;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 24px;
+  align-items: stretch;
 }
 
 @media (max-width: 900px) {
@@ -1616,15 +1616,26 @@ img, svg {
 
 .contact__list {
   display: grid;
+  grid-auto-rows: 1fr;
   gap: 12px;
-  margin-top: 32px;
+}
+
+.contact__arrow {
+  margin-left: auto;
+  color: var(--text-3);
+  transition: transform 0.3s var(--ease), color 0.2s;
+}
+
+.contact__item:hover .contact__arrow {
+  color: var(--accent);
+  transform: translateX(3px);
 }
 
 .contact__item {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 14px 16px;
+  padding: 18px 20px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--surface);
