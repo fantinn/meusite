@@ -1769,7 +1769,7 @@ img, svg {
   position: relative;
   overflow: hidden;
   border-radius: 24px;
-  padding: clamp(40px, 7vw, 72px);
+  padding: clamp(56px, 9vw, 104px) clamp(24px, 7vw, 72px);
   background: linear-gradient(120deg, #003a6b, #0067b8, #004e8c, #0a5ea8, #003a6b);
   background-size: 300% 300%;
   animation: cta-shift 16s ease-in-out infinite;
@@ -1783,27 +1783,20 @@ img, svg {
   50% { background-position: 100% 50%; }
 }
 
-.cta > *:not(.cta__bg):not(.cta__ring) {
+.cta > *:not(.flow-bg) {
   position: relative;
   z-index: 1;
 }
 
-.cta__bg {
+/* Ondas de luz em canvas (FlowBackground) */
+.flow-bg {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
   pointer-events: none;
-  filter: blur(60px);
 }
-
-.cta__glow {
-  position: absolute;
-  border-radius: 50%;
-}
-
-.cta__glow--1 { width: 45%; aspect-ratio: 1; top: -20%; left: -10%; background: rgba(76, 194, 255, 0.55); }
-.cta__glow--2 { width: 40%; aspect-ratio: 1; bottom: -30%; right: -5%; background: rgba(0, 120, 212, 0.7); }
-.cta__glow--3 { width: 30%; aspect-ratio: 1; top: 20%; left: 35%; background: rgba(160, 210, 255, 0.35); }
 
 @media (prefers-reduced-motion: reduce) {
   .cta { animation: none; }
@@ -1825,9 +1818,4 @@ img, svg {
   color: #0067b8;
 }
 
-.cta__ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  pointer-events: none;
-}
+
