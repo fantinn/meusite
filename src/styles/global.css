@@ -659,7 +659,7 @@ img, svg {
 
 /* ---------- Statement (texto fixo que acende no scroll) ---------- */
 .statement {
-  height: 260vh;
+  position: relative;
 }
 
 .statement__sticky {
@@ -668,18 +668,21 @@ img, svg {
   height: 100vh;
   display: flex;
   align-items: center;
+  overflow: hidden;
 }
 
 .statement__text {
-  font-size: clamp(32px, 5.4vw, 64px);
-  line-height: 1.15;
-  font-weight: 600;
-  letter-spacing: -0.035em;
+  width: max-content;
+  padding-left: max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter)));
+  white-space: nowrap;
+  font-size: clamp(72px, 13vw, 200px);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.045em;
 }
 
 .statement__word {
   display: inline-block;
-  margin-right: 0.25em;
 }
 
 /* ---------- Scroll horizontal (Serviços) ---------- */
