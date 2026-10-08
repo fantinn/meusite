@@ -448,8 +448,8 @@ img, svg {
 
 .hero h1 {
   margin: 24px 0 20px;
-  font-size: clamp(40px, 6vw, 68px);
-  line-height: 1.05;
+  font-size: clamp(46px, 7.4vw, 92px);
+  line-height: 1.02;
   font-weight: 600;
   letter-spacing: -0.035em;
 }
