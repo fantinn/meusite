@@ -36,7 +36,7 @@ export default function Contact() {
 
         <div className="contact" style={{ marginTop: 'clamp(64px,10vw,112px)' }}>
           <div>
-            <SectionHead kicker="Contato" title="Fale comigo." text="Prefere outro canal? Escolha o que for mais prático para você." />
+            <SectionHead kicker="Contato" title="Fale comigo." text="Prefere outro canal? Escolha o que for mais prático para você." still />
             <Reveal className="contact__list" delay={0.1}>
               {channels.map(({ icon: Icon, label, value, href }) => (
                 <a key={label} className="contact__item" href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noreferrer">

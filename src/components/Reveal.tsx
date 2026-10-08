@@ -24,7 +24,24 @@ export default function Reveal({ children, className }: Props) {
   return <div className={className}>{children}</div>
 }
 
-export function SectionHead({ kicker, title, text, center }: { kicker: string; title: string; text?: string; center?: boolean }) {
+type HeadProps = { kicker: string; title: string; text?: string; center?: boolean; still?: boolean }
+
+export function SectionHead({ still, ...props }: HeadProps) {
+  if (still) {
+    const { kicker, title, text, center } = props
+    return (
+      <div className={`section__head${center ? ' section__head--center' : ''}`}>
+        <span className="kicker">{kicker}</span>
+        <span className="kicker__line" aria-hidden />
+        <h2>{title}</h2>
+        {text && <p>{text}</p>}
+      </div>
+    )
+  }
+  return <MovingSectionHead {...props} />
+}
+
+function MovingSectionHead({ kicker, title, text, center }: HeadProps) {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const p = useSpring(scrollYProgress, { stiffness: 200, damping: 40, mass: 0.3 })

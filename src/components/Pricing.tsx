@@ -5,7 +5,7 @@ import { INSTALLMENTS, plans, plansNote, type Plan } from '../content'
 import { startCheckout, type Billing } from '../checkout'
 import type { PlanId } from '../pricing'
 import Card from './Card'
-import Reveal, { Parallax, SectionHead, ease } from './Reveal'
+import Reveal, { SectionHead, ease } from './Reveal'
 
 export function CheckoutButton({ plan, kind = 'project', billing, className, children }: {
   plan: PlanId
@@ -82,6 +82,7 @@ export default function Pricing() {
           title="Seu projeto pronto, e sempre funcionando."
           text="Você paga a criação uma única vez e mantém tudo no ar com uma manutenção que cabe no bolso: hospedagem, domínio, segurança e suporte inclusos."
           center
+          still
         />
 
         <Reveal className="billing-wrap">
@@ -104,12 +105,12 @@ export default function Pricing() {
         </Reveal>
 
         <div className="plans">
-          {plans.map((p, i) => {
+          {plans.map((p) => {
             const Icon = p.icon
             const care = careFor(p, billing)
             const yearlySaving = (p.care - p.careAnnual) * 12
             return (
-              <Parallax key={p.name} speed={[40, 0, 40][i]}>
+              <div key={p.name}>
               <Card className={`plan${p.featured ? ' is-featured' : ''}`} style={{ height: '100%' }}>
                 {p.featured && <span className="plan__badge">Mais popular</span>}
                 <div className="card__icon"><Icon size={24} /></div>
@@ -158,7 +159,7 @@ export default function Pricing() {
                   Quero esse plano
                 </CheckoutButton>
               </Card>
-              </Parallax>
+              </div>
             )
           })}
         </div>
