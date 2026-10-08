@@ -1,7 +1,7 @@
 import { Fragment, useLayoutEffect, useRef, useState } from 'react'
 import { motion, useScroll, useSpring, useTransform, type MotionValue } from 'framer-motion'
 
-const TEXT = 'Design limpo. Código rápido. Um site que trabalha por você enquanto você cuida do seu negócio.'
+const TEXT = 'Design limpo. Um site que trabalha por você enquanto você cuida do seu negócio.'
 
 function Word({ word, index, total, progress }: { word: string; index: number; total: number; progress: MotionValue<number> }) {
   // Cada palavra acende um pouco antes de chegar ao centro da tela.
