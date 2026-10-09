@@ -128,27 +128,86 @@ img, svg {
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 50;
-  transition: background 0.3s, box-shadow 0.3s, border-color 0.3s;
-  border-bottom: 1px solid transparent;
+  padding-top: 14px;
+  transition: padding 0.4s var(--ease);
 }
 
 .nav.is-scrolled {
-  background: var(--surface-acrylic);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom-color: var(--border);
+  padding-top: 10px;
 }
 
+.nav__svg {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* Liquid glass: pílula flutuante de vidro, com brilho nas bordas */
+.nav__glass {
+  position: relative;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(10px) saturate(130%) brightness(1.04);
+  -webkit-backdrop-filter: blur(10px) saturate(130%) brightness(1.04);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+    inset 0 0 24px rgba(255, 255, 255, 0.08),
+    0 10px 36px rgba(0, 30, 70, 0.16);
+  transition: background 0.4s, box-shadow 0.4s;
+}
+
+/* Refração das nuvens atrás do vidro (Chrome/Edge) */
+.nav__glass.has-refraction {
+  backdrop-filter: url(#nav-glass) blur(6px) saturate(130%) brightness(1.04);
+}
+
+/* Reflexo diagonal na superfície do vidro */
+.nav__glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 35%, rgba(255, 255, 255, 0) 70%, rgba(255, 255, 255, 0.12));
+  pointer-events: none;
+}
+
+/* Ao rolar, o vidro fica mais denso para o texto continuar legível sobre o conteúdo */
+.nav.is-scrolled .nav__glass {
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 10px 36px rgba(0, 30, 70, 0.14);
+}
+
+:root[data-theme='dark'] .nav.is-scrolled .nav__glass {
+  background: rgba(24, 30, 42, 0.62);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 10px 36px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme='dark'] .nav.is-scrolled .nav__glass::before {
+  opacity: 0.25;
+}
+
+/* Logo à esquerda, links centralizados, ações à direita */
 .nav__inner {
-  display: flex;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 32px;
-  height: 72px;
-  transition: height 0.3s var(--ease);
+  height: 60px;
+  padding: 0 10px 0 16px;
+  transition: height 0.4s var(--ease);
 }
 
 .nav.is-scrolled .nav__inner {
-  height: 60px;
+  height: 54px;
 }
 
 .logo {
@@ -213,7 +272,12 @@ img, svg {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: auto;
+  justify-self: end;
+  grid-column: 3;
+}
+
+.nav__cta {
+  border-radius: 999px;
 }
 
 .nav__toggle,
@@ -246,17 +310,14 @@ img, svg {
 }
 
 .mobile-menu {
+  position: relative;
   overflow: hidden;
-  background: var(--surface-acrylic);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid var(--border);
 }
 
 .mobile-menu ul {
   list-style: none;
   margin: 0;
-  padding: 8px var(--gutter) 24px;
+  padding: 0 16px 18px;
 }
 
 .mobile-menu a {
@@ -268,11 +329,24 @@ img, svg {
 }
 
 .mobile-menu .btn {
+  display: flex;
   margin-top: 20px;
   width: 100%;
+  padding: 0 22px;
+  font-size: 16px;
+  border-bottom: 0;
 }
 
 @media (max-width: 860px) {
+  .nav__inner {
+    grid-template-columns: 1fr auto;
+  }
+  .nav__actions {
+    grid-column: 2;
+  }
+  .logo {
+    white-space: nowrap;
+  }
   .nav__links,
   .nav__cta {
     display: none;
@@ -312,6 +386,43 @@ img, svg {
 
 .nav:not(.is-scrolled) .nav__pill {
   background: rgba(255, 255, 255, 0.18);
+}
+
+/* No topo o nav fica solto sobre o céu: sem caixa de vidro, logo e botão brancos.
+   Ao rolar, volta a pílula de vidro. */
+.nav:not(.is-scrolled) .nav__glass {
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.nav:not(.is-scrolled) .nav__glass::before {
+  opacity: 0;
+}
+
+.nav__glass::before {
+  transition: opacity 0.4s;
+}
+
+.nav:not(.is-scrolled) .nav__link {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.nav:not(.is-scrolled) .logo__mark {
+  background: #fff;
+  color: var(--accent);
+}
+
+.nav:not(.is-scrolled) .nav__cta {
+  background: #fff;
+  color: var(--accent);
+  box-shadow: 0 4px 16px rgba(0, 30, 70, 0.18);
+}
+
+.nav:not(.is-scrolled) .nav__cta:hover {
+  background: #eef6ff;
 }
 
 :root[data-theme='dark'] .hero {
@@ -405,7 +516,7 @@ img, svg {
 .hero__inner {
   position: relative;
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: 1.25fr 1fr;
   gap: 56px;
   align-items: center;
 }
@@ -446,10 +557,11 @@ img, svg {
   to { transform: scale(3); opacity: 0; }
 }
 
+/* Tamanho pela largura da coluna (cqw): "Sites que transformam" sempre cabe numa linha */
 .hero h1 {
   margin: 24px 0 20px;
-  font-size: clamp(46px, 7.4vw, 92px);
-  line-height: 1.02;
+  font-size: min(80px, 10cqw);
+  line-height: 1.04;
   font-weight: 600;
   letter-spacing: -0.035em;
 }
@@ -457,6 +569,37 @@ img, svg {
 .hero h1 .word {
   display: inline-block;
   margin-right: 0.24em;
+}
+
+/* Título em 2 linhas no computador; no celular cada trecho vira uma linha */
+.hero__copy {
+  container-type: inline-size;
+}
+
+.hero__line {
+  display: block;
+  width: max-content;
+  white-space: nowrap;
+  letter-spacing: -0.035em; /* em da própria linha, para escalar junto com o tamanho dela */
+}
+
+.hero__chunk:last-child .word:last-child {
+  margin-right: 0;
+}
+
+/* Sombra suave na linha de destaque, para ela não sumir quando uma nuvem branca passa atrás */
+.hero__line:last-child {
+  filter: drop-shadow(0 2px 14px rgba(0, 30, 70, 0.4));
+}
+
+@media (max-width: 860px) {
+  .hero h1 {
+    font-size: min(64px, 16cqw);
+    line-height: 1.02;
+  }
+  .hero__chunk {
+    display: block;
+  }
 }
 
 .hero h1 .accent {
@@ -477,6 +620,20 @@ img, svg {
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 36px;
+}
+
+@media (max-width: 860px) {
+  .hero__actions {
+    flex-direction: column;
+  }
+  .hero__actions .btn {
+    width: 100%;
+    height: 50px;
+  }
+  .hero__actions .btn--primary {
+    height: 54px;
+    font-size: 16px;
+  }
 }
 
 .hero__visual {
@@ -517,14 +674,26 @@ img, svg {
   padding: 18px;
 }
 
-.window--main {
-  inset: 20px 40px 60px 0;
+/* Notebook e celular do hero */
+.device {
+  position: absolute;
+  height: auto;
+  user-select: none;
+  pointer-events: none;
 }
 
-.window--chart {
-  width: 230px;
-  right: 0;
-  bottom: 0;
+.device--laptop {
+  left: -4%;
+  top: 2%;
+  width: 112%;
+}
+
+/* Celular na frente do notebook, encostado no canto, para dar profundidade */
+.device--phone {
+  right: -9%;
+  bottom: -8%;
+  width: 37%;
+  filter: drop-shadow(-12px 18px 24px rgba(0, 30, 70, 0.28));
 }
 
 .window--chip {
@@ -562,68 +731,6 @@ img, svg {
   margin-bottom: 10px;
 }
 
-.mock-hero {
-  height: 110px;
-  border-radius: var(--radius-s);
-  background: linear-gradient(135deg, var(--accent), var(--blob-2));
-  margin-bottom: 16px;
-  position: relative;
-  overflow: hidden;
-}
-
-.mock-hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
-  animation: shine 3.2s ease-in-out infinite;
-}
-
-@keyframes shine {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(100%); }
-}
-
-.mock-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.mock-cards div {
-  height: 64px;
-  border-radius: var(--radius-s);
-  background: var(--bg-alt);
-  border: 1px solid var(--border);
-}
-
-.bars {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  height: 90px;
-}
-
-.bars span {
-  flex: 1;
-  border-radius: 4px 4px 0 0;
-  background: linear-gradient(var(--accent), var(--blob-3));
-  transform-origin: bottom;
-}
-
-.chart__label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: var(--text-3);
-  margin-bottom: 12px;
-}
-
-.chart__label strong {
-  color: #16c60c;
-}
-
 @media (max-width: 960px) {
   .hero__inner {
     grid-template-columns: 1fr;
@@ -638,11 +745,14 @@ img, svg {
   .hero__visual {
     height: 320px;
   }
-  .window--main {
-    inset: 30px 20px 50px 0;
+  .device--laptop {
+    left: 0;
+    width: 96%;
   }
-  .window--chart {
-    width: 180px;
+  .device--phone {
+    right: 0;
+    bottom: 0;
+    width: 32%;
   }
 }
 
@@ -1125,6 +1235,15 @@ img, svg {
   padding: 28px;
 }
 
+@media (max-width: 560px) {
+  .modal .project__cover {
+    height: 200px;
+  }
+  .modal__body {
+    padding: 22px 20px;
+  }
+}
+
 .modal__body p {
   color: var(--text-2);
   margin: 12px 0 20px;
@@ -1371,9 +1490,187 @@ img, svg {
   flex-direction: column;
 }
 
+/* Card em destaque: escuro, com ondas de luz azul animadas no rodapé */
 .plan.is-featured {
-  border: 2px solid var(--accent);
-  box-shadow: var(--shadow-28);
+  background: #071a33;
+  border: 1px solid rgba(120, 190, 255, 0.35);
+  box-shadow: 0 24px 60px -18px rgba(0, 70, 160, 0.55), var(--shadow-28);
+  color: #fff;
+}
+
+.plan__glow {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 62%;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to top, #000 45%, transparent);
+  mask-image: linear-gradient(to top, #000 45%, transparent);
+}
+
+.plan.is-featured p,
+.plan.is-featured .plan__from,
+.plan.is-featured .plan__setup,
+.plan.is-featured .plan__currency,
+.plan.is-featured li,
+.plan.is-featured .care__price small {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.plan.is-featured .card__icon {
+  background: rgba(255, 255, 255, 0.1);
+  color: #8fd0ff;
+}
+
+.plan.is-featured .plan__pricing {
+  border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+.plan.is-featured li svg,
+.plan.is-featured .care__title,
+.plan.is-featured .care li svg {
+  color: #8fd0ff;
+}
+
+.plan.is-featured .care {
+  background: rgba(10, 30, 60, 0.75);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.plan.is-featured .btn--primary {
+  background: #fff;
+  color: var(--accent);
+}
+
+.plan.is-featured .btn--primary:hover {
+  background: #eef6ff;
+}
+
+.plan.is-featured::before {
+  background: radial-gradient(400px circle at var(--x) var(--y), rgba(80, 170, 255, 0.16), transparent 45%);
+}
+
+/* Sem luz que segue o mouse nos cards dos planos */
+.plan::before,
+.plan::after {
+  display: none;
+}
+
+/* Menu some enquanto os planos estão em foco ("translate" para não brigar com o transform do framer) */
+.nav {
+  transition: padding 0.4s var(--ease), translate 0.45s var(--ease), opacity 0.3s;
+}
+
+html[data-nav-hidden] .nav {
+  translate: 0 -130%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Zoom de câmera dos planos (só computador, ver Pricing.tsx) */
+.pricing--zoom {
+  height: 200vh;
+  padding: 0;
+}
+
+.pricing--zoom .pricing__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.pricing--zoom .pricing__camera {
+  position: absolute;
+  inset: 0 0 auto 0;
+  padding-top: 110px; /* no tamanho normal, a seção chega como as outras */
+  transform-origin: 50% 0;}
+
+/* Chave Mensal/Anual flutuando no topo enquanto os cards estão em foco (no lugar do menu) */
+.billing-float {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.billing-float {
+  top: 10px;
+}
+
+/* Versão compacta da chave */
+.billing-float .billing {
+  padding: 3px;
+}
+
+.billing-float .billing__opt {
+  padding: 5px 14px;
+  font-size: 13px;
+  gap: 6px;
+}
+
+.billing-float .billing__save {
+  font-size: 10px;
+  padding: 1px 6px;
+}
+
+.billing-float .billing {
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: 0 8px 28px rgba(0, 30, 70, 0.14);
+}
+
+:root[data-theme='dark'] .billing-float .billing {
+  background: rgba(24, 30, 42, 0.8);
+}
+
+.pricing--zoom .billing-wrap {
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+/* Cards mais compactos no computador, para caberem inteiros na tela */
+.pricing--zoom .plan {
+  padding: 24px;
+}
+
+/* Sem o ícone do topo: o nome do plano já diz tudo e sobra altura para o zoom */
+.pricing--zoom .plan .card__icon {
+  display: none;
+}
+
+.pricing--zoom .plan > p {
+  min-height: 0;
+}
+
+.pricing--zoom .plan__pricing {
+  margin-top: 16px;
+  padding-top: 14px;
+}
+
+.pricing--zoom .plan__price {
+  font-size: 40px;
+}
+
+.pricing--zoom .plan ul {
+  margin: 16px 0 18px;
+  gap: 8px;
+}
+
+.pricing--zoom .care {
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+
+.pricing--zoom .care ul {
+  margin-top: 8px;
+  gap: 6px;
 }
 
 .plan__badge {
@@ -1726,6 +2023,19 @@ img, svg {
   resize: vertical;
 }
 
+/* No celular, 16px evita que o iPhone dê zoom ao tocar no campo */
+@media (max-width: 860px) {
+  .field input,
+  .field textarea,
+  .field select,
+  .field label {
+    font-size: 16px;
+  }
+  .form .btn {
+    justify-self: stretch;
+  }
+}
+
 .field label {
   position: absolute;
   left: 15px;
@@ -1755,6 +2065,22 @@ img, svg {
 
 .form .btn {
   justify-self: start;
+}
+
+/* Botão de segurar para enviar no WhatsApp */
+.form__hold {
+  justify-self: start;
+}
+
+@media (max-width: 860px) {
+  .form__hold {
+    justify-self: stretch;
+    min-width: 0;
+  }
+  .form__hold .hold-button {
+    width: 100%;
+    padding: 0 16px;
+  }
 }
 
 .form__success {

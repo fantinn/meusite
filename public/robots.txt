@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /fita.html
+Disallow: /fundos.html
+
+Sitemap: https://fantin.tech/sitemap.xml

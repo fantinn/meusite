@@ -3,9 +3,99 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Desenvolvimento web, design de interfaces e automação para empresas que querem crescer." />
-    <title>Gabriel Fantin — Desenvolvimento & Design</title>
+
+    <!-- SEO -->
+    <title>Gabriel Fantin | Criação de Sites, Landing Pages e Lojas Online</title>
+    <meta name="description" content="Criação de sites, landing pages e lojas online por Gabriel Fantin. Seu site no ar em até 5 dias, com WhatsApp integrado e otimizado para aparecer no Google." />
+    <meta name="keywords" content="criação de sites, fazer site, criar site, landing page, criar landing page, página de vendas, loja online, loja virtual, site profissional, desenvolvedor web, web designer, Gabriel Fantin, Fantin" />
+    <meta name="author" content="Gabriel Fantin" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://fantin.tech/" />
+    <meta name="theme-color" content="#0067b8" />
+
+    <!-- Compartilhamento (WhatsApp, Instagram, LinkedIn, X) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Gabriel Fantin" />
+    <meta property="og:url" content="https://fantin.tech/" />
+    <meta property="og:title" content="Gabriel Fantin | Criação de Sites, Landing Pages e Lojas Online" />
+    <meta property="og:description" content="Seu site no ar em até 5 dias, com WhatsApp integrado e otimizado para o Google." />
+    <meta property="og:image" content="https://fantin.tech/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Gabriel Fantin — Criação de sites, landing pages e lojas online" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Gabriel Fantin | Criação de Sites, Landing Pages e Lojas Online" />
+    <meta name="twitter:description" content="Seu site no ar em até 5 dias, com WhatsApp integrado e otimizado para o Google." />
+    <meta name="twitter:image" content="https://fantin.tech/og.jpg" />
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%230067b8'/><stop offset='1' stop-color='%23004e8c'/></linearGradient></defs><rect width='32' height='32' rx='8' fill='url(%23g)'/><text x='16' y='21' font-family='Segoe UI,Arial' font-size='13' font-weight='700' fill='white' text-anchor='middle'>GF</text></svg>" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/logo-gf.png" />
+    <link rel="apple-touch-icon" href="/logo-gf.png" />
+
+    <!-- Dados estruturados: dizem ao Google quem é, o que faz e quanto custa -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://fantin.tech/#site",
+            "url": "https://fantin.tech/",
+            "name": "Gabriel Fantin",
+            "alternateName": ["Fantin", "Fantin Tech", "fantin.tech"],
+            "inLanguage": "pt-BR",
+            "publisher": { "@id": "https://fantin.tech/#gabriel" }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://fantin.tech/#gabriel",
+            "name": "Gabriel Fantin",
+            "jobTitle": "Desenvolvedor web e designer",
+            "url": "https://fantin.tech/",
+            "image": "https://fantin.tech/logo-gf.png",
+            "knowsAbout": ["Criação de sites", "Landing pages", "Lojas online", "UI/UX Design", "SEO", "Automação"]
+          },
+          {
+            "@type": "ProfessionalService",
+            "@id": "https://fantin.tech/#servicos",
+            "name": "Gabriel Fantin — Criação de Sites",
+            "url": "https://fantin.tech/",
+            "logo": "https://fantin.tech/logo-gf.png",
+            "image": "https://fantin.tech/og.jpg",
+            "description": "Criação de sites profissionais, landing pages e lojas online, com WhatsApp integrado e otimização para o Google.",
+            "founder": { "@id": "https://fantin.tech/#gabriel" },
+            "areaServed": { "@type": "Country", "name": "Brasil" },
+            "priceRange": "R$ 400 - R$ 700",
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Serviços",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "price": "400",
+                  "priceCurrency": "BRL",
+                  "itemOffered": { "@type": "Service", "name": "Criação de Landing Page", "description": "Landing page profissional com design personalizado, botão de WhatsApp, SEO e Google Analytics, entregue em até 5 dias." }
+                },
+                {
+                  "@type": "Offer",
+                  "price": "700",
+                  "priceCurrency": "BRL",
+                  "itemOffered": { "@type": "Service", "name": "Criação de Loja Online", "description": "Loja virtual completa com até 90 produtos, Pix e cartão, frete automático e painel de pedidos." }
+                },
+                {
+                  "@type": "Offer",
+                  "price": "500",
+                  "priceCurrency": "BRL",
+                  "itemOffered": { "@type": "Service", "name": "Automação", "description": "Fluxos automatizados integrando WhatsApp, CRM, e-mail e planilhas." }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    </script>
+
     <script>
       // O site sempre abre no modo claro; o botão de tema troca para o escuro só durante a visita.
       document.documentElement.dataset.theme = 'light'

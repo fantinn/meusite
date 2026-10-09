@@ -23,9 +23,11 @@ export const nav = [
 
 export const hero = {
   eyebrow: 'Disponível para novos projetos',
-  title: 'Sites que transformam visitas em clientes.',
+  title: 'Sites que transformam visitas em clientes',
+  // Quebra do título: 2 linhas no computador; no celular cada trecho vira uma linha
+  titleLines: [['Sites que', 'transformam'], ['visitas em', 'clientes']],
   subtitle:
-    'Sites, sistemas e interfaces rápidas, bonitas e pensadas para converter. Do conceito ao lançamento, com atenção a cada detalhe.',
+    'Seu site no ar em até 5 dias, com WhatsApp integrado e otimizado para o Google. Enquanto você pensa, seu concorrente já está recebendo os clientes.',
   primary: { label: 'Solicitar orçamento', href: '#contato' },
   secondary: { label: 'Ver projetos', href: '#projetos' },
 }
@@ -41,7 +43,7 @@ export const services: Service[] = [
   { icon: Code2, title: 'Sites & Landing Pages', text: 'Páginas rápidas, responsivas e otimizadas para transformar visitantes em clientes.', tags: ['React', 'SEO', 'Performance'] },
   { icon: Palette, title: 'UI/UX Design', text: 'Interfaces limpas e intuitivas, com design system consistente do protótipo ao código.', tags: ['Figma', 'Protótipos', 'Design System'] },
   { icon: Smartphone, title: 'Aplicações Web', text: 'Sistemas sob medida, dashboards e áreas de cliente com autenticação e banco de dados.', tags: ['Full-stack', 'APIs', 'Cloud'] },
-  { icon: ShoppingBag, title: 'E-commerce', text: 'Lojas virtuais com checkout fluido, integrações de pagamento e gestão simplificada.', tags: ['Pagamentos', 'Estoque', 'Analytics'] },
+  { icon: ShoppingBag, title: 'Lojas Online', text: 'Lojas virtuais com checkout fluido, integrações de pagamento e gestão simplificada.', tags: ['Pagamentos', 'Estoque', 'Analytics'] },
   { icon: Zap, title: 'Automação', text: 'Elimine tarefas repetitivas com integrações, bots e fluxos automatizados.', tags: ['Integrações', 'Bots', 'Workflows'] },
   { icon: Search, title: 'SEO & Performance', text: 'Auditoria técnica e melhorias para carregar rápido e aparecer no Google.', tags: ['Core Web Vitals', 'Auditoria'] },
 ]
@@ -104,7 +106,7 @@ export const plans: Plan[] = [
       'Página única com design personalizado',
       'Botão de WhatsApp e formulário',
       'SEO + Google Analytics',
-      'Entrega em até 7 dias',
+      'Entrega em até 5 dias',
     ],
     careFeatures: [
       'Hospedagem, domínio e SSL',
@@ -121,7 +123,7 @@ export const plans: Plan[] = [
     from: true,
     featured: true,
     features: [
-      'Até 60 produtos cadastrados',
+      'Até 90 produtos cadastrados',
       'Pix e cartão integrados',
       'Cálculo de frete automático',
       'Painel de pedidos e estoque',
@@ -140,7 +142,7 @@ export const plans: Plan[] = [
     desc: 'Robôs e integrações que trabalham por você 24h e eliminam tarefas manuais.',
     from: true,
     features: [
-      '1 fluxo automatizado completo',
+      'Fluxo automatizado completo',
       'Integração com WhatsApp, CRM, e-mail e planilhas',
       'Documentação do fluxo',
     ],

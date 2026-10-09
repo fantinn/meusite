@@ -1,8 +1,9 @@
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent, type SyntheticEvent } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, CheckCircle2, Linkedin, Mail, MessageCircle } from 'lucide-react'
 import { brand } from '../content'
 import FlowBackground from './FlowBackground'
+import HoldButton from './HoldButton'
 import Reveal,{ SectionHead, ease } from './Reveal'
 
 const channels = [
@@ -13,14 +14,26 @@ const channels = [
 
 export default function Contact() {
   const [sent, setSent] = useState(false)
+  const formRef = useRef<HTMLFormElement>(null)
 
   // Monta a mensagem e abre o WhatsApp (app no celular, WhatsApp Web no computador) já com o texto preenchido.
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const data = new FormData(e.currentTarget)
+  const sendToWhatsApp = () => {
+    const form = formRef.current
+    if (!form) return
+    const data = new FormData(form)
     const text = `Olá! Meu nome é ${data.get('name')}.\nTenho interesse em: *${data.get('service')}*\n\n${data.get('message')}`
-    window.open(`https://wa.me/${brand.whatsappNumber}?text=${encodeURIComponent(text)}`, '_blank', 'noopener')
+    const url = `https://wa.me/${brand.whatsappNumber}?text=${encodeURIComponent(text)}`
+    // Se o navegador bloquear a nova aba (comum no iPhone), abre na mesma aba
+    if (!window.open(url, '_blank', 'noopener')) window.location.href = url
     setSent(true)
+  }
+
+  // Enter dentro do formulário não envia direto: o envio é segurando o botão
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => e.preventDefault()
+
+  // Só deixa começar a segurar se os campos obrigatórios estiverem preenchidos
+  const checkBeforeHold = (e: SyntheticEvent) => {
+    if (!formRef.current?.reportValidity()) e.stopPropagation()
   }
 
   return (
@@ -50,7 +63,7 @@ export default function Contact() {
             ))}
           </div>
 
-          <form id="form" className="form card" onSubmit={onSubmit}>
+          <form ref={formRef} id="form" className="form card" onSubmit={onSubmit}>
               <div className="field">
                 <input id="name" name="name" placeholder=" " required />
                 <label htmlFor="name">Seu nome</label>
@@ -74,9 +87,35 @@ export default function Contact() {
                     <CheckCircle2 size={22} /> Pronto! O WhatsApp foi aberto com a sua mensagem, é só tocar em enviar.
                   </motion.div>
                 ) : (
-                  <motion.button key="btn" type="submit" className="btn btn--primary" whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }} exit={{ opacity: 0, y: -8 }}>
-                    <MessageCircle size={18} /> Enviar pelo WhatsApp
-                  </motion.button>
+                  <motion.div
+                    key="btn"
+                    className="form__hold"
+                    exit={{ opacity: 0, y: -8 }}
+                    onPointerDownCapture={checkBeforeHold}
+                    onKeyDownCapture={(e) => (e.key === ' ' || e.key === 'Enter') && checkBeforeHold(e)}
+                  >
+                    <HoldButton
+                      icon={<MessageCircle size={18} />}
+                      doneIcon={<CheckCircle2 size={18} />}
+                      doneLabel="Abrindo o WhatsApp…"
+                      backgroundColor="#0067b8"
+                      fillColor="#25d366"
+                      textColor="#ffffff"
+                      fillTextColor="#ffffff"
+                      size="lg"
+                      radius={10}
+                      holdTime={1200}
+                      releaseTime={200}
+                      pressScale={0.97}
+                      wave
+                      waveAmplitude={6}
+                      glow
+                      resetAfter={0}
+                      onHold={sendToWhatsApp}
+                    >
+                      Segure para enviar
+                    </HoldButton>
+                  </motion.div>
                 )}
               </AnimatePresence>
           </form>

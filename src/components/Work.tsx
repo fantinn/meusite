@@ -10,7 +10,7 @@ function Cover({ p }: { p: Project }) {
       <div className="project__cover-inner" style={{ background: p.gradient }} />
       <motion.div className={`project__mock${p.image ? ' project__mock--image' : ''}`} whileHover={{ y: -8 }} transition={{ type: 'spring', stiffness: 260, damping: 22 }}>
         {p.image ? (
-          <img src={p.image} alt={`Site ${p.title}`} loading="lazy" />
+          <img src={p.image} alt={`${p.category} ${p.title}, criada por Gabriel Fantin`} loading="lazy" />
         ) : (
           <>
             <div className="skeleton" />
@@ -40,7 +40,7 @@ export default function Work() {
   return (
     <section id="projetos" className="section">
       <div className="container">
-        <SectionHead kicker="Projetos" title="Resultados reais para negócios reais." text="Alguns trabalhos recentes. Clique para ver os detalhes." />
+        <SectionHead kicker="Projetos" title="Sites e landing pages que já estão no ar." text="Alguns trabalhos recentes. Clique para ver os detalhes." />
         <div className="work">
           {projects.map((p) => (
             <motion.button

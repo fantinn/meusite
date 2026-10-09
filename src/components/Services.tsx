@@ -4,7 +4,7 @@ import HorizontalScroll from './HorizontalScroll'
 
 export default function Services() {
   return (
-    <HorizontalScroll id="servicos" kicker="Serviços" title="Tudo o que seu projeto digital precisa, em um só lugar.">
+    <HorizontalScroll id="servicos" kicker="Serviços" title="Criação de sites, landing pages e lojas online.">
       {services.map(({ icon: Icon, title, text, tags }, i) => (
         <Card key={title} className="hscroll__card">
           <span className="hscroll__num">{String(i + 1).padStart(2, '0')}</span>

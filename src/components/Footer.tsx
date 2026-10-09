@@ -13,7 +13,7 @@ export default function Footer() {
     <footer className="footer">
       <div className="container footer__inner">
         <Logo />
-        <span>© {new Date().getFullYear()} {brand.name}. Todos os direitos reservados.</span>
+        <span>© {new Date().getFullYear()} {brand.name} · Criação de sites, landing pages e lojas online.</span>
         <div className="footer__social">
           {social.map(({ icon: Icon, href, label }) => (
             <motion.a key={label} className="icon-btn" href={href} aria-label={label} target="_blank" rel="noreferrer" whileHover={{ y: -3 }}>

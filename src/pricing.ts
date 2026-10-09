@@ -25,7 +25,7 @@ export const pricing: Record<PlanId, PlanPricing> = {
   },
   loja: {
     name: 'Loja Online Completa',
-    checkoutDesc: 'Loja Nuvemshop pronta em até 14 dias: até 60 produtos, Pix e cartão, frete automático e Instagram.',
+    checkoutDesc: 'Loja Nuvemshop pronta em até 14 dias: até 90 produtos, Pix e cartão, frete automático e Instagram.',
     price: 700,
     care: 59,
     careAnnual: 49,
