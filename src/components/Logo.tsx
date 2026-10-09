@@ -3,7 +3,7 @@ import { stagger, useAnimate, useReducedMotion } from 'framer-motion'
 import { brand } from '../content'
 
 // Logo "fantın" com o pingo do i animado.
-// Entrada: as letras sobem desfocando para nítido, o pingo cai do alto com um rastro,
+// Entrada: as letras sobem desfocando para nítido, o pingo surge no alto e cai,
 // achata ao tocar no i, solta uma onda e as letras fazem uma "ola".
 // Depois o pingo pulsa de leve, como status de site no ar. No hover ele dá um pulinho.
 
@@ -30,8 +30,9 @@ export default function Logo({ intro = true }: { intro?: boolean }) {
     busy.current = true
     const run = async () => {
       animate('.wm__l', { opacity: [0, 1], y: ['0.5em', '0em'], filter: ['blur(6px)', 'blur(0px)'] }, { duration: 0.75, delay: stagger(0.06, { startDelay: 0.35 }), ease: out })
-      animate('.wm__trail', { opacity: [0, 0.9, 0], scaleY: [0.2, 1, 0.3] }, { duration: 0.6, delay: 0.9, ease: 'easeIn' })
-      await animate('.wm__dot', { y: ['-2.6em', '0em'], opacity: [0, 1] }, { duration: 0.55, delay: 0.9, ease: fall })
+      // O pingo surge parado no alto, segura um instante e cai (esticando um pouco na queda)
+      await animate('.wm__dot', { y: '-1.5em', scale: [0, 1], opacity: [0, 1] }, { duration: 0.3, delay: 0.85, ease: out })
+      await animate('.wm__dot', { y: ['-1.5em', '0em'], scaleX: [1, 0.85], scaleY: [1, 1.25] }, { duration: 0.42, delay: 0.12, ease: fall })
       await impact()
       busy.current = false
       scope.current?.classList.add('is-live') // libera o pulso contínuo
@@ -63,7 +64,6 @@ export default function Logo({ intro = true }: { intro?: boolean }) {
             {ch}
             {ch === 'ı' && (
               <span className="wm__drop">
-                <span className="wm__trail" />
                 <span className="wm__ripple" />
                 <span className="wm__dot" />
               </span>

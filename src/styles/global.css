@@ -300,19 +300,6 @@ img, svg {
   opacity: 0;
 }
 
-/* Rastro de luz da queda */
-.wm__trail {
-  position: absolute;
-  left: 0.03em;
-  right: 0.03em;
-  bottom: 50%;
-  height: 2.4em;
-  border-radius: 99px;
-  background: linear-gradient(to bottom, transparent, var(--wm-dot));
-  transform-origin: 50% 100%;
-  opacity: 0;
-}
-
 /* Pulso contínuo, como status de "online" */
 .wm.is-live .wm__drop::after {
   content: '';
