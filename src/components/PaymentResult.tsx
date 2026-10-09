@@ -18,7 +18,9 @@ function readResult(): Result | null {
 }
 
 export default function PaymentResult() {
-  const [result, setResult] = useState<Result | null>(readResult)
+  // Lido depois de montar: o HTML pré-renderizado não tem a URL do visitante
+  const [result, setResult] = useState<Result | null>(null)
+  useEffect(() => setResult(readResult()), [])
 
   const close = () => {
     setResult(null)

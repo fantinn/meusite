@@ -131,20 +131,62 @@ function compile(gl: WebGLRenderingContext, type: number, source: string) {
   if (!shader) return null
   gl.shaderSource(shader, source)
   gl.compileShader(shader)
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    gl.deleteShader(shader)
-    return null
-  }
   return shader
+}
+
+// Liga o shader na primeira interação (mexer o mouse, rolar, tocar) ou alguns segundos depois de a
+// página carregar, o que vier primeiro. Criar o WebGL pode travar o processador por um instante,
+// então isso nunca acontece no meio do primeiro carregamento. Até lá aparece o céu em degradê.
+const WAKE_EVENTS = ['pointermove', 'pointerdown', 'touchstart', 'wheel', 'scroll', 'keydown'] as const
+const WAKE_AFTER_LOAD_MS = 5000
+
+function whenSettled(fn: () => void) {
+  let timer = 0
+  let idle = 0
+  const ric = 'requestIdleCallback' in window
+  const wake = () => {
+    cleanup()
+    // Fora do evento (no próximo momento ocioso) para não atrasar a resposta ao toque
+    idle = ric ? requestIdleCallback(fn, { timeout: 400 }) : window.setTimeout(fn, 50)
+  }
+  const arm = () => {
+    timer = window.setTimeout(wake, WAKE_AFTER_LOAD_MS)
+  }
+  const cleanup = () => {
+    WAKE_EVENTS.forEach((e) => window.removeEventListener(e, wake))
+    window.removeEventListener('load', arm)
+    clearTimeout(timer)
+  }
+  WAKE_EVENTS.forEach((e) => window.addEventListener(e, wake, { passive: true }))
+  if (document.readyState === 'complete') arm()
+  else window.addEventListener('load', arm)
+  return () => {
+    cleanup()
+    if (ric) cancelIdleCallback(idle)
+    else clearTimeout(idle)
+  }
 }
 
 export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
   const ref = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
+    let cleanup = () => {}
+    const cancelWake = whenSettled(() => {
+      cleanup = start() ?? cleanup
+    })
+    return () => {
+      cancelWake()
+      cleanup()
+    }
+  }, [speed])
+
+  function start() {
     const canvas = ref.current
     if (!canvas) return
-    const gl = canvas.getContext('webgl', { alpha: false, antialias: false })
+    // failIfMajorPerformanceCaveat: sem placa de vídeo (renderização por software) fica só o céu em degradê,
+    // em vez de um shader travando o aparelho
+    const gl = canvas.getContext('webgl', { alpha: false, antialias: false, failIfMajorPerformanceCaveat: true, powerPreference: 'low-power' })
     if (!gl) return
     const vert = compile(gl, gl.VERTEX_SHADER, VERT)
     const frag = compile(gl, gl.FRAGMENT_SHADER, FRAG)
@@ -154,7 +196,32 @@ export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
     gl.attachShader(program, frag)
     gl.bindAttribLocation(program, 0, 'a_pos')
     gl.linkProgram(program)
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return
+
+    // Com KHR_parallel_shader_compile a compilação roda em segundo plano e a página não trava esperando.
+    const parallel = gl.getExtension('KHR_parallel_shader_compile')
+    let alive = true
+    let stop = () => {}
+    const ready = () => {
+      if (!alive) return
+      if (parallel && !gl.getProgramParameter(program, parallel.COMPLETION_STATUS_KHR)) {
+        requestAnimationFrame(ready)
+        return
+      }
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return
+      stop = run(canvas, gl, program)
+    }
+    ready()
+
+    return () => {
+      alive = false
+      stop()
+      gl.deleteProgram(program)
+      gl.deleteShader(vert)
+      gl.deleteShader(frag)
+    }
+  }
+
+  function run(canvas: HTMLCanvasElement, gl: WebGLRenderingContext, program: WebGLProgram) {
     gl.useProgram(program)
 
     // Um triângulo que cobre a tela toda.
@@ -214,6 +281,7 @@ export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
     ro.observe(canvas)
     resize()
     draw()
+    canvas.classList.add('is-ready')
 
     const io = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting
@@ -235,11 +303,8 @@ export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
       io.disconnect()
       mo.disconnect()
       gl.deleteBuffer(buffer)
-      gl.deleteProgram(program)
-      gl.deleteShader(vert)
-      gl.deleteShader(frag)
     }
-  }, [speed])
+  }
 
   return (
     <div className="sky-bg" aria-hidden>

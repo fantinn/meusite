@@ -55,6 +55,19 @@ img, svg {
   border-radius: 4px;
 }
 
+/* Texto só para leitores de tela e buscadores */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .container {
   width: 100%;
   max-width: var(--max);
@@ -219,23 +232,114 @@ img, svg {
   letter-spacing: -0.01em;
 }
 
-.logo__mark {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 12px;
+/* Fonte do logo: Inter Tight 700 só com as letras f, a, n, t, ı (menos de 1 KB) */
+@font-face {
+  font-family: 'Fantin Logo';
+  src: url('/fonts/fantin-logo.woff2') format('woff2');
   font-weight: 700;
-  letter-spacing: 0.02em;
-  box-shadow: var(--shadow-4);
-  transition: transform 0.4s var(--ease);
+  font-display: block;
+  unicode-range: U+0061, U+0066, U+006E, U+0074, U+0131;
 }
 
-.logo:hover .logo__mark {
-  transform: rotate(-8deg) scale(1.06);
+/* Logo "fantın" (Logo.tsx): o pingo do i é um elemento separado, para poder animar */
+.wm {
+  --wm-dot: var(--accent);
+  font-family: 'Fantin Logo', var(--font);
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.wm__word {
+  display: inline-flex;
+  align-items: baseline;
+  padding-top: 0.12em; /* espaço para o pingo cair sem cortar */
+}
+
+.wm__l {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* Antes do JS rodar a entrada, letras e pingo ficam escondidos (só se a animação estiver ligada) */
+@media (prefers-reduced-motion: no-preference) {
+  .wm--intro .wm__l,
+  .wm--intro .wm__dot {
+    opacity: 0;
+  }
+}
+
+.wm__i {
+  position: relative;
+}
+
+/* Área do pingo, centrada em cima do ı (medidas tiradas da própria fonte, um pouco maior que o pingo original) */
+.wm__drop {
+  position: absolute;
+  left: 50%;
+  top: 0.07em;
+  width: 0.19em;
+  height: 0.19em;
+  margin-left: -0.095em;
+}
+
+.wm__dot,
+.wm__ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--wm-dot);
+}
+
+.wm__dot {
+  transform-origin: 50% 100%;
+}
+
+.wm__ripple {
+  opacity: 0;
+}
+
+/* Rastro de luz da queda */
+.wm__trail {
+  position: absolute;
+  left: 0.03em;
+  right: 0.03em;
+  bottom: 50%;
+  height: 2.4em;
+  border-radius: 99px;
+  background: linear-gradient(to bottom, transparent, var(--wm-dot));
+  transform-origin: 50% 100%;
+  opacity: 0;
+}
+
+/* Pulso contínuo, como status de "online" */
+.wm.is-live .wm__drop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--wm-dot);
+  animation: wm-pulse 3.2s ease-out 1s infinite;
+  opacity: 0;
+}
+
+@keyframes wm-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  45%,
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wm.is-live .wm__drop::after {
+    animation: none;
+  }
 }
 
 .nav__links {
@@ -410,9 +514,9 @@ img, svg {
   font-weight: 500;
 }
 
-.nav:not(.is-scrolled) .logo__mark {
-  background: #fff;
-  color: var(--accent);
+/* Sobre o céu o pingo azul sumiria: fica azul-marinho */
+.nav:not(.is-scrolled) .wm {
+  --wm-dot: #062a55;
 }
 
 .nav:not(.is-scrolled) .nav__cta {
@@ -442,6 +546,13 @@ img, svg {
   width: 100%;
   height: 100%;
   display: block;
+  /* O céu em degradê do .hero aparece primeiro; as nuvens entram suavemente quando o shader fica pronto */
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.sky-bg__canvas.is-ready {
+  opacity: 1;
 }
 
 .sky-bg::after {
@@ -569,6 +680,70 @@ img, svg {
 .hero h1 .word {
   display: inline-block;
   margin-right: 0.24em;
+}
+
+/* ---------- Entrada do hero (CSS puro: aparece já no HTML, sem esperar o JavaScript) ----------
+   Só movimento e desfoque, sem mexer na opacidade: o Chrome não conta como "pintado" um texto
+   que começa invisível, e isso atrasava o FCP/LCP do PageSpeed até o JavaScript rodar. */
+@keyframes hero-rise {
+  from { transform: translateY(18px); }
+}
+
+@keyframes hero-word {
+  from { transform: translateY(0.4em); filter: blur(10px); }
+}
+
+@keyframes hero-visual {
+  from { transform: translateY(40px) scale(0.92); }
+}
+
+@keyframes chip-float {
+  50% { translate: 0 -10px; }
+}
+
+@keyframes nav-in {
+  from { transform: translateY(-110%); }
+}
+
+.hero .eyebrow {
+  animation: hero-rise 0.6s var(--ease) both;
+}
+
+.hero h1 .word {
+  animation: hero-word 0.7s var(--ease) both;
+  animation-delay: calc(0.05s + var(--i, 0) * 0.045s);
+}
+
+.hero__sub {
+  animation: hero-rise 0.6s var(--ease) 0.15s both;
+}
+
+.hero__actions {
+  animation: hero-rise 0.6s var(--ease) 0.22s both;
+}
+
+.hero__visual {
+  animation: hero-visual 0.9s var(--ease) 0.1s both;
+}
+
+.window--chip {
+  animation: chip-float 4s ease-in-out infinite;
+}
+
+.nav {
+  animation: nav-in 0.6s var(--ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero .eyebrow,
+  .hero h1 .word,
+  .hero__sub,
+  .hero__actions,
+  .hero__visual,
+  .window--chip,
+  .nav {
+    animation: none;
+  }
 }
 
 /* Título em 2 linhas no computador; no celular cada trecho vira uma linha */
@@ -770,6 +945,19 @@ img, svg {
   display: flex;
   gap: 56px;
   width: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  animation: marquee 40s linear infinite;
+}
+
+/* -50% − metade do gap: o fim da primeira cópia encaixa exatamente no começo da segunda */
+@keyframes marquee {
+  to { transform: translateX(calc(-50% - 28px)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation: none; }
 }
 
 .marquee__item {
@@ -876,6 +1064,10 @@ img, svg {
   display: inline-block;
 }
 
+.statement__word::before {
+  content: attr(data-word);
+}
+
 /* ---------- Scroll horizontal (Serviços) ---------- */
 .hscroll {
   position: relative;
@@ -912,7 +1104,9 @@ img, svg {
   min-height: 300px;
 }
 
-.hscroll__num {
+/* Número decorativo do card (vem do CSS para não ser lido como texto) */
+.hscroll__num::before {
+  content: attr(data-num);
   position: absolute;
   top: 20px;
   right: 24px;
@@ -972,6 +1166,10 @@ img, svg {
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1.1;
+}
+
+.smarquee__row::before {
+  content: attr(data-text);
 }
 
 .smarquee__row.is-outline {
@@ -1075,6 +1273,24 @@ img, svg {
   flex-wrap: wrap;
   gap: 6px;
   margin-top: 20px;
+}
+
+.card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.card__link svg {
+  transition: transform 0.3s var(--ease);
+}
+
+.card__link:hover svg {
+  transform: translateX(3px);
 }
 
 .tag {
@@ -1537,6 +1753,10 @@ img, svg {
   border-color: rgba(255, 255, 255, 0.12);
 }
 
+.plan.is-featured .care__saving {
+  color: #6ee7a0;
+}
+
 .plan.is-featured .btn--primary {
   background: #fff;
   color: var(--accent);
@@ -1736,7 +1956,7 @@ html[data-nav-hidden] .nav {
 }
 
 .plan__setup strong {
-  color: #16c60c;
+  color: var(--success);
 }
 
 .plan > ul {
@@ -1790,7 +2010,7 @@ html[data-nav-hidden] .nav {
   overflow: hidden;
   font-size: 13px;
   font-weight: 600;
-  color: #16c60c;
+  color: var(--success);
   text-align: right;
 }
 
@@ -1892,7 +2112,7 @@ html[data-nav-hidden] .nav {
   font-size: 11px;
   padding: 2px 7px;
   border-radius: 999px;
-  background: #16c60c;
+  background: #107c10;
   color: #fff;
 }
 
@@ -1922,6 +2142,130 @@ html[data-nav-hidden] .nav {
   flex: none;
   margin-top: 3px;
   color: var(--accent);
+}
+
+/* ---------- Dúvidas (FAQ) ---------- */
+.faq {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 24px 56px;
+  align-items: start;
+}
+
+.faq .section__head {
+  position: sticky;
+  top: 110px;
+  margin-bottom: 0;
+}
+
+.faq__list {
+  display: grid;
+  gap: 12px;
+}
+
+.faq__item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition: border-color 0.2s, box-shadow 0.3s;
+}
+
+.faq__item[open] {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-8);
+}
+
+.faq__item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq__item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq__item h3 {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.faq__icon {
+  flex: none;
+  color: var(--accent);
+  transition: transform 0.3s var(--ease);
+}
+
+.faq__item[open] .faq__icon {
+  transform: rotate(45deg);
+}
+
+.faq__item p {
+  padding: 0 20px 20px;
+  color: var(--text-2);
+  font-size: 15px;
+}
+
+.guides {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.guide {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  padding: 20px 48px 20px 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-alt);
+  transition: border-color 0.2s, transform 0.3s var(--ease);
+}
+
+.guide strong {
+  font-size: 16px;
+}
+
+.guide span {
+  font-size: 14px;
+  color: var(--text-2);
+}
+
+.guide__arrow {
+  position: absolute;
+  top: 22px;
+  right: 18px;
+  color: var(--accent);
+  transition: transform 0.3s var(--ease);
+}
+
+.guide:hover {
+  border-color: var(--accent);
+}
+
+.guide:hover .guide__arrow {
+  transform: translateX(3px);
+}
+
+@media (max-width: 900px) {
+  .faq {
+    grid-template-columns: 1fr;
+  }
+  .faq .section__head {
+    position: static;
+  }
+  .guides {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ---------- Contact ---------- */
@@ -2087,7 +2431,7 @@ html[data-nav-hidden] .nav {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #16c60c;
+  color: var(--success);
   font-weight: 500;
 }
 
@@ -2110,6 +2454,26 @@ html[data-nav-hidden] .nav {
 .footer__social {
   display: flex;
   gap: 8px;
+}
+
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+}
+
+.footer__links a {
+  padding: 6px 0;
+  color: var(--text-2);
+  transition: color 0.2s;
+}
+
+.footer__links a:hover {
+  color: var(--accent);
+}
+
+.footer__copy {
+  flex-basis: 100%;
 }
 
 /* ---------- CTA band ---------- */

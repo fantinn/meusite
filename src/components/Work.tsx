@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUpRight, TrendingUp, X } from 'lucide-react'
-import { projects, type Project } from '../content'
+import { projectSrcSet, projects, type Project } from '../content'
 import { SectionHead, ease } from './Reveal'
 
 function Cover({ p }: { p: Project }) {
@@ -10,7 +10,16 @@ function Cover({ p }: { p: Project }) {
       <div className="project__cover-inner" style={{ background: p.gradient }} />
       <motion.div className={`project__mock${p.image ? ' project__mock--image' : ''}`} whileHover={{ y: -8 }} transition={{ type: 'spring', stiffness: 260, damping: 22 }}>
         {p.image ? (
-          <img src={p.image} alt={`${p.category} ${p.title}, criada por Gabriel Fantin`} loading="lazy" />
+          <img
+            src={p.image}
+            srcSet={projectSrcSet(p.image)}
+            sizes="(max-width: 760px) calc(76vw - 24px), (max-width: 1200px) 38vw, 420px"
+            alt={`${p.category} ${p.title}, criada por Gabriel Fantin`}
+            width={800}
+            height={500}
+            loading="lazy"
+            decoding="async"
+          />
         ) : (
           <>
             <div className="skeleton" />

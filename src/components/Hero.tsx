@@ -1,8 +1,8 @@
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
 import { ArrowRight, Sparkles } from 'lucide-react'
-import { useLayoutEffect, useRef, type MouseEvent } from 'react'
+import { useLayoutEffect, useRef, type CSSProperties, type MouseEvent } from 'react'
 import { hero } from '../content'
-import { ease } from './Reveal'
+import { fitHeroTitle } from '../heroFit'
 import CloudShader from './CloudShader'
 
 const ACCENT_FROM = 3 // índice da palavra onde começa o destaque em gradiente
@@ -37,23 +37,12 @@ export default function Hero() {
     line.map((chunk) => chunk.split(' ').map((word) => ({ word, i: n++ }))),
   )
 
-  // No computador, cada linha recebe o tamanho que a faz ocupar exatamente a largura da coluna
-  // (as duas linhas ficam com a mesma largura). No celular vale o tamanho do CSS.
   const titleRef = useRef<HTMLHeadingElement>(null)
   useLayoutEffect(() => {
     const h1 = titleRef.current
     if (!h1) return
+    const fit = () => fitHeroTitle(h1)
     const desktop = window.matchMedia('(min-width: 861px)')
-    const fit = () => {
-      const lineEls = h1.querySelectorAll<HTMLElement>('.hero__line')
-      lineEls.forEach((line) => (line.style.fontSize = ''))
-      if (!desktop.matches) return
-      const width = h1.clientWidth
-      lineEls.forEach((line) => {
-        line.style.fontSize = '100px'
-        line.style.fontSize = `${(100 * width) / line.offsetWidth}px`
-      })
-    }
     fit()
     document.fonts?.ready.then(fit)
     const observer = new ResizeObserver(fit)
@@ -65,32 +54,27 @@ export default function Hero() {
     }
   }, [])
 
+  // As entradas são animações CSS (global.css): o hero aparece já no HTML, sem esperar o JavaScript.
   return (
-    <section ref={ref} className="hero" onMouseMove={onMove} onMouseLeave={() => { mx.set(0); my.set(0) }}>
+    <section ref={ref} id="inicio" className="hero" onMouseMove={onMove} onMouseLeave={() => { mx.set(0); my.set(0) }}>
       <CloudShader />
 
       <motion.div className="container hero__inner" style={{ opacity: fade, y: lift }}>
         <div className="hero__copy">
-          <motion.span className="eyebrow" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease, delay: 0.2 }}>
+          <span className="eyebrow">
             <span className="eyebrow__dot" />
             {hero.eyebrow}
-          </motion.span>
+          </span>
 
-          <h1 ref={titleRef} aria-label={hero.title}>
+          <h1 ref={titleRef} id="hero-title" aria-label={hero.title}>
             {lines.map((line, l) => (
               <span key={l} className="hero__line" aria-hidden>
                 {line.map((chunk, c) => (
                   <span key={c} className="hero__chunk">
                     {chunk.map(({ word, i }) => (
-                      <motion.span
-                        key={i}
-                        className={`word${i >= ACCENT_FROM ? ' accent' : ''}`}
-                        initial={{ opacity: 0, y: 40, filter: 'blur(8px)' }}
-                        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                        transition={{ duration: 0.9, ease, delay: 0.3 + i * 0.06 }}
-                      >
+                      <span key={i} className={`word${i >= ACCENT_FROM ? ' accent' : ''}`} style={{ '--i': i } as CSSProperties}>
                         {word}
-                      </motion.span>
+                      </span>
                     ))}
                   </span>
                 ))}
@@ -98,43 +82,53 @@ export default function Hero() {
             ))}
           </h1>
 
-          <motion.p className="hero__sub" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease, delay: 0.8 }}>
-            {hero.subtitle}
-          </motion.p>
+          <p className="hero__sub">{hero.subtitle}</p>
 
-          <motion.div className="hero__actions" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease, delay: 0.95 }}>
+          <div className="hero__actions">
             <motion.a href={hero.primary.href} className="btn btn--primary" whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
               {hero.primary.label} <ArrowRight size={18} />
             </motion.a>
             <motion.a href={hero.secondary.href} className="btn btn--ghost" whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
               {hero.secondary.label}
             </motion.a>
-          </motion.div>
+          </div>
         </div>
 
-        <motion.div
-          className="hero__visual"
-          initial={{ opacity: 0, scale: 0.92, y: 40 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 1.2, ease, delay: 0.5 }}
-          aria-hidden
-        >
+        <div className="hero__visual" aria-hidden>
           <motion.div style={{ rotateX: rotX, rotateY: rotY, position: 'absolute', inset: 0, transformStyle: 'preserve-3d' }}>
             {/* Notebook e celular flutuando no céu (fundo removido, sombra preservada) */}
-            <img className="device device--laptop" src="/hero/laptop.webp" alt="" width={1100} height={911} draggable={false} />
-            <motion.img className="device device--phone" src="/hero/phone.webp" alt="" width={560} height={639} draggable={false} style={{ x: fx, y: fy }} />
-
-            <motion.div
-              className="window window--chip chip"
+            <img
+              className="device device--laptop"
+              src="/hero/laptop.webp"
+              srcSet="/hero/laptop-760.webp 760w, /hero/laptop.webp 1100w"
+              sizes="(max-width: 520px) calc(96vw - 30px), (max-width: 960px) 500px, 40vw"
+              alt=""
+              width={1100}
+              height={911}
+              // No celular fica abaixo da dobra: prioridade baixa. No computador o index.html já
+              // pré-carrega esta imagem com prioridade alta (<link rel="preload" media=...>).
+              fetchPriority="low"
+              draggable={false}
+            />
+            <motion.img
+              className="device device--phone"
+              src="/hero/phone.webp"
+              srcSet="/hero/phone-300.webp 300w, /hero/phone.webp 560w"
+              sizes="(max-width: 520px) 31vw, (max-width: 960px) 190px, 14vw"
+              alt=""
+              width={560}
+              height={639}
+              loading="lazy"
+              draggable={false}
               style={{ x: fx, y: fy }}
-              animate={{ translateY: [0, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            >
+            />
+
+            <motion.div className="window window--chip chip" style={{ x: fx, y: fy }}>
               <span className="chip__icon"><Sparkles size={16} /></span>
               <span>Site no ar!<small>há 2 minutos</small></span>
             </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
       </motion.div>
     </section>
   )

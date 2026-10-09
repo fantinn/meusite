@@ -5,7 +5,8 @@ import { Moon, Sun } from 'lucide-react'
 
 type Theme = 'light' | 'dark'
 
-const current = (): Theme => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light')
+// O site sempre abre no claro (script do index.html); no pré-render não existe document.
+const current = (): Theme => (typeof document !== 'undefined' && document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light')
 
 export default function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(current)

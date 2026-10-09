@@ -78,10 +78,12 @@ const FOCUS_SAFE = 16 // margem embaixo quando os cards estão em foco
 const FOCUS_TOP = 54 // em cima fica a chave Mensal/Anual flutuante, no lugar do menu
 
 function useZoomStage() {
-  const [on, setOn] = useState(() => typeof window !== 'undefined' && window.matchMedia(ZOOM_QUERY).matches)
+  // Começa desligado (igual ao HTML pré-renderizado) e liga depois de montar
+  const [on, setOn] = useState(false)
   useEffect(() => {
     const mq = window.matchMedia(ZOOM_QUERY)
     const update = () => setOn(mq.matches)
+    update()
     mq.addEventListener('change', update)
     return () => mq.removeEventListener('change', update)
   }, [])

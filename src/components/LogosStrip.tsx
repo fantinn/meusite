@@ -1,19 +1,15 @@
-import { motion } from 'framer-motion'
 import { tech } from '../content'
 
+// Faixa infinita em CSS puro (roda na GPU, sem JavaScript a cada quadro)
 export default function LogosStrip() {
   const items = [...tech, ...tech]
   return (
-    <div className="marquee" aria-label="Tecnologias">
-      <motion.div
-        className="marquee__track"
-        animate={{ x: ['0%', '-50%'] }}
-        transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-      >
+    <div className="marquee">
+      <ul className="marquee__track" aria-label="Tecnologias que uso">
         {items.map((t, i) => (
-          <span key={i} className="marquee__item" aria-hidden={i >= tech.length}>{t}</span>
+          <li key={i} className="marquee__item" aria-hidden={i >= tech.length || undefined}>{t}</li>
         ))}
-      </motion.div>
+      </ul>
     </div>
   )
 }

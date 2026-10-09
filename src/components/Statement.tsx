@@ -8,7 +8,9 @@ function Word({ word, index, total, progress }: { word: string; index: number; t
   const start = (index / total) * 0.9
   const end = start + 0.9 / total
   const opacity = useTransform(progress, [start, end], [0.15, 1])
-  return <motion.span className="statement__word" style={{ opacity }}>{word}</motion.span>
+  // O texto vem do CSS (::before): as palavras "apagadas" são só efeito visual;
+  // leitores de tela e o Google leem a frase inteira no span .sr-only.
+  return <motion.span className="statement__word" data-word={word} style={{ opacity }} />
 }
 
 // Frase gigante em uma linha: fica fixa na tela e passa para o lado enquanto você rola.
@@ -38,6 +40,7 @@ export default function Statement() {
     <section ref={ref} className="statement" style={{ height: `calc(100vh + ${Math.round(distance * 0.55)}px)` }}>
       <div className="statement__sticky">
         <motion.p ref={lineRef} className="statement__text" style={{ x }}>
+          <span className="sr-only">{TEXT}</span>
           {words.map((w, i) => (
             <Fragment key={i}>
               <Word word={w} index={i} total={words.length} progress={p} />

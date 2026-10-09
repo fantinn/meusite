@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /fita.html
-Disallow: /fundos.html
+Disallow: /fita
+Disallow: /fundos
 
 Sitemap: https://fantin.tech/sitemap.xml

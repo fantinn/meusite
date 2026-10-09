@@ -12,10 +12,10 @@ export default function Testimonials() {
         <Card key={t.name} className="hscroll__card testimonial-card">
           <Quote size={28} className="testimonial-card__icon" />
           <blockquote>“{t.quote}”</blockquote>
-          <figcaption className="testimonial__author">
-            <span className="avatar">{initials(t.name)}</span>
+          <div className="testimonial__author">
+            <span className="avatar" aria-hidden>{initials(t.name)}</span>
             <span><strong>{t.name}</strong><small>{t.role}</small></span>
-          </figcaption>
+          </div>
         </Card>
       ))}
     </HorizontalScroll>

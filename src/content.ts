@@ -1,7 +1,7 @@
 // Edite aqui os textos do site.
 import type { LucideIcon } from 'lucide-react'
 import { Code2, Palette, Smartphone, Zap, Search, ShoppingBag } from 'lucide-react'
-import { pricing, type PlanId, type PlanPricing } from './pricing'
+import { INSTALLMENTS, pricing, type PlanId, type PlanPricing } from './pricing'
 
 export const brand = {
   name: 'Gabriel Fantin',
@@ -11,14 +11,23 @@ export const brand = {
   whatsappNumber: '5527992864820', // formato internacional, só números (55 + DDD + número)
   whatsappLabel: '(27) 99286-4820',
   linkedin: 'https://www.linkedin.com/',
-  github: 'https://github.com/',
+  github: 'https://github.com/fantinn',
+  site: 'https://fantin.tech',
 }
 
 export const nav = [
   { label: 'Serviços', href: '#servicos' },
   { label: 'Projetos', href: '#projetos' },
   { label: 'Planos', href: '#planos' },
+  { label: 'Dúvidas', href: '#duvidas' },
   { label: 'Contato', href: '#contato' },
+]
+
+// Páginas de conteúdo (geradas como HTML estático no build, ver src/pages)
+export const guides = [
+  { href: '/criacao-de-sites', label: 'Criação de sites', text: 'Como funciona para fazer o site da sua empresa, prazos e valores.' },
+  { href: '/landing-page', label: 'Landing page', text: 'O que é, quando vale a pena e como criar uma landing page que vende.' },
+  { href: '/gabriel-fantin', label: 'Sobre Gabriel Fantin', text: 'Quem faz o seu site, como eu trabalho e projetos no ar.' },
 ]
 
 export const hero = {
@@ -37,15 +46,15 @@ export const tech = [
   'Supabase', 'Tailwind', 'Power BI', 'Python', 'Vercel', 'PostgreSQL',
 ]
 
-export type Service = { icon: LucideIcon; title: string; text: string; tags: string[] }
+export type Service = { icon: LucideIcon; title: string; text: string; tags: string[]; link?: { href: string; label: string } }
 
 export const services: Service[] = [
-  { icon: Code2, title: 'Sites & Landing Pages', text: 'Páginas rápidas, responsivas e otimizadas para transformar visitantes em clientes.', tags: ['React', 'SEO', 'Performance'] },
+  { icon: Code2, title: 'Sites & Landing Pages', text: 'Páginas rápidas, responsivas e otimizadas para transformar visitantes em clientes.', tags: ['React', 'SEO', 'Performance'], link: { href: '/landing-page', label: 'Como funciona a landing page' } },
   { icon: Palette, title: 'UI/UX Design', text: 'Interfaces limpas e intuitivas, com design system consistente do protótipo ao código.', tags: ['Figma', 'Protótipos', 'Design System'] },
   { icon: Smartphone, title: 'Aplicações Web', text: 'Sistemas sob medida, dashboards e áreas de cliente com autenticação e banco de dados.', tags: ['Full-stack', 'APIs', 'Cloud'] },
   { icon: ShoppingBag, title: 'Lojas Online', text: 'Lojas virtuais com checkout fluido, integrações de pagamento e gestão simplificada.', tags: ['Pagamentos', 'Estoque', 'Analytics'] },
   { icon: Zap, title: 'Automação', text: 'Elimine tarefas repetitivas com integrações, bots e fluxos automatizados.', tags: ['Integrações', 'Bots', 'Workflows'] },
-  { icon: Search, title: 'SEO & Performance', text: 'Auditoria técnica e melhorias para carregar rápido e aparecer no Google.', tags: ['Core Web Vitals', 'Auditoria'] },
+  { icon: Search, title: 'SEO & Performance', text: 'Auditoria técnica e melhorias para carregar rápido e aparecer no Google.', tags: ['Core Web Vitals', 'Auditoria'], link: { href: '/criacao-de-sites', label: 'Criação de sites completa' } },
 ]
 
 export type Project = {
@@ -60,11 +69,14 @@ export type Project = {
 }
 
 export const projects: Project[] = [
-  { id: 'p1', title: 'ListaJota', category: 'Página de Vendas', text: 'Página de vendas de uma lista de fornecedores de multimarcas: prova social, prévia da planilha de contatos, bônus, depoimentos, dúvidas frequentes e compra com acesso imediato.', gradient: 'linear-gradient(135deg,#4ade80,#16a34a 50%,#052e16)', image: '/projects/listajota.jpg', url: 'https://fantinn.github.io/ListaJota/' },
-  { id: 'p2', title: 'Pedro Design', category: 'Site / Portfólio', text: 'Site para designer de posicionamento visual: apresentação dos serviços, planos mensais, projetos em destaque e contato direto pelo WhatsApp.', gradient: 'linear-gradient(135deg,#ff8a1f,#c2410c 55%,#1a0a02)', image: '/projects/pdrdesign.jpg', url: 'https://pdrdesign.com.br' },
-  { id: 'p3', title: 'PryzeGear', category: 'Landing Page', text: 'Landing page de uma comunidade de periféricos e setups high-end: apresentação da marca, níveis de setup e chamada para o grupo VIP de ofertas no WhatsApp.', gradient: 'linear-gradient(135deg,#a78bfa,#7c3aed 50%,#1e0b3d)', image: '/projects/pryzegear.jpg', url: 'https://www.pryzegear.com.br' },
-  { id: 'p4', title: 'LFNC', category: 'Página de Vendas', text: 'Página de vendas de lista de fornecedores com contador de oferta, bônus exclusivos, preço parcelado, perguntas frequentes e área de membros para liberar o acesso após a compra.', gradient: 'linear-gradient(135deg,#60a5fa,#1d4ed8 50%,#020617)', image: '/projects/listafnc.jpg', url: 'https://listafnc.com.br' },
+  { id: 'p1', title: 'ListaJota', category: 'Página de Vendas', text: 'Página de vendas de uma lista de fornecedores de multimarcas: prova social, prévia da planilha de contatos, bônus, depoimentos, dúvidas frequentes e compra com acesso imediato.', gradient: 'linear-gradient(135deg,#4ade80,#16a34a 50%,#052e16)', image: '/projects/listajota.webp', url: 'https://fantinn.github.io/ListaJota/' },
+  { id: 'p2', title: 'Pedro Design', category: 'Site / Portfólio', text: 'Site para designer de posicionamento visual: apresentação dos serviços, planos mensais, projetos em destaque e contato direto pelo WhatsApp.', gradient: 'linear-gradient(135deg,#ff8a1f,#c2410c 55%,#1a0a02)', image: '/projects/pdrdesign.webp', url: 'https://pdrdesign.com.br' },
+  { id: 'p3', title: 'PryzeGear', category: 'Landing Page', text: 'Landing page de uma comunidade de periféricos e setups high-end: apresentação da marca, níveis de setup e chamada para o grupo VIP de ofertas no WhatsApp.', gradient: 'linear-gradient(135deg,#a78bfa,#7c3aed 50%,#1e0b3d)', image: '/projects/pryzegear.webp', url: 'https://www.pryzegear.com.br' },
+  { id: 'p4', title: 'LFNC', category: 'Página de Vendas', text: 'Página de vendas de lista de fornecedores com contador de oferta, bônus exclusivos, preço parcelado, perguntas frequentes e área de membros para liberar o acesso após a compra.', gradient: 'linear-gradient(135deg,#60a5fa,#1d4ed8 50%,#020617)', image: '/projects/listafnc.webp', url: 'https://listafnc.com.br' },
 ]
+
+// Print do projeto em dois tamanhos (560 e 800px de largura): o navegador escolhe o menor que serve
+export const projectSrcSet = (image: string) => `${image.replace(/\.webp$/, '-560.webp')} 560w, ${image} 800w`
 
 export const stats = [
   { value: 50, suffix: '+', label: 'Projetos entregues' },
@@ -155,3 +167,39 @@ export const plans: Plan[] = [
 ]
 
 export const plansNote = 'O projeto é seu: você paga uma vez pela criação e a manutenção mantém tudo no ar, seguro e atualizado.'
+
+// Perguntas frequentes da página inicial (também viram dados estruturados FAQPage no HTML).
+export const faq = [
+  {
+    q: 'Quanto custa criar um site?',
+    a: `Uma landing page sai a partir de R$ ${pricing.landing.price} e uma loja online completa a partir de R$ ${pricing.loja.price}, em até ${INSTALLMENTS}x sem juros. Depois, a manutenção a partir de R$ ${pricing.landing.careAnnual} por mês cobre hospedagem, domínio, SSL e suporte. Você recebe a proposta com o valor exato em até 24 horas.`,
+  },
+  {
+    q: 'Em quanto tempo meu site fica pronto?',
+    a: 'Uma landing page fica no ar em até 5 dias. Lojas online e sites com mais páginas levam em média de 10 a 14 dias, dependendo da quantidade de conteúdo e de produtos.',
+  },
+  {
+    q: 'O que é uma landing page e quando vale a pena fazer uma?',
+    a: 'Landing page é uma página única, focada em um objetivo: fazer o visitante chamar no WhatsApp, comprar ou deixar o contato. Vale a pena para anúncios, lançamentos e para quem quer começar a vender pela internet rápido e gastando pouco.',
+  },
+  {
+    q: 'Meu site vai aparecer no Google?',
+    a: 'Todo site sai com SEO técnico: títulos e descrições otimizados, dados estruturados, sitemap, carregamento rápido (Core Web Vitals) e cadastro no Google Search Console. Isso deixa o site pronto para ser encontrado; a posição no Google cresce com o tempo, com conteúdo e com a reputação do seu negócio.',
+  },
+  {
+    q: 'O site funciona bem no celular?',
+    a: 'Sim. Todo projeto é pensado primeiro para o celular, onde está a maior parte dos seus clientes, e depois adaptado para tablet e computador.',
+  },
+  {
+    q: 'Preciso ter domínio e hospedagem?',
+    a: 'Não precisa se preocupar com isso. A manutenção já inclui hospedagem, domínio (o endereço do site, como seunegocio.com.br) e certificado SSL. Se você já tiver um domínio, eu uso o seu.',
+  },
+  {
+    q: 'Você atende em qual cidade?',
+    a: 'Atendo todo o Brasil. O processo é 100% online: conversamos pelo WhatsApp, você acompanha o andamento e aprova cada etapa antes de o site ir para o ar.',
+  },
+  {
+    q: 'Quem é Gabriel Fantin?',
+    a: 'Sou desenvolvedor web e designer. Crio sites, landing pages, lojas online e automações para empresas e profissionais que querem vender mais pela internet, cuidando de tudo: design, código, SEO e suporte.',
+  },
+]
