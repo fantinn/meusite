@@ -2114,8 +2114,6 @@ html[data-nav-hidden] .nav {
 }
 
 .faq .section__head {
-  position: sticky;
-  top: 110px;
   margin-bottom: 0;
 }
 
@@ -2211,6 +2209,42 @@ html[data-nav-hidden] .nav {
 
 .guide:hover {
   border-color: var(--accent);
+}
+
+/* Card em destaque (Sobre Gabriel Fantin): borda e fundo azuis, sombra e seta preenchida */
+.guide--featured {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 8px 24px rgba(0, 103, 184, 0.16);
+  transform: translateY(-4px);
+}
+
+.guide--featured strong {
+  color: var(--accent);
+}
+
+.guide--featured .guide__arrow {
+  top: 18px;
+  right: 14px;
+  box-sizing: content-box;
+  padding: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.guide--featured:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 103, 184, 0.24);
+}
+
+@media (max-width: 900px) {
+  .guide--featured {
+    transform: none;
+  }
+  .guide--featured:hover {
+    transform: none;
+  }
 }
 
 .guide:hover .guide__arrow {
