@@ -1,0 +1,274 @@
+/* ---------- Telas do notebook e do celular do hero (ScreenSites.tsx) ---------- */
+.device > img {
+  width: 100%;
+  height: auto;
+}
+
+/* Camada do tamanho da imagem, reduzida por --s (definido em JS); sem --s fica invisível */
+.dscreen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: scale(var(--s, 0));
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+.dscreen__pane {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Reflexo do vidro por cima do site */
+.dscreen__pane::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(118deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 38%);
+  pointer-events: none;
+}
+
+/* O site da tela tem cores próprias: não muda com o tema claro/escuro da página */
+.ss {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #fff;
+  color: #062a55;
+  font-family: var(--font);
+  line-height: 1.2;
+  animation: ss-life 14s linear infinite;
+}
+
+.ss-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 134px;
+  height: 46px;
+  margin-left: -67px;
+  border-radius: 0 0 18px 18px;
+  background: #000;
+}
+
+.ss-logo {
+  font-family: 'Fantin Logo', var(--font);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 1;
+  color: #062a55;
+}
+
+.ss-i {
+  position: relative;
+}
+
+.ss-i::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0.07em;
+  width: 0.19em;
+  height: 0.19em;
+  margin-left: -0.095em;
+  border-radius: 50%;
+  background: #0067b8;
+}
+
+.ss-card {
+  background: #fff;
+  border-radius: 28px;
+  box-shadow: 0 24px 60px rgba(0, 40, 90, 0.18), 0 0 0 1px rgba(0, 40, 90, 0.05);
+}
+
+.ss-gauge {
+  width: 100%;
+  height: auto;
+}
+
+.ss-gauge__bg,
+.ss-gauge__bar {
+  fill: none;
+  stroke-width: 10;
+}
+
+.ss-gauge__bg { stroke: #e3edf7; }
+
+.ss-gauge__bar {
+  stroke: #0067b8;
+  stroke-linecap: round;
+  stroke-dasharray: 100 100;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  animation: ss-ring 14s ease-out infinite both;
+}
+
+.ss-gauge text {
+  font-size: 34px;
+  font-weight: 800;
+  fill: #062a55;
+}
+/* Entradas: cada grupo (a–g) aparece num momento do ciclo de 18 s */
+.ss-a { animation: ss-in-a 14s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both; }
+.ss-b { animation: ss-in-b 14s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both; }
+.ss-c { animation: ss-in-c 14s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both; }
+.ss-d { animation: ss-in-d 14s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both; }
+.ss-e { animation: ss-in-e 14s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both; }
+.ss-f { animation: ss-in-f 14s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both; }
+.ss-g { animation: ss-in-g 14s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both; }
+
+@keyframes ss-life {
+  0% { opacity: 0; }
+  2.5%, 93% { opacity: 1; }
+  97%, 100% { opacity: 0; }
+}
+
+@keyframes ss-in-a { 0%, 3% { opacity: 0; transform: translateY(24px); } 8%, 100% { opacity: 1; transform: none; } }
+@keyframes ss-in-b { 0%, 6% { opacity: 0; transform: translateY(24px); } 12%, 100% { opacity: 1; transform: none; } }
+@keyframes ss-in-c { 0%, 9% { opacity: 0; transform: translateY(24px); } 15%, 100% { opacity: 1; transform: none; } }
+@keyframes ss-in-d { 0%, 13% { opacity: 0; transform: translateY(24px); } 19%, 100% { opacity: 1; transform: none; } }
+@keyframes ss-in-e { 0%, 17% { opacity: 0; transform: translateY(24px); } 23%, 100% { opacity: 1; transform: none; } }
+@keyframes ss-in-f { 0%, 20% { opacity: 0; transform: translateY(40px) scale(0.94); } 29%, 100% { opacity: 1; transform: none; } }
+@keyframes ss-in-g { 0%, 26% { opacity: 0; transform: translateY(24px) scale(0.85); } 33%, 100% { opacity: 1; transform: none; } }
+
+@keyframes ss-ring {
+  0%, 8% { stroke-dashoffset: 100; }
+  22%, 100% { stroke-dashoffset: 0; }
+}
+
+/* Contadores que sobem (a propriedade registrada permite animar um número inteiro) */
+@property --n {
+  syntax: '<integer>';
+  inherits: false;
+  initial-value: 0;
+}
+
+.ss-num { counter-reset: n var(--n); }
+.ss-num::after { content: counter(n); }
+.ss-num--1 { animation: ss-c1 14s cubic-bezier(0.2, 0.7, 0.2, 1) infinite both; }
+.ss-num--2 { animation: ss-c2 14s cubic-bezier(0.2, 0.7, 0.2, 1) infinite both; }
+.ss-num--3 { animation: ss-c3 14s cubic-bezier(0.2, 0.7, 0.2, 1) infinite both; }
+
+@keyframes ss-c1 { 0%, 12% { --n: 0; } 34%, 100% { --n: 842; } }
+@keyframes ss-c2 { 0%, 12% { --n: 0; } 34%, 100% { --n: 64; } }
+@keyframes ss-c3 { 0%, 12% { --n: 0; } 34%, 100% { --n: 19; } }
+
+@keyframes ss-draw {
+  0%, 10% { stroke-dashoffset: 100; }
+  22%, 100% { stroke-dashoffset: 0; }
+}
+
+@keyframes ss-area {
+  0%, 18% { opacity: 0; }
+  38%, 100% { opacity: 1; }
+}
+
+@keyframes ss-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* Contatos e notificações chegando um a um */
+.ss-n1 { animation: ss-n1 14s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both; }
+.ss-n2 { animation: ss-n2 14s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both; }
+.ss-n3 { animation: ss-n3 14s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both; }
+
+@keyframes ss-n1 { 0%, 28% { opacity: 0; transform: translateY(-22px) scale(0.96); } 34%, 100% { opacity: 1; transform: none; } }
+@keyframes ss-n2 { 0%, 38% { opacity: 0; transform: translateY(-22px) scale(0.96); } 44%, 100% { opacity: 1; transform: none; } }
+@keyframes ss-n3 { 0%, 48% { opacity: 0; transform: translateY(-22px) scale(0.96); } 54%, 100% { opacity: 1; transform: none; } }
+
+/* Quem prefere menos movimento vê tudo parado, já montado */
+@media (prefers-reduced-motion: reduce) {
+  .ss,
+  .ss *,
+  .ss *::after {
+    animation: none !important;
+  }
+  .ss-num--1 { --n: 842; }
+  .ss-num--2 { --n: 64; }
+  .ss-num--3 { --n: 19; }
+  .ss-chart__line { stroke-dashoffset: 0; }
+}
+
+.ss-i::after { background: #4cc2ff; }
+.ss .ss-logo { color: #fff; }
+
+.ss-gauge__bg { stroke: rgba(255, 255, 255, 0.14); }
+.ss-gauge__bar { stroke: #4cc2ff; }
+.ss-gauge text { fill: #fff; }
+
+.ss-lead span,
+.ss-notif span {
+  display: grid;
+  place-items: center;
+  flex: none;
+  background: #22b35b;
+  color: #fff;
+}
+
+/* ---- Notebook (1280 × 800): painel ---- */
+.ss--lap {
+  display: flex;
+  background: #071a33;
+  color: #fff;
+}
+
+.ss--lap .ss-side { flex: none; width: 240px; padding: 44px 26px; background: #04142b; }
+.ss--lap .ss-logo { font-size: 50px; }
+.ss--lap .ss-side ul { margin: 64px 0 0; padding: 0; list-style: none; }
+.ss--lap .ss-side li { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; padding: 16px 18px; border-radius: 16px; font-size: 22px; font-weight: 500; color: rgba(255, 255, 255, 0.62); }
+.ss--lap .ss-side li.is-on { background: rgba(76, 194, 255, 0.16); color: #fff; }
+
+.ss--lap .ss-main { flex: 1; min-width: 0; padding: 0 44px; }
+.ss--lap .ss-bar { display: flex; align-items: center; justify-content: space-between; height: 132px; padding-top: 38px; }
+.ss--lap .ss-bar h2 { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; }
+.ss-live { display: inline-flex; align-items: center; gap: 10px; padding: 10px 22px; border-radius: 999px; background: rgba(74, 222, 128, 0.16); color: #4ade80; font-size: 21px; font-weight: 600; }
+.ss-live i { width: 12px; height: 12px; border-radius: 50%; background: #4ade80; animation: ss-blink 1.6s ease-in-out infinite; }
+
+.ss-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.ss-kpi { position: relative; padding: 26px; border-radius: 24px; background: #0f2747; }
+.ss-kpi__icon { display: grid; place-items: center; width: 54px; height: 54px; border-radius: 16px; background: rgba(76, 194, 255, 0.16); color: #4cc2ff; }
+.ss-kpi small { display: block; margin-top: 18px; font-size: 21px; color: #9fb6d1; }
+.ss-num { display: block; font-size: 68px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+.ss-kpi em { position: absolute; top: 28px; right: 26px; padding: 6px 14px; border-radius: 999px; background: rgba(74, 222, 128, 0.14); color: #4ade80; font-size: 20px; font-style: normal; font-weight: 700; }
+
+.ss-row { display: grid; grid-template-columns: 1fr 340px; gap: 24px; margin-top: 24px; }
+.ss-panel { padding: 26px; border-radius: 24px; background: #0f2747; }
+.ss-panel header { display: flex; align-items: baseline; justify-content: space-between; }
+.ss-panel header b { font-size: 24px; }
+.ss-panel header small { font-size: 18px; color: #9fb6d1; }
+
+.ss-chart svg { width: 100%; height: auto; margin-top: 16px; }
+.ss-chart__line { fill: none; stroke: #4cc2ff; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 100 100; animation: ss-draw 14s ease-out infinite both; }
+.ss-chart__line--2 { stroke: #4ade80; stroke-width: 5; }
+.ss-chart__area { animation: ss-area 14s ease-out infinite both; }
+
+.ss-side-col { display: grid; gap: 24px; align-content: start; }
+.ss-speed { display: flex; align-items: center; gap: 22px; padding: 22px 26px; }
+.ss-speed .ss-gauge { flex: none; width: 104px; }
+.ss-speed .ss-gauge text { font-size: 34px; }
+.ss-speed b { display: block; font-size: 26px; }
+.ss-speed small { display: block; margin-top: 4px; font-size: 19px; color: #9fb6d1; }
+
+.ss-feed header { margin-bottom: 8px; }
+.ss-lead { display: flex; align-items: center; gap: 14px; margin: 0; padding: 10px 0; }
+.ss-lead span { width: 42px; height: 42px; border-radius: 12px; }
+.ss-lead b { min-width: 0; font-size: 20px; }
+.ss-lead small { display: block; overflow: hidden; max-width: 230px; font-size: 17px; font-weight: 400; color: #9fb6d1; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---- Celular (320 × 692): tela de bloqueio ---- */
+.ss--pho { background: radial-gradient(120% 60% at 50% 0%, #1b86e0 0%, transparent 70%), linear-gradient(180deg, #0a4f96 0%, #04244b 100%); color: #fff; }
+.ss-lock { height: 100%; padding: 74px 16px 0; text-align: center; }
+.ss-clock { display: block; font-size: 84px; font-weight: 600; letter-spacing: -0.05em; line-height: 1; }
+.ss-notifs { display: grid; gap: 12px; margin-top: 46px; text-align: left; }
+.ss-notif { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 22px; background: rgba(255, 255, 255, 0.93); color: #062a55; box-shadow: 0 10px 28px rgba(0, 20, 60, 0.3); font-size: 15px; line-height: 1.3; }
+.ss-notif span { width: 46px; height: 46px; border-radius: 13px; }
+.ss-notif p { margin: 0; min-width: 0; }
+.ss-notif p b { display: flex; justify-content: space-between; font-size: 16px; }
+.ss-notif p small { font-size: 13px; font-weight: 400; color: #667; }
+.ss-lock__foot { position: absolute; left: 0; right: 0; bottom: 34px; text-align: center; }
+.ss-lock__foot .ss-logo { font-size: 34px; }

@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef, type CSSProperties, type MouseEvent } from 're
 import { hero } from '../content'
 import { fitHeroTitle } from '../heroFit'
 import CloudShader from './CloudShader'
+import { LaptopScreen, PhoneScreen } from './ScreenSites'
 
 const ACCENT_FROM = 3 // índice da palavra onde começa o destaque em gradiente
 
@@ -97,31 +98,34 @@ export default function Hero() {
         <div className="hero__visual" aria-hidden>
           <motion.div style={{ rotateX: rotX, rotateY: rotY, position: 'absolute', inset: 0, transformStyle: 'preserve-3d' }}>
             {/* Notebook e celular flutuando no céu (fundo removido, sombra preservada) */}
-            <img
-              className="device device--laptop"
-              src="/hero/laptop.webp"
-              srcSet="/hero/laptop-760.webp 760w, /hero/laptop.webp 1100w"
-              sizes="(max-width: 520px) calc(96vw - 30px), (max-width: 960px) 500px, 40vw"
-              alt=""
-              width={1100}
-              height={911}
-              // No celular fica abaixo da dobra: prioridade baixa. No computador o index.html já
-              // pré-carrega esta imagem com prioridade alta (<link rel="preload" media=...>).
-              fetchPriority="low"
-              draggable={false}
-            />
-            <motion.img
-              className="device device--phone"
-              src="/hero/phone.webp"
-              srcSet="/hero/phone-300.webp 300w, /hero/phone.webp 560w"
-              sizes="(max-width: 520px) 31vw, (max-width: 960px) 190px, 14vw"
-              alt=""
-              width={560}
-              height={639}
-              loading="lazy"
-              draggable={false}
-              style={{ x: fx, y: fy }}
-            />
+            <div className="device device--laptop">
+              <img
+                src="/hero/laptop.webp"
+                srcSet="/hero/laptop-760.webp 760w, /hero/laptop.webp 1100w"
+                sizes="(max-width: 520px) calc(96vw - 30px), (max-width: 960px) 500px, 40vw"
+                alt=""
+                width={1100}
+                height={911}
+                // No celular fica abaixo da dobra: prioridade baixa. No computador o index.html já
+                // pré-carrega esta imagem com prioridade alta (<link rel="preload" media=...>).
+                fetchPriority="low"
+                draggable={false}
+              />
+              <LaptopScreen />
+            </div>
+            <motion.div className="device device--phone" style={{ x: fx, y: fy }}>
+              <img
+                src="/hero/phone.webp"
+                srcSet="/hero/phone-300.webp 300w, /hero/phone.webp 560w"
+                sizes="(max-width: 520px) 31vw, (max-width: 960px) 190px, 14vw"
+                alt=""
+                width={560}
+                height={639}
+                loading="lazy"
+                draggable={false}
+              />
+              <PhoneScreen />
+            </motion.div>
 
             <motion.div className="window window--chip chip" style={{ x: fx, y: fy }}>
               <span className="chip__icon"><Sparkles size={16} /></span>
