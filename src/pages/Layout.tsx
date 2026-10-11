@@ -71,8 +71,10 @@ export function Document({ page, css }: { page: PageMeta; css: string }) {
         <meta name="twitter:title" content={page.title} />
         <meta name="twitter:description" content={page.description} />
         <meta name="twitter:image" content={`${SITE}/og.jpg`} />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
         <link rel="icon" type="image/png" sizes="512x512" href="/logo-gf.png" />
-        <link rel="apple-touch-icon" href="/logo-gf.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         {[breadcrumbLd(page.path, page.crumb), ...page.jsonLd].map((ld, i) => (
           <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(ld) }} />
         ))}
