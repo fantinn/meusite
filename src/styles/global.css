@@ -2488,6 +2488,17 @@ html[data-nav-hidden] .nav {
   align-items: center;
 }
 
+@media (min-width: 901px) {
+  .cta {
+    grid-template-columns: max-content minmax(0, 1fr);
+  }
+  .cta h2,
+  .cta p {
+    white-space: nowrap;
+    max-width: none;
+  }
+}
+
 @media (max-width: 900px) {
   .cta {
     grid-template-columns: 1fr;
