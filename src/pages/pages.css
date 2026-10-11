@@ -261,18 +261,21 @@ img, svg {
   gap: 24px;
 }
 
-.pg-profile__mark {
+.pg-profile__photo {
   flex: none;
-  display: grid;
-  place-items: center;
-  width: clamp(72px, 12vw, 112px);
+  width: clamp(88px, 15vw, 144px);
   aspect-ratio: 1;
-  border-radius: 24px;
+  border-radius: 28px;
+  overflow: hidden;
   background: #fff;
-  color: var(--accent);
-  font-size: clamp(26px, 4vw, 40px);
-  font-weight: 700;
   box-shadow: 0 16px 40px rgba(0, 20, 50, 0.3);
+}
+
+.pg-profile__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .pg-profile .pg-hero__lead {
