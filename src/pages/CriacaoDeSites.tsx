@@ -6,7 +6,7 @@ const PATH = '/criacao-de-sites'
 const faq = [
   {
     q: 'Quanto tempo leva para criar um site?',
-    a: 'Uma landing page fica pronta em até 5 dias. Sites institucionais com várias páginas e lojas online levam em média de 10 a 14 dias. O prazo exato vem na proposta, junto com o valor.',
+    a: 'Uma landing page fica pronta em até 4 dias. Sites e lojas online seguem o mesmo prazo. O prazo exato vem na proposta, junto com o valor.',
   },
   {
     q: 'Quanto custa fazer um site profissional?',

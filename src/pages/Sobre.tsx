@@ -58,7 +58,7 @@ function Body() {
         <CheckList
           items={[
             'Proposta com escopo, prazo e valor fechados em até 24 horas',
-            'Landing page no ar em até 5 dias',
+            'Landing page no ar em até 4 dias',
             'Design pensado primeiro para o celular',
             'Sites rápidos, com nota alta no Google PageSpeed',
             'SEO técnico em todos os projetos',

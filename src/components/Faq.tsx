@@ -10,8 +10,8 @@ export default function Faq() {
       <div className="container faq">
         <SectionHead
           kicker="Dúvidas"
-          title="Perguntas frequentes sobre criar seu site."
-          text="Tudo o que costumam me perguntar antes de fazer um site ou uma landing page. Ficou alguma dúvida? Me chama no WhatsApp."
+          title="Perguntas frequentes."
+          text="Dúvidas mais comuns antes de realizar o melhor investimento para o seu negócio! Ficou alguma dúvida? Me chama no Zap."
           still
         />
 

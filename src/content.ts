@@ -1,7 +1,7 @@
 // Edite aqui os textos do site.
 import type { LucideIcon } from 'lucide-react'
 import { Code2, Palette, Smartphone, Zap, Search, ShoppingBag } from 'lucide-react'
-import { INSTALLMENTS, pricing, type PlanId, type PlanPricing } from './pricing'
+import { pricing, type PlanId, type PlanPricing } from './pricing'
 
 export const brand = {
   name: 'Gabriel Fantin',
@@ -36,7 +36,7 @@ export const hero = {
   // Quebra do título: 2 linhas no computador; no celular cada trecho vira uma linha
   titleLines: [['Sites que', 'transformam'], ['visitas em', 'clientes']],
   subtitle:
-    'Seu site no ar em até 5 dias, com WhatsApp integrado e otimizado para o Google. Enquanto você pensa, seu concorrente já está recebendo os clientes.',
+    'Seu site no ar em até 4 dias, com WhatsApp integrado e otimizado para o Google. Enquanto você pensa, seu concorrente já está recebendo os clientes.',
   primary: { label: 'Solicitar orçamento', href: '#contato' },
   secondary: { label: 'Ver projetos', href: '#projetos' },
 }
@@ -118,7 +118,7 @@ export const plans: Plan[] = [
       'Página única com design personalizado',
       'Botão de WhatsApp e formulário',
       'SEO + Google Analytics',
-      'Entrega em até 5 dias',
+      'Entrega em até 4 dias',
     ],
     careFeatures: [
       'Hospedagem, domínio e SSL',
@@ -171,12 +171,8 @@ export const plansNote = 'O projeto é seu: você paga uma vez pela criação e 
 // Perguntas frequentes da página inicial (também viram dados estruturados FAQPage no HTML).
 export const faq = [
   {
-    q: 'Quanto custa criar um site?',
-    a: `Uma landing page sai a partir de R$ ${pricing.landing.price} e uma loja online completa a partir de R$ ${pricing.loja.price}, em até ${INSTALLMENTS}x sem juros. Depois, a manutenção a partir de R$ ${pricing.landing.careAnnual} por mês cobre hospedagem, domínio, SSL e suporte. Você recebe a proposta com o valor exato em até 24 horas.`,
-  },
-  {
     q: 'Em quanto tempo meu site fica pronto?',
-    a: 'Uma landing page fica no ar em até 5 dias. Lojas online e sites com mais páginas levam em média de 10 a 14 dias, dependendo da quantidade de conteúdo e de produtos.',
+    a: 'Landing pages, sites e lojas online ficam prontos em até 4 dias, contados a partir do momento em que você me envia as informações do negócio (textos, fotos e logo, se tiver).',
   },
   {
     q: 'O que é uma landing page e quando vale a pena fazer uma?',
@@ -195,8 +191,8 @@ export const faq = [
     a: 'Não precisa se preocupar com isso. A manutenção já inclui hospedagem, domínio (o endereço do site, como seunegocio.com.br) e certificado SSL. Se você já tiver um domínio, eu uso o seu.',
   },
   {
-    q: 'Você atende em qual cidade?',
-    a: 'Atendo todo o Brasil. O processo é 100% online: conversamos pelo WhatsApp, você acompanha o andamento e aprova cada etapa antes de o site ir para o ar.',
+    q: 'O que eu preciso enviar para começar?',
+    a: 'Só as informações do seu negócio: textos, fotos e o logo, se você tiver. Se precisar, eu ajudo a escrever os textos. O processo é 100% online: conversamos pelo WhatsApp e você aprova cada etapa antes de o site ir para o ar.',
   },
   {
     q: 'Quem é Gabriel Fantin?',

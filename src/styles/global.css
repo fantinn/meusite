@@ -554,14 +554,14 @@ img, svg {
 .hero .sky-bg::after {
   background:
     linear-gradient(180deg, transparent 72%, var(--bg) 100%),
-    linear-gradient(90deg, rgba(4, 30, 60, 0.28), rgba(4, 30, 60, 0.06) 50%, rgba(4, 30, 60, 0) 75%);
+    radial-gradient(65% 55% at 50% 50%, rgba(4, 30, 60, 0.26), rgba(4, 30, 60, 0) 100%);
 }
 
 /* No céu de dia as nuvens são claras: sombra um pouco mais forte do lado do texto. */
 :root:not([data-theme='dark']) .hero .sky-bg::after {
   background:
     linear-gradient(180deg, transparent 80%, var(--bg) 100%),
-    linear-gradient(90deg, rgba(4, 30, 60, 0.38), rgba(4, 30, 60, 0.12) 50%, rgba(4, 30, 60, 0) 75%);
+    radial-gradient(65% 55% at 50% 50%, rgba(4, 30, 60, 0.34), rgba(4, 30, 60, 0) 100%);
 }
 
 /* No celular o texto ocupa a largura toda: só um véu leve atrás dele, para as nuvens continuarem aparecendo. */
@@ -612,12 +612,12 @@ img, svg {
   background: rgba(255, 255, 255, 0.2);
 }
 
+/* Título e chamada centralizados sobre o céu */
 .hero__inner {
   position: relative;
-  display: grid;
-  grid-template-columns: 1.25fr 1fr;
-  gap: 56px;
-  align-items: center;
+  display: flex;
+  justify-content: center;
+  text-align: center;
 }
 
 .eyebrow {
@@ -681,10 +681,6 @@ img, svg {
   from { transform: translateY(0.4em); filter: blur(10px); }
 }
 
-@keyframes hero-visual {
-  from { transform: translateY(40px) scale(0.92); }
-}
-
 @keyframes chip-float {
   50% { translate: 0 -10px; }
 }
@@ -710,10 +706,6 @@ img, svg {
   animation: hero-rise 0.6s var(--ease) 0.22s both;
 }
 
-.hero__visual {
-  animation: hero-visual 0.9s var(--ease) 0.1s both;
-}
-
 .window--chip {
   animation: chip-float 4s ease-in-out infinite;
 }
@@ -727,7 +719,6 @@ img, svg {
   .hero h1 .word,
   .hero__sub,
   .hero__actions,
-  .hero__visual,
   .window--chip,
   .nav {
     animation: none;
@@ -737,11 +728,14 @@ img, svg {
 /* Título em 2 linhas no computador; no celular cada trecho vira uma linha */
 .hero__copy {
   container-type: inline-size;
+  width: 100%;
+  max-width: 1000px;
 }
 
 .hero__line {
   display: block;
   width: max-content;
+  margin-inline: auto;
   white-space: nowrap;
   letter-spacing: -0.035em; /* em da própria linha, para escalar junto com o tamanho dela */
 }
@@ -773,14 +767,16 @@ img, svg {
 }
 
 .hero__sub {
-  max-width: 540px;
-  font-size: clamp(16px, 1.6vw, 19px);
+  max-width: 620px;
+  margin-inline: auto;
+  font-size: clamp(16px, 1.6vw, 20px);
   color: var(--text-2);
 }
 
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 12px;
   margin-top: 36px;
 }
@@ -797,12 +793,6 @@ img, svg {
     height: 54px;
     font-size: 16px;
   }
-}
-
-.hero__visual {
-  position: relative;
-  height: 460px;
-  perspective: 1200px;
 }
 
 .window {
@@ -837,7 +827,15 @@ img, svg {
   padding: 18px;
 }
 
-/* Notebook e celular do hero */
+/* Notebook e celular (banner de contato) */
+.devices {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  aspect-ratio: 1100 / 930;
+  justify-self: center;
+}
+
 .device {
   position: absolute;
   height: auto;
@@ -846,16 +844,16 @@ img, svg {
 }
 
 .device--laptop {
-  left: -4%;
-  top: 2%;
-  width: 112%;
+  left: 0;
+  top: 4%;
+  width: 96%;
 }
 
 /* Celular na frente do notebook, encostado no canto, para dar profundidade */
 .device--phone {
-  right: -9%;
-  bottom: -8%;
-  width: 37%;
+  right: 0;
+  bottom: -2%;
+  width: 34%;
   filter: drop-shadow(-12px 18px 24px rgba(0, 30, 70, 0.28));
 }
 
@@ -892,31 +890,6 @@ img, svg {
   border-radius: 999px;
   background: var(--border-strong);
   margin-bottom: 10px;
-}
-
-@media (max-width: 960px) {
-  .hero__inner {
-    grid-template-columns: 1fr;
-  }
-  .hero__visual {
-    height: 380px;
-    max-width: 520px;
-  }
-}
-
-@media (max-width: 520px) {
-  .hero__visual {
-    height: 320px;
-  }
-  .device--laptop {
-    left: 0;
-    width: 96%;
-  }
-  .device--phone {
-    right: 0;
-    bottom: 0;
-    width: 32%;
-  }
 }
 
 /* ---------- Marquee ---------- */
@@ -2469,13 +2442,23 @@ html[data-nav-hidden] .nav {
   position: relative;
   overflow: hidden;
   border-radius: 24px;
-  padding: clamp(56px, 9vw, 104px) clamp(24px, 7vw, 72px);
+  padding: clamp(40px, 6vw, 72px) clamp(24px, 5vw, 64px);
   background: linear-gradient(120deg, #003a6b, #0067b8, #004e8c, #0a5ea8, #003a6b);
   background-size: 300% 300%;
   animation: cta-shift 16s ease-in-out infinite;
   color: #fff;
-  text-align: center;
   isolation: isolate;
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .cta {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
 }
 
 @keyframes cta-shift {
@@ -2508,10 +2491,16 @@ html[data-nav-hidden] .nav {
 }
 
 .cta p {
-  margin: 16px auto 32px;
-  max-width: 520px;
+  margin: 16px 0 32px;
+  max-width: 460px;
   opacity: 0.88;
   font-size: 17px;
+}
+
+@media (max-width: 900px) {
+  .cta p {
+    margin-inline: auto;
+  }
 }
 
 .cta .btn--primary {
