@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Logo Instagram</title>
+<style>
+  @font-face {
+    font-family: 'Fantin Logo';
+    src: url('data:font/woff2;base64,d09GMgABAAAAAAPUABAAAAAAB2AAAAN3AAMBBgAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbgS4cKgZgP1NUQVREAFQRCAqDIIJmATYCJAMYCw4ABCAFg3IHIAwHG/4FCJ4H2VnmlFgTE+ctKB0PXzbL91s9utEhgxFmjyg0MWVIGLqcri7W2t69Sfz5KIaqnfgeeGI63lRDgq7TKUG9E85Q1fV/oT/socvp/xZd2+AN12gt+/fawFvDiB7Pj7w1gAMJKDAKVFI3RRQ9fAJFYimhFK8d24tAe0ASQiEE2houDrl8ZUUD2PduQh7sMvwb348922QejAiErKEUSiGhlCymxVottOpgW/OrWgkxI6vpE4Iqk0IWfmnrSCG0swrgOb+bnlNQTMvv4yZbLL3vknQ7IFLw3+CAAyvrYdOmmNLmpdauoPwyXYaAXBWfYDCrEEoJ3ZEYjjx+xwgSncGuY3pZoi9C1hkB0Ss9h5qQoh9AgIQautMIdKe1GGivlGSbDOFhTGni+GLNO9ziOlf+EwEAQjTpBOqgPUqcDDwIyIAkCSGN7JK75F6586aLbr+IM7/88stDv/zyw4gzv2h70WeDN69eu4s/B4DcPto+9Nlnh16884hrXgPI8Nc+e8kZn5/MHic2zrzPRxx030UY8JGyXaNDuSe3Ny3tNPZIC3HyWYw5skN5xsfMk70Ofu2zX+uLuKH77gfKupf4rvxptXIleGCbjeWxXbYOK1YcUl5d31fyPbBnj22nL9/sd17nUfg5R1TO9b+NuqW85/CqmYji8+U7k+YeNff4ryZ9+9XZ1nreGb/oyCUQfkx19/CN36oHJ7o2dvelSkYdT874c/icAcur1AccWSVW5s49b0Y1+c12IzbfK83g6WD3+eybM67YTmFnVsvMGduEvVb9c+c3MKPz7O6zuj7+3+Q/J1YdJt7/+H03AIFa1G/cvz+2pdP8/8taCT7b3Wkp4McnO/7/vdbU/YLyGaEugeCL1XtMcSHX7xDgluqZ7XmnQPpSPf51ZH7Wkekr7QTqjqLXQicAQE2gnYvURG7gFk5i6GlVTEqPiDXTnYnZYE9ioW90FOoGxmhTdGaNld1edPXoy8kDLqEfc1TyCUQTZJRhI5BLnBhx4rg0GDHIpRQPDZK51JAJaIP6Q/BcKjRCIFO4hMhgSKRIEy3aMMoJVPWJ0k/AoXa37VgRjUrJImGdzdD0agP/bB4Ba0C8KDFiJEhXp16leunRcHZEtnnEVddKmzxFCoqA58paRJ81G6RsKdTbp/Sre/ltvXgaoPVBl4DZp6LZ8qUAAAA=') format('woff2');
+    font-weight: 700;
+  }
+  body { margin: 0; padding: 24px; font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f5f5; color: #1b1b1b; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  p { margin: 0 0 24px; color: #505050; }
+  h2 { font-size: 16px; margin: 32px 0 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+  .card { background: #fff; border-radius: 16px; padding: 16px; box-shadow: 0 2px 4px rgba(0,0,0,.04), 0 0 2px rgba(0,0,0,.06); }
+  .card canvas.big { width: 100%; height: auto; border-radius: 50%; display: block; }
+  .row { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+  .row canvas { width: 56px; height: 56px; border-radius: 50%; }
+  .row b { flex: 1; font-size: 14px; }
+  a.dl { font-size: 13px; color: #0067b8; text-decoration: none; font-weight: 600; }
+</style>
+</head>
+<body>
+<h1>Logo para o Instagram</h1>
+<p>Prévia já recortada em círculo, como aparece no perfil. Cada PNG sai em 1080×1080.</p>
+<div id="groups"></div>
+<script>
+// Mesmas medidas do Logo.tsx / global.css
+const LETTERS = [['f', -0.02], ['a', -0.01], ['n', 0], ['t', -0.015], ['ı', 0.005], ['n', 0]]
+const TRACK = -0.055 // letter-spacing do .wm
+const DOT = 0.19     // tamanho do pingo (em)
+const DOT_TOP = 0.07 // distância do topo da caixa do ı até o pingo (em)
+const S = 1080
+
+const STACK = [[['f', -0.02], ['a', -0.01], ['n', 0]], [['t', -0.015], ['ı', 0.005], ['n', 0]]]
+const NAVY = '#062a55', BLUE = '#0067b8', SKY = '#9cc3e8'
+
+// Fundos com as mesmas "bolhas" de cor do hero do site
+const blob = (ctx, x, y, r, color) => {
+  const g = ctx.createRadialGradient(x * S, y * S, 0, x * S, y * S, r * S)
+  g.addColorStop(0, color); g.addColorStop(1, color.replace(/[\d.]+\)$/, '0)'))
+  ctx.fillStyle = g; ctx.fillRect(0, 0, S, S)
+}
+const blobsLight = (ctx) => {
+  ctx.fillStyle = '#f2f6fb'; ctx.fillRect(0, 0, S, S)
+  blob(ctx, 0.15, 0.12, 0.62, 'rgba(156,195,232,0.9)')
+  blob(ctx, 0.92, 0.95, 0.6, 'rgba(207,214,222,0.95)')
+  blob(ctx, 0.95, 0.08, 0.45, 'rgba(0,103,184,0.35)')
+}
+const blobsDark = (ctx) => {
+  ctx.fillStyle = NAVY; ctx.fillRect(0, 0, S, S)
+  blob(ctx, 0.18, 0.15, 0.75, 'rgba(0,103,184,0.95)')
+  blob(ctx, 0.9, 0.9, 0.6, 'rgba(0,78,140,0.9)')
+  blob(ctx, 0.88, 0.12, 0.42, 'rgba(156,195,232,0.45)')
+}
+
+const W = { ink: '#ffffff', dot: SKY, ring: 'rgba(156,195,232,.3)' } // palavra clara
+const D = { ink: '#1b1b1b', dot: BLUE, ring: 'rgba(0,103,184,.16)' }  // palavra escura
+
+const GROUPS = [
+  ['FA / Ti + N', [
+    { id: 'fatin-branco', name: 'Branco', bg: '#ffffff', ink: '#1b1b1b', dot: BLUE },
+    { id: 'fatin-branco-n-azul', name: 'Branco · N azul', bg: '#ffffff', ink: '#1b1b1b', dot: BLUE, nInk: BLUE },
+    { id: 'fatin-azul', name: 'Azul', bg: BLUE, ink: '#ffffff', dot: '#ffffff' },
+    { id: 'fatin-navy', name: 'Navy', bg: NAVY, ink: '#ffffff', dot: '#3d9be9' },
+    { id: 'fatin-bolhas', name: 'Bolhas', bg: blobsDark, ink: '#ffffff', dot: SKY },
+  ].map((v) => ({ ...v, mono: true, width: 0.6 }))],
+  ['FA / Ti + N · novas versões', [
+    { id: 'fatin-grossa-branco', name: 'Mais grossa · branco', bg: '#ffffff', ink: '#1b1b1b', dot: BLUE, m: { s: 0.27, lg: 0.1, gap: 0.18 } },
+    { id: 'fatin-grossa-navy', name: 'Mais grossa · navy', bg: NAVY, ink: '#ffffff', dot: '#3d9be9', m: { s: 0.27, lg: 0.1, gap: 0.18 } },
+    { id: 'fatin-fina-branco', name: 'Fina · branco', bg: '#ffffff', ink: '#1b1b1b', dot: BLUE, m: { s: 0.13 } },
+    { id: 'fatin-sem-barra-branco', name: 'A sem barra · branco', bg: '#ffffff', ink: '#1b1b1b', dot: BLUE, noBar: true },
+    { id: 'fatin-sem-barra-azul', name: 'A sem barra · azul', bg: BLUE, ink: '#ffffff', dot: '#ffffff', noBar: true },
+    { id: 'fatin-diagonal-branco', name: 'Diagonal do N azul · branco', bg: '#ffffff', ink: '#1b1b1b', dot: BLUE, diagInk: BLUE },
+    { id: 'fatin-diagonal-navy', name: 'Diagonal do N azul · navy', bg: NAVY, ink: '#ffffff', dot: SKY, diagInk: '#3d9be9' },
+    { id: 'fatin-duas-cores-branco', name: 'Duas cores · branco', bg: '#ffffff', ink: '#1b1b1b', inkBottom: BLUE, nInk: BLUE, dot: BLUE },
+    { id: 'fatin-moldura-navy', name: 'Com anel · navy', bg: NAVY, ink: '#ffffff', dot: '#3d9be9', frame: 'rgba(255,255,255,.9)' },
+    { id: 'fatin-moldura-branco', name: 'Com anel · branco', bg: '#ffffff', ink: '#1b1b1b', dot: BLUE, frame: BLUE },
+    { id: 'fatin-pulso-bolhas', name: 'Pingo pulsando · bolhas', bg: blobsDark, ink: '#ffffff', dot: SKY, pulse: true },
+    { id: 'fatin-compacta-azul', name: 'Compacta · azul', bg: BLUE, ink: '#ffffff', dot: '#ffffff', m: { s: 0.24, lg: 0.08, gap: 0.15, N: 1.05, A: 0.78 } },
+  ].map((v) => ({ ...v, mono: true, width: 0.6 }))],
+  ['n que fecha "fan" e "tın"', [
+    { id: 'fan-tin-branco', name: 'Branco', bg: '#ffffff', ink: '#1b1b1b', dot: BLUE, width: 0.6 },
+    { id: 'fan-tin-branco-n-azul', name: 'Branco · n azul', bg: '#ffffff', ink: '#1b1b1b', dot: BLUE, nInk: BLUE, width: 0.6 },
+    { id: 'fan-tin-azul', name: 'Azul', bg: BLUE, ink: '#ffffff', dot: '#ffffff', width: 0.6 },
+    { id: 'fan-tin-navy', name: 'Navy', bg: NAVY, ink: '#ffffff', dot: '#3d9be9', width: 0.6 },
+    { id: 'fan-tin-bolhas', name: 'Bolhas', bg: blobsDark, ink: '#ffffff', dot: SKY, width: 0.6 },
+  ].map((v) => ({ ...v, shared: true }))],
+  ['Novas ideias', [
+    { id: 'empilhado-branco', name: 'Empilhado · branco', bg: '#ffffff', ...D, lines: STACK, width: 0.46 },
+    { id: 'empilhado-azul', name: 'Empilhado · azul', bg: BLUE, ink: '#ffffff', dot: '#ffffff', ring: 'rgba(255,255,255,.28)', lines: STACK, width: 0.46 },
+    { id: 'empilhado-bolhas', name: 'Empilhado · bolhas', bg: blobsDark, ...W, lines: STACK, width: 0.46 },
+    { id: 'bolhas-claro', name: 'Bolhas claras', bg: blobsLight, ...D, width: 0.66 },
+    { id: 'bolhas-escuro', name: 'Bolhas escuras', bg: blobsDark, ...W, width: 0.66 },
+    { id: 'navegador-escuro', name: 'Janela de site · escuro', bg: blobsDark, ...D, frame: true, width: 0.58 },
+    { id: 'navegador-claro', name: 'Janela de site · claro', bg: blobsLight, ...D, frame: true, width: 0.58 },
+  ]],
+  ['Anteriores', [
+    { id: 'wordmark-azul', name: 'fantın · azul', bg: BLUE, ink: '#ffffff', dot: '#ffffff', ring: 'rgba(255,255,255,.28)', width: 0.66 },
+    { id: 'wordmark-branco', name: 'fantın · branco', bg: '#ffffff', ...D, width: 0.66 },
+    { id: 'wordmark-navy', name: 'fantın · navy', bg: NAVY, ink: '#ffffff', dot: '#3d9be9', ring: 'rgba(61,155,233,.28)', width: 0.66 },
+  ]],
+]
+
+const circle = (ctx, x, y, r) => { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill() }
+const roundRect = (ctx, x, y, w, h, r) => { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); ctx.fill() }
+
+// Seta do mouse com a ponta em (x, y)
+function drawCursor(ctx, x, y, size, fill, stroke) {
+  const p = [[0, 0], [0, 16], [4.2, 12.3], [7, 18.6], [9.6, 17.5], [6.9, 11.3], [12.2, 11.3]]
+  ctx.save(); ctx.translate(x, y); ctx.rotate(-0.12); ctx.scale(size / 18, size / 18)
+  ctx.beginPath(); p.forEach(([a, b], i) => (i ? ctx.lineTo(a, b) : ctx.moveTo(a, b))); ctx.closePath()
+  ctx.lineJoin = 'round'; ctx.lineWidth = 1.6; ctx.strokeStyle = stroke; ctx.stroke()
+  ctx.fillStyle = fill; ctx.fill()
+  ctx.restore()
+}
+
+// "fa" em cima de "tı", e um n só fechando as duas palavras.
+// O n mantém o arco normal (no alto, alinhado com o "a") e só as hastes descem até a base do "tı".
+// Cada linha encosta no n com o espaçamento normal da logo, então dá para ler "fan" e "tın".
+function nStems(em) {
+  // Acha as duas hastes do n lendo os pixels da linha logo acima da base
+  const c = document.createElement('canvas'), size = Math.ceil(em * 1.2)
+  c.width = c.height = size
+  const g = c.getContext('2d')
+  g.font = `700 ${em}px "Fantin Logo"`; g.fillStyle = '#000'; g.fillText('n', 0, em)
+  const row = g.getImageData(0, Math.round(em - em * 0.06), size, 1).data
+  const runs = []; let start = -1
+  for (let x = 0; x <= size; x++) {
+    const on = x < size && row[x * 4 + 3] > 127
+    if (on && start < 0) start = x
+    if (!on && start >= 0) { runs.push([start, x]); start = -1 }
+  }
+  return runs.slice(0, 2)
+}
+
+function drawShared(ctx, v) {
+  const TOP = [['f', -0.02], ['a', -0.01]], BOT = [['t', -0.015], ['ı', 0.005]]
+  const gap = 0.92 // entre as linhas: deixa o pingo do ı livre embaixo do "a"
+  ctx.font = '700 100px "Fantin Logo"'
+  const adv = (ls) => ls.reduce((w, [ch, k]) => w + ctx.measureText(ch).width / 100 + TRACK + k, 0) // até o início do n
+  const n = ctx.measureText('n')
+  const nW = n.width / 100, xh = n.actualBoundingBoxAscent / 100
+  const fTop = ctx.measureText('f').actualBoundingBoxAscent / 100
+  const aTop = adv(TOP), aBot = adv(BOT)
+  const leftW = Math.max(aTop, aBot)
+  const totalW = leftW + nW, totalH = fTop + gap
+  const em = Math.min((S * v.width) / totalW, (S * 0.58) / totalH)
+
+  ctx.font = `700 ${em}px "Fantin Logo"`
+  const asc = n.fontBoundingBoxAscent / 100, desc = n.fontBoundingBoxDescent / 100
+  const dotTop = -asc + (asc + desc - 1) / 2 + DOT_TOP
+  const x0 = (S - totalW * em) / 2
+  const nx = x0 + leftW * em
+  const b1 = S / 2 - (totalH * em) / 2 + fTop * em, b2 = b1 + gap * em
+
+  // Cada linha termina encostada no n (alinhada à direita)
+  ;[[TOP, b1, aTop], [BOT, b2, aBot]].forEach(([ls, b, a]) => {
+    let x = nx - a * em
+    ls.forEach(([ch, k]) => {
+      const cw = ctx.measureText(ch).width
+      ctx.fillStyle = v.ink; ctx.fillText(ch, x, b)
+      if (ch === 'ı') { ctx.fillStyle = v.dot; circle(ctx, x + cw / 2, b + (dotTop + DOT / 2) * em, (DOT / 2) * em) }
+      x += cw + (TRACK + k) * em
+    })
+  })
+
+  ctx.fillStyle = v.nInk || v.ink
+  ctx.fillText('n', nx, b1)
+  nStems(em).forEach(([l, r]) => ctx.fillRect(nx + l, b1 - em * 0.08, r - l, b2 - b1 + em * 0.08))
+}
+
+// Monograma "FA / Ti + N": letras desenhadas como formas, para tudo alinhar no milímetro.
+// Unidade = altura da maiúscula. F e T têm a mesma largura (alinham dos dois lados),
+// A e i dividem o mesmo eixo, e o N vai do topo do FA até a base do Ti.
+// O espaço entre as linhas é o mesmo que separa as letras do N.
+const M = { s: 0.2, F: 0.6, A: 0.82, lg: 0.12, gap: 0.22, N: 1.24 }
+
+// Opções por versão (v): m = medidas, noBar = A sem barra, diagInk = cor só da diagonal do N,
+// inkBottom = cor da linha "Ti", frame = anel em volta, pulse = ondas no pingo
+function drawMono(ctx, v) {
+  const m = { ...M, ...v.m }
+  const colW = m.F + m.lg + m.A
+  const H = 2 + m.gap, Wt = colW + m.gap + m.N
+  const u = Math.min((S * v.width) / Wt, (S * (v.frame ? 0.5 : 0.56)) / H)
+  const s = m.s * u
+  const x0 = (S - Wt * u) / 2, y0 = (S - H * u) / 2
+  const top1 = y0, base1 = y0 + u, top2 = base1 + m.gap * u, base2 = y0 + H * u
+  const inkB = v.inkBottom || v.ink
+
+  // Camada separada: o miolo do A é recortado sem apagar o fundo
+  const L = document.createElement('canvas'); L.width = L.height = S
+  const g = L.getContext('2d')
+  // Arredonda para o pixel inteiro: sem emendas onde as formas se encostam
+  const R = Math.round
+  const rect = (x, y, w, h, col = v.ink) => { g.fillStyle = col; g.fillRect(R(x), R(y), R(x + w) - R(x), R(y + h) - R(y)) }
+  const poly = (pts) => { g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.closePath() }
+
+  // F
+  rect(x0, top1, s, u)
+  rect(x0, top1, m.F * u, s)
+  rect(x0, top1 + u * 0.43, m.F * u * 0.86, s)
+
+  // A: trapézio cheio, recorta o miolo e devolve a barra
+  const ax = x0 + (m.F + m.lg) * u, aw = m.A * u, acx = ax + aw / 2, tw = s * 1.1
+  const run = aw / 2 - tw / 2, d = s * 0.9 // perna um pouco mais fina que a haste: abre espaço para a barra aparecer
+  const outer = [[ax, base1], [acx - tw / 2, top1], [acx + tw / 2, top1], [ax + aw, base1]]
+  g.fillStyle = v.ink; poly(outer); g.fill()
+  // Bordas de dentro: as de fora deslocadas d na horizontal; se cruzam no vértice do miolo
+  const k = (aw - 2 * d) / (2 * run)
+  const apexY = base1 - u * Math.min(1, k)
+  g.save(); g.globalCompositeOperation = 'destination-out'
+  const hole = [[ax + d, base1 + 4], [acx, apexY], [ax + aw - d, base1 + 4]] // passa da base para não sobrar fio
+  poly(hole); g.fill(); g.restore()
+  // Barra só dentro do vão (1px a mais de cada lado), para não serrilhar a borda de fora
+  if (!v.noBar) { g.save(); poly([[hole[0][0] - 1, hole[0][1]], [acx, apexY - 1], [hole[2][0] + 1, hole[2][1]]]); g.clip(); rect(ax, base1 - u * 0.22 - s * 0.7, aw, s * 0.7); g.restore() }
+
+  // T: mesma largura do F
+  rect(x0, top2, m.F * u, s, inkB)
+  rect(x0 + (m.F * u - s) / 2, top2, s, u, inkB)
+
+  // i: no eixo do A, com o pingo azul da marca no alto
+  const dotD = s * 1.3, dotY = top2 + dotD / 2
+  rect(acx - s / 2, top2 + dotD + s * 0.55, s, u - dotD - s * 0.55, inkB)
+  if (v.pulse) {
+    ;[[2.3, 0.12], [1.65, 0.24]].forEach(([r, a]) => {
+      g.globalAlpha = a; g.fillStyle = v.dot; g.beginPath(); g.arc(acx, dotY, (dotD / 2) * r, 0, Math.PI * 2); g.fill()
+    })
+    g.globalAlpha = 1
+  }
+  g.fillStyle = v.dot; g.beginPath(); g.arc(acx, dotY, dotD / 2, 0, Math.PI * 2); g.fill()
+
+  // N: altura das duas linhas juntas
+  const nx = x0 + (colW + m.gap) * u, nw = m.N * u, nh = base2 - top1
+  const dn = s * Math.hypot(nh, nw) / nh * 1.18
+  const nInk = v.nInk || v.ink
+  if (v.diagInk) {
+    // Diagonal em destaque, hastes na cor normal por cima
+    g.fillStyle = v.diagInk
+    poly([[nx, top1], [nx + dn, top1], [nx + nw, base2], [nx + nw - dn, base2]]); g.fill()
+    rect(nx, top1, s, nh, nInk); rect(nx + nw - s, top1, s, nh, nInk)
+  } else {
+    const yR = top1 + ((nw - s - dn) / (nw - dn)) * nh, yL = top1 + (s / (nw - dn)) * nh
+    g.fillStyle = nInk
+    poly([[nx, base2], [nx, top1], [nx + dn, top1], [nx + nw - s, yR], [nx + nw - s, top1], [nx + nw, top1],
+          [nx + nw, base2], [nx + nw - dn, base2], [nx + s, yL], [nx + s, base2]])
+    g.fill()
+  }
+
+  ctx.drawImage(L, 0, 0)
+
+  if (v.frame) {
+    ctx.strokeStyle = v.frame; ctx.lineWidth = s * 0.45
+    ctx.beginPath(); ctx.arc(S / 2, S / 2, S * 0.405, 0, Math.PI * 2); ctx.stroke()
+  }
+}
+
+function draw(v) {
+  const c = document.createElement('canvas')
+  c.width = c.height = S
+  const ctx = c.getContext('2d')
+  if (typeof v.bg === 'function') v.bg(ctx)
+  else { ctx.fillStyle = v.bg; ctx.fillRect(0, 0, S, S) }
+  if (v.mono) { drawMono(ctx, v); return c }
+  if (v.shared) { ctx.textBaseline = 'alphabetic'; drawShared(ctx, v); return c }
+
+  const lines = v.lines || [LETTERS]
+  ctx.font = '700 100px "Fantin Logo"'
+  const lineW = (ls) => ls.reduce((w, [ch, k], i) => w + ctx.measureText(ch).width / 100 + (i < ls.length - 1 ? TRACK + k : 0), 0)
+  const widths = lines.map(lineW)
+  const wMax = Math.max(...widths)
+  const em = (S * v.width) / wMax
+
+  ctx.font = `700 ${em}px "Fantin Logo"`
+  const m = ctx.measureText('n')
+  const asc = m.fontBoundingBoxAscent / em, desc = m.fontBoundingBoxDescent / em
+  const dotTop = -asc + (asc + desc - 1) / 2 + DOT_TOP // topo do pingo, relativo à linha de base (em)
+  const fTop = ctx.measureText('f').actualBoundingBoxAscent / em
+  const top = Math.max(fTop, -dotTop)
+  const gap = 1.0 // distância entre linhas empilhadas (em)
+  const blockH = (top + gap * (lines.length - 1)) * em
+  let cy = S / 2 + (v.frame ? 0.05 * S : 0)
+
+  if (v.frame) {
+    // Janela de navegador com a logo dentro
+    const fw = S * 0.8, fh = S * 0.5, fx = (S - fw) / 2, fy = S / 2 - fh / 2, bar = S * 0.075
+    ctx.save(); ctx.shadowColor = 'rgba(0,20,50,.35)'; ctx.shadowBlur = 60; ctx.shadowOffsetY = 24
+    ctx.fillStyle = '#ffffff'; roundRect(ctx, fx, fy, fw, fh, S * 0.04); ctx.restore()
+    ctx.fillStyle = '#eef2f7'; ctx.save(); ctx.beginPath(); ctx.roundRect(fx, fy, fw, fh, S * 0.04); ctx.clip()
+    ctx.fillRect(fx, fy, fw, bar); ctx.restore()
+    ;['#ff5f57', '#febc2e', '#28c840'].forEach((col, i) => { ctx.fillStyle = col; circle(ctx, fx + S * 0.05 + i * S * 0.04, fy + bar / 2, S * 0.012) })
+    cy = fy + bar + (fh - bar) / 2
+  }
+
+  let baseline = cy - blockH / 2 + top * em
+  let dot = null
+  ctx.textBaseline = 'alphabetic'
+  lines.forEach((ls, li) => {
+    let x = v.lines ? (S - wMax * em) / 2 : (S - widths[li] * em) / 2
+    ls.forEach(([ch, k]) => {
+      const cw = ctx.measureText(ch).width
+      ctx.fillStyle = v.ink; ctx.fillText(ch, x, baseline)
+      if (ch === 'ı') {
+        dot = { x: x + cw / 2, y: baseline + (dotTop + DOT / 2) * em, r: (DOT / 2) * em }
+        ctx.fillStyle = v.ring; circle(ctx, dot.x, dot.y, dot.r * 1.9) // eco do pulso de "site no ar"
+        ctx.fillStyle = v.dot; circle(ctx, dot.x, dot.y, dot.r)
+      }
+      x += cw + (TRACK + k) * em
+    })
+    baseline += gap * em
+  })
+
+  if (v.cursor && dot) drawCursor(ctx, dot.x + dot.r * 0.55, dot.y + dot.r * 0.55, S * 0.21, '#ffffff', '#1b1b1b')
+  return c
+}
+
+document.fonts.load('700 100px "Fantin Logo"', 'fantın').then(() => {
+  const root = document.getElementById('groups')
+  window.__logos = {}
+  GROUPS.forEach(([title, variants]) => {
+    const grid = document.createElement('div'); grid.className = 'grid'
+    root.append(Object.assign(document.createElement('h2'), { textContent: title }), grid)
+    variants.forEach((v) => {
+      const c = draw(v)
+      const url = c.toDataURL('image/png')
+      window.__logos[v.id] = url
+      const card = document.createElement('div')
+      card.className = 'card'
+      c.className = 'big'
+      const row = document.createElement('div'); row.className = 'row'
+      const thumb = document.createElement('canvas'); thumb.width = thumb.height = 112
+      thumb.getContext('2d').drawImage(c, 0, 0, 112, 112)
+      row.append(thumb, Object.assign(document.createElement('b'), { textContent: v.name }),
+        Object.assign(document.createElement('a'), { className: 'dl', href: url, download: `fantin-${v.id}.png`, textContent: 'Baixar PNG' }))
+      card.append(c, row)
+      grid.append(card)
+    })
+  })
+  document.body.dataset.ready = '1'
+})
+</script>
+</body>
+</html>
