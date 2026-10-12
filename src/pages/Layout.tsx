@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { ArrowRight, Check, MessageCircle } from 'lucide-react'
 import { brand, guides, projectSrcSet, projects } from '../content'
-import { INSTALLMENTS, pricing } from '../pricing'
+import { installmentText, pricing } from '../pricing'
 
 // Páginas de conteúdo (criação de sites, landing page, sobre): HTML estático gerado no build,
 // sem nenhum JavaScript no navegador. Carregam instantâneo e o Google lê tudo de primeira.
@@ -214,7 +214,7 @@ export function Prices() {
             <h3>{name}</h3>
             <p>{note}</p>
             <div className="pg-price__value"><small>a partir de</small> R$ {brl(p.price)}</div>
-            <div className="pg-price__sub">ou {INSTALLMENTS}x de R$ {brl(Math.ceil(p.price / INSTALLMENTS))} sem juros</div>
+            <div className="pg-price__sub">{installmentText(p)}</div>
             <div className="pg-price__sub">+ manutenção a partir de R$ {p.careAnnual}/mês</div>
           </div>
         ))}

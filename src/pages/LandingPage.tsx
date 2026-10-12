@@ -1,4 +1,4 @@
-import { INSTALLMENTS, pricing } from '../pricing'
+import { installmentText, pricing } from '../pricing'
 import { CheckList, Cta, Faq, Hero, Projects, Related, Section, SITE, Steps, brl, faqLd, type PageMeta } from './Layout'
 
 const PATH = '/landing-page'
@@ -11,7 +11,7 @@ const faq = [
   },
   {
     q: 'Quanto custa fazer uma landing page?',
-    a: `A partir de R$ ${lp.price}, ou ${INSTALLMENTS}x de R$ ${brl(Math.ceil(lp.price / INSTALLMENTS))} sem juros. A manutenção custa a partir de R$ ${lp.careAnnual} por mês e inclui hospedagem, domínio, SSL, uma alteração de conteúdo por mês e suporte.`,
+    a: `A partir de R$ ${lp.price}, ${installmentText(lp)}. A manutenção custa a partir de R$ ${lp.careAnnual} por mês e inclui hospedagem, domínio, SSL, uma alteração de conteúdo por mês e suporte.`,
   },
   {
     q: 'Posso usar a landing page com anúncios do Google e do Instagram?',
@@ -101,7 +101,7 @@ function Body() {
         <div className="pg-price pg-price--wide">
           <h3>Landing Page</h3>
           <div className="pg-price__value"><small>a partir de</small> R$ {brl(lp.price)}</div>
-          <div className="pg-price__sub">ou {INSTALLMENTS}x de R$ {brl(Math.ceil(lp.price / INSTALLMENTS))} sem juros · pronta em até 4 dias</div>
+          <div className="pg-price__sub">{installmentText(lp)} · pronta em até 4 dias</div>
           <CheckList
             items={[
               'Página única com design personalizado',

@@ -1,9 +1,13 @@
-import type { PlanId } from './pricing'
+import { payLinks, type PlanId } from './pricing'
 
 export type Billing = 'monthly' | 'annual'
 
-// Cria um Checkout Asaas via /api/checkout e redireciona o cliente para ele.
+// Projeto: abre o link de pagamento fixo do Asaas. Manutenção: cria um Checkout via /api/checkout e redireciona.
 export async function startCheckout(plan: PlanId, kind: 'project' | 'care', billing: Billing = 'monthly') {
+  if (kind === 'project') {
+    window.location.href = payLinks[plan]
+    return
+  }
   const res = await fetch('/api/checkout', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },

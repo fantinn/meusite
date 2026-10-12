@@ -10,7 +10,7 @@ const faq = [
   },
   {
     q: 'Quanto custa fazer um site profissional?',
-    a: `Uma landing page sai a partir de R$ ${pricing.landing.price} e uma loja online a partir de R$ ${pricing.loja.price}, com parcelamento sem juros no cartão. A manutenção, que inclui hospedagem, domínio e suporte, começa em R$ ${pricing.landing.careAnnual} por mês.`,
+    a: `Uma landing page sai a partir de R$ ${pricing.landing.price} e uma loja online a partir de R$ ${pricing.loja.price}, e a loja pode ser parcelada em até 10x sem juros. A manutenção, que inclui hospedagem, domínio e suporte, começa em R$ ${pricing.landing.careAnnual} por mês.`,
   },
   {
     q: 'Posso pedir alterações depois que o site estiver no ar?',
@@ -30,7 +30,7 @@ const faq = [
   },
   {
     q: 'Como é feito o pagamento?',
-    a: 'Por Pix ou cartão de crédito, em um checkout seguro. O projeto pode ser parcelado sem juros e a manutenção pode ser mensal (sem fidelidade) ou anual, com desconto.',
+    a: 'Por Pix ou cartão de crédito, em um checkout seguro. A loja pode ser parcelada em até 10x sem juros e a manutenção pode ser mensal (sem fidelidade) ou anual, com desconto.',
   },
 ]
 
