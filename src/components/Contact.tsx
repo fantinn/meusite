@@ -45,7 +45,7 @@ export default function Contact() {
         <Reveal className="cta">
           <FlowBackground />
           <div className="cta__copy">
-            <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.03em', lineHeight: 1.1 }}>Vamos tirar sua ideia do papel?</h2>
+            <h2 className="cta__title" style={{ fontWeight: 600, letterSpacing: '-0.03em', lineHeight: 1.1 }}>Vamos tirar sua ideia do papel?</h2>
             <p>Me chame no WhatsApp e receba uma proposta em até 24 horas.</p>
             <motion.a href={wa('Olá! Vim pelo seu site e quero um orçamento.')} target="_blank" rel="noreferrer" className="btn btn--primary" whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
               <MessageCircle size={18} /> Chamar no WhatsApp

@@ -2488,6 +2488,28 @@ html[data-nav-hidden] .nav {
   align-items: center;
 }
 
+.cta .cta__title {
+  font-size: clamp(28px, 4vw, 44px);
+}
+
+/* Desktop: título e subtítulo em uma linha só, a fonte acompanha a largura da coluna */
+@media (min-width: 901px) {
+  .cta__copy {
+    container-type: inline-size;
+  }
+  .cta h2,
+  .cta p {
+    white-space: nowrap;
+    max-width: none;
+  }
+  .cta .cta__title {
+    font-size: min(44px, 7.4cqi);
+  }
+  .cta .cta__copy p {
+    font-size: min(17px, 3.4cqi);
+  }
+}
+
 @media (max-width: 900px) {
   .cta {
     grid-template-columns: 1fr;
