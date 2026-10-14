@@ -7,3 +7,7 @@ dist-server
 .DS_Store
 
 .vercel
+
+# Skills de ferramentas (nao fazem parte do site)
+.agents/
+.claude/skills/
