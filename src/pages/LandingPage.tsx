@@ -1,4 +1,4 @@
-import { INSTALLMENTS, pricing } from '../pricing'
+import { installmentText, pricing } from '../pricing'
 import { CheckList, Cta, Faq, Hero, Projects, Related, Section, SITE, Steps, brl, faqLd, type PageMeta } from './Layout'
 
 const PATH = '/landing-page'
@@ -7,11 +7,11 @@ const lp = pricing.landing
 const faq = [
   {
     q: 'Em quanto tempo minha landing page fica pronta?',
-    a: 'Em até 5 dias depois que você me envia as informações do negócio (textos, fotos e logo, se tiver). Se precisar, eu ajudo a escrever os textos.',
+    a: 'Em até 4 dias depois que você me envia as informações do negócio (textos, fotos e logo, se tiver). Se precisar, eu ajudo a escrever os textos.',
   },
   {
     q: 'Quanto custa fazer uma landing page?',
-    a: `A partir de R$ ${lp.price}, ou ${INSTALLMENTS}x de R$ ${brl(Math.ceil(lp.price / INSTALLMENTS))} sem juros. A manutenção custa a partir de R$ ${lp.careAnnual} por mês e inclui hospedagem, domínio, SSL, uma alteração de conteúdo por mês e suporte.`,
+    a: `A partir de R$ ${lp.price}, ${installmentText(lp)}. A manutenção custa a partir de R$ ${lp.careAnnual} por mês e inclui hospedagem, domínio, SSL, uma alteração de conteúdo por mês e suporte.`,
   },
   {
     q: 'Posso usar a landing page com anúncios do Google e do Instagram?',
@@ -37,7 +37,7 @@ function Body() {
       <Hero
         crumb="Landing page"
         title="Landing page profissional: crie a sua e transforme visitas em clientes"
-        lead={`Quer criar uma landing page para vender mais, anunciar no Google e no Instagram ou receber contatos no WhatsApp? Faço sua landing page com design personalizado, SEO e Google Analytics, pronta em até 5 dias, a partir de R$ ${lp.price}.`}
+        lead={`Quer criar uma landing page para vender mais, anunciar no Google e no Instagram ou receber contatos no WhatsApp? Faço sua landing page com design personalizado, SEO e Google Analytics, pronta em até 4 dias, a partir de R$ ${lp.price}.`}
         cta="Olá, Gabriel! Quero fazer uma landing page."
       />
 
@@ -88,7 +88,7 @@ function Body() {
             <tbody>
               <tr><th scope="row">Objetivo</th><td>Uma ação: vender, captar contato</td><td>Apresentar a empresa inteira</td></tr>
               <tr><th scope="row">Páginas</th><td>Uma página</td><td>Várias páginas e menus</td></tr>
-              <tr><th scope="row">Prazo</th><td>Até 5 dias</td><td>De 10 a 14 dias, em média</td></tr>
+              <tr><th scope="row">Prazo</th><td>Até 4 dias</td><td>Até 4 dias</td></tr>
               <tr><th scope="row">Ideal para</th><td>Anúncios, lançamentos, começar rápido</td><td>Empresas com muitos serviços ou produtos</td></tr>
               <tr><th scope="row">Investimento</th><td>A partir de R$ {lp.price}</td><td>Sob orçamento</td></tr>
             </tbody>
@@ -101,7 +101,7 @@ function Body() {
         <div className="pg-price pg-price--wide">
           <h3>Landing Page</h3>
           <div className="pg-price__value"><small>a partir de</small> R$ {brl(lp.price)}</div>
-          <div className="pg-price__sub">ou {INSTALLMENTS}x de R$ {brl(Math.ceil(lp.price / INSTALLMENTS))} sem juros · pronta em até 5 dias</div>
+          <div className="pg-price__sub">{installmentText(lp)} · pronta em até 4 dias</div>
           <CheckList
             items={[
               'Página única com design personalizado',
@@ -124,7 +124,7 @@ function Body() {
             { title: 'Briefing rápido', text: 'Conversamos pelo WhatsApp sobre o que você vende, para quem e qual ação o visitante deve tomar.' },
             { title: 'Estrutura e textos', text: 'Monto a estrutura da página e ajudo a escrever títulos e chamadas que vendem.' },
             { title: 'Design e desenvolvimento', text: 'Crio o design com a sua marca e desenvolvo a página, rápida e perfeita no celular.' },
-            { title: 'No ar em até 5 dias', text: 'Publico com domínio, SSL, Google Analytics e Search Console configurados.' },
+            { title: 'No ar em até 4 dias', text: 'Publico com domínio, SSL, Google Analytics e Search Console configurados.' },
           ]}
         />
       </Section>
@@ -148,7 +148,7 @@ export const landingPage: PageMeta = {
   file: 'landing-page.html',
   crumb: 'Landing page',
   title: 'Criar Landing Page Profissional que Converte | Gabriel Fantin',
-  description: `Landing page profissional pronta em até 5 dias, a partir de R$ ${lp.price}: design personalizado, WhatsApp, SEO e Google Analytics. Veja o que é e como criar a sua.`,
+  description: `Landing page profissional pronta em até 4 dias, a partir de R$ ${lp.price}: design personalizado, WhatsApp, SEO e Google Analytics. Veja o que é e como criar a sua.`,
   jsonLd: [
     {
       '@context': 'https://schema.org',

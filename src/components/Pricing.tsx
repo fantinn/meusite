@@ -1,9 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { AnimatePresence, animate, motion, useMotionValue, useMotionValueEvent, useScroll, useTransform } from 'framer-motion'
 import { Check, Loader2, RefreshCw, ShieldCheck } from 'lucide-react'
-import { INSTALLMENTS, plans, plansNote, type Plan } from '../content'
+import { plans, plansNote, type Plan } from '../content'
 import { startCheckout, type Billing } from '../checkout'
-import type { PlanId } from '../pricing'
+import { installmentText, type PlanId } from '../pricing'
 import Card from './Card'
 import FlowBackground from './FlowBackground'
 import Reveal, { SectionHead, ease } from './Reveal'
@@ -236,7 +236,7 @@ export default function Pricing() {
                     <span className="plan__currency">R$</span>
                     {brl(p.price)}
                   </div>
-                  <div className="plan__setup">ou {INSTALLMENTS}x de R$ {brl(Math.ceil(p.price / INSTALLMENTS))} sem juros</div>
+                  <div className="plan__setup">{installmentText(p)}</div>
                 </div>
 
                 <ul>

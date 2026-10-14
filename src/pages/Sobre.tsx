@@ -12,7 +12,17 @@ function Body() {
             <a href="/">Início</a> <span aria-hidden>›</span> <span aria-current="page">Sobre</span>
           </nav>
           <div className="pg-profile">
-            <span className="pg-profile__mark" aria-hidden>{brand.short}</span>
+            <picture className="pg-profile__photo">
+              <source type="image/avif" srcSet="/gabriel/gabriel-fantin-320.avif 1x, /gabriel/gabriel-fantin-480.avif 2x" />
+              <img
+                src="/gabriel/gabriel-fantin-320.webp"
+                srcSet="/gabriel/gabriel-fantin-480.webp 2x"
+                alt="Gabriel Fantin, desenvolvedor web e designer"
+                width={160}
+                height={160}
+                decoding="async"
+              />
+            </picture>
             <div>
               <h1>Gabriel Fantin</h1>
               <p className="pg-hero__lead">
@@ -58,7 +68,7 @@ function Body() {
         <CheckList
           items={[
             'Proposta com escopo, prazo e valor fechados em até 24 horas',
-            'Landing page no ar em até 5 dias',
+            'Landing page no ar em até 4 dias',
             'Design pensado primeiro para o celular',
             'Sites rápidos, com nota alta no Google PageSpeed',
             'SEO técnico em todos os projetos',
@@ -109,7 +119,7 @@ export const sobre: PageMeta = {
         alternateName: 'Fantin',
         jobTitle: 'Desenvolvedor web e designer',
         url: `${SITE}/`,
-        image: `${SITE}/logo-gf.png`,
+        image: `${SITE}/gabriel/gabriel-fantin-480.webp`,
         sameAs: [brand.github],
         knowsAbout: ['Criação de sites', 'Landing pages', 'Lojas online', 'UI/UX Design', 'SEO', 'Motion Design', ...tech],
       },

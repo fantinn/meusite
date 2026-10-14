@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Posts Instagram</title>
+<style>
+  body { margin: 0; padding: 24px; font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f5f5; color: #1b1b1b; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  h2 { font-size: 16px; margin: 32px 0 12px; }
+  p { margin: 0 0 16px; color: #505050; }
+  .feed { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; max-width: 540px; background: #fff; }
+  .feed img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; }
+  .row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+  .item { flex: 0 0 auto; text-align: center; font-size: 12px; }
+  .item img { display: block; height: 340px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,.12); margin-bottom: 6px; }
+  .item a { color: #0067b8; text-decoration: none; font-weight: 600; }
+  .hl { display: flex; gap: 20px; }
+  .hl img { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 2px solid #ddd; padding: 2px; background: #fff; }
+</style>
+<script src="brand.js"></script>
+</head>
+<body>
+<h1>Instagram · posts</h1>
+<p>Prévia do feed (como fica no perfil, o post mais novo no canto de cima) e cada peça para baixar.</p>
+<div id="out"></div>
+<script>
+const W = 1080, H = 1350, M = 96 // tamanho do post (4:5) e margem
+const WHATS = '(27) 99286-4820', SITE = 'fantin.tech'
+
+// ---------- ajudantes ----------
+function canvas(w = W, h = H) { const c = document.createElement('canvas'); c.width = w; c.height = h; return c }
+function bg(ctx, color, w = W, h = H) { ctx.fillStyle = color; ctx.fillRect(0, 0, w, h) }
+
+// Linha com trechos de cores diferentes: [['texto ', cor], ['destaque', cor2]]
+function line(ctx, parts, x, y, size, weight = 700, align = 'left', spacing = -0.02) {
+  ctx.font = font(weight, size)
+  ctx.letterSpacing = `${spacing * size}px`
+  ctx.textBaseline = 'alphabetic'
+  if (typeof parts === 'string') parts = [[parts, ctx.fillStyle]]
+  const total = parts.reduce((w, [t]) => w + ctx.measureText(t).width, 0)
+  let cx = align === 'center' ? x - total / 2 : align === 'right' ? x - total : x
+  parts.forEach(([t, col]) => { ctx.fillStyle = col; ctx.fillText(t, cx, y); cx += ctx.measureText(t).width })
+  ctx.letterSpacing = '0px'
+  return total
+}
+// Várias linhas; cada item pode ser string ou lista de trechos
+function lines(ctx, list, x, y, size, color, lh = 1.08, weight = 700, align = 'left', spacing = -0.025) {
+  list.forEach((l, i) => { ctx.fillStyle = color; line(ctx, typeof l === 'string' ? [[l, color]] : l, x, y + i * size * lh, size, weight, align, spacing) })
+  return y + (list.length - 1) * size * lh
+}
+function dot(ctx, x, y, r, color) { ctx.fillStyle = color; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill() }
+function rr(ctx, x, y, w, h, r, color) { ctx.fillStyle = color; ctx.beginPath(); ctx.roundRect(x, y, w, h, r); ctx.fill() }
+// Lista com o pingo azul como marcador
+function bullets(ctx, items, x, y, size, color, dotColor, gap = 1.7) {
+  items.forEach((t, i) => {
+    const yy = y + i * size * gap
+    dot(ctx, x + size * 0.28, yy - size * 0.34, size * 0.22, dotColor)
+    ctx.fillStyle = color; line(ctx, [[t, color]], x + size * 0.95, yy, size, 500, 'left', -0.01)
+  })
+  return y + (items.length - 1) * size * gap
+}
+// Cabeçalho (monograma pequeno) e rodapé (site + paginação) de todo post
+function frame(ctx, ink, dotC, sub, page) {
+  drawMonogram(ctx, M, M - 14, 64, ink, dotC)
+  ctx.fillStyle = sub; line(ctx, [[SITE, sub]], W - M, M + 36, 28, 600, 'right', 0)
+  ctx.fillStyle = sub; line(ctx, [['Gabriel Fantin · sites e automações', sub]], M, H - M + 20, 26, 500, 'left', 0)
+  if (page) line(ctx, [[page, sub]], W - M, H - M + 20, 26, 600, 'right', 0)
+}
+function swipe(ctx, color) { line(ctx, [['arrasta para o lado  →', color]], W - M, H - M - 40, 30, 600, 'right', 0) }
+// Janela de navegador com o print do projeto
+function browser(ctx, img, x, y, w, dark) {
+  const bar = 44, h = w * (img.height / img.width) + bar, r = 22
+  ctx.save(); ctx.shadowColor = 'rgba(0,20,50,.28)'; ctx.shadowBlur = 50; ctx.shadowOffsetY = 20
+  rr(ctx, x, y, w, h, r, dark ? '#16253a' : '#ffffff'); ctx.restore()
+  ctx.save(); ctx.beginPath(); ctx.roundRect(x, y, w, h, r); ctx.clip()
+  ctx.fillStyle = dark ? '#1d2f48' : '#eef2f7'; ctx.fillRect(x, y, w, bar)
+  ;['#ff5f57', '#febc2e', '#28c840'].forEach((c, i) => dot(ctx, x + 30 + i * 26, y + bar / 2, 8, c))
+  ctx.drawImage(img, x, y + bar, w, h - bar)
+  ctx.restore()
+  return y + h
+}
+const loadImg = (src) => new Promise((ok, fail) => { const i = new Image(); i.onload = () => ok(i); i.onerror = fail; i.src = src })
+
+// ---------- posts ----------
+// Ordem de postagem: 1 primeiro. No perfil, o 9 aparece no canto de cima à esquerda.
+const POSTS = []
+const add = (id, title, slides) => POSTS.push({ id, title, slides })
+
+// 1 · Apresentação
+add('01-apresentacao', 'Apresentação', [(ctx) => {
+  bg(ctx, C.navy)
+  const mh = 290, mw = monoWidth(mh)
+  drawMonogram(ctx, (W - mw) / 2, 250, mh, C.white, C.bright)
+  lines(ctx, [[['Sites que transformam', C.white]], [['visitas em ', C.white], ['clientes.', C.sky]]], W / 2, 760, 82, C.white, 1.12, 700, 'center')
+  lines(ctx, ['Sites, landing pages, lojas online e automações.', 'Todo o Brasil, 100% online.'], W / 2, 950, 34, 'rgba(255,255,255,.72)', 1.5, 500, 'center', 0)
+  line(ctx, [[SITE, C.sky]], W / 2, H - M + 10, 30, 600, 'center', 0)
+}])
+
+// 2 · Cinco dias
+add('02-cinco-dias', 'No ar em 5 dias', [(ctx) => {
+  bg(ctx, C.white)
+  frame(ctx, C.ink, C.blue, C.ink2)
+  lines(ctx, ['Seu site no ar', 'em até'], M, 330, 84, C.ink, 1.08)
+  line(ctx, [['5', C.blue]], M - 18, 860, 560, 800, 'left', -0.04)
+  line(ctx, [['dias', C.ink]], M + 330, 860, 150, 700, 'left', -0.04)
+  bullets(ctx, ['WhatsApp integrado', 'Otimizado para o Google', 'Feito primeiro para o celular'], M, 990, 38, C.ink, C.blue)
+}])
+
+// 3 · Quanto custa (carrossel)
+const plan = (name, price, parcel, features, care, note) => (ctx, page) => {
+  bg(ctx, C.white)
+  frame(ctx, C.ink, C.blue, C.ink2, page)
+  line(ctx, [[name.toUpperCase(), C.blue]], M, 300, 34, 700, 'left', 0.08)
+  line(ctx, [['a partir de', C.ink2]], M, 380, 36, 500, 'left', 0)
+  const rw = line(ctx, [['R$ ', C.ink]], M, 560, 90, 700)
+  line(ctx, [[String(price), C.ink]], M + rw, 560, 200, 800, 'left', -0.04)
+  line(ctx, [[parcel, C.ink2]], M, 630, 34, 500, 'left', 0)
+  ctx.fillStyle = '#e3e8ef'; ctx.fillRect(M, 690, W - 2 * M, 3)
+  bullets(ctx, features, M, 780, 38, C.ink, C.blue)
+  rr(ctx, M, 1060, W - 2 * M, 130, 24, C.light)
+  line(ctx, [['Manutenção ', C.ink], ['a partir de R$ ' + care + '/mês', C.blue]], M + 36, 1112, 32, 700, 'left', 0)
+  line(ctx, [[note, C.ink2]], M + 36, 1160, 28, 500, 'left', 0)
+}
+add('03-quanto-custa', 'Quanto custa (carrossel)', [
+  (ctx) => {
+    bg(ctx, C.blue)
+    frame(ctx, C.white, C.navy, 'rgba(255,255,255,.75)', '1/5')
+    lines(ctx, ['Quanto custa', 'ter um site', [['profissional', C.white], ['?', C.sky]]], M, 520, 118, C.white, 1.04)
+    line(ctx, [['Valores reais, sem letra miúda.', 'rgba(255,255,255,.8)']], M, 900, 38, 500, 'left', 0)
+    swipe(ctx, C.white)
+  },
+  (ctx) => plan('Landing Page', 400, 'ou 5x de R$ 80 sem juros', ['Página única com design personalizado', 'Botão de WhatsApp e formulário', 'SEO + Google Analytics', 'Entrega em até 5 dias'], 29, 'Hospedagem, domínio, SSL e suporte.')(ctx, '2/5'),
+  (ctx) => plan('Loja Online', 700, 'ou 5x de R$ 140 sem juros', ['Até 90 produtos cadastrados', 'Pix e cartão integrados', 'Frete calculado automático', 'Painel de pedidos e estoque'], 49, 'Hospedagem, domínio, SSL e backups.')(ctx, '3/5'),
+  (ctx) => plan('Automação', 500, 'ou 5x de R$ 100 sem juros', ['Fluxo automatizado completo', 'WhatsApp, CRM, e-mail e planilhas', 'Documentação do fluxo', 'Monitoramento 24h'], 49, 'Servidor, correção de falhas e suporte.')(ctx, '4/5'),
+  (ctx) => {
+    bg(ctx, C.navy)
+    frame(ctx, C.white, C.bright, 'rgba(255,255,255,.6)', '5/5')
+    lines(ctx, [[['O projeto é ', C.white], ['seu.', C.sky]]], M, 420, 110, C.white)
+    lines(ctx, ['Você paga uma vez pela criação.', 'A manutenção mantém tudo no ar,', 'seguro e atualizado.'], M, 540, 40, 'rgba(255,255,255,.8)', 1.45, 500, 'left', 0)
+    rr(ctx, M, 860, W - 2 * M, 250, 28, C.blue)
+    line(ctx, [['Proposta com o valor exato em até 24h', C.white]], M + 44, 940, 36, 700, 'left', 0)
+    line(ctx, [['WhatsApp ' + WHATS, C.sky]], M + 44, 1040, 52, 700, 'left', -0.01)
+  },
+])
+
+// 4 · Projetos no ar (carrossel)
+const PROJECTS = [
+  { img: 'pdrdesign', cat: 'Site / Portfólio', name: 'Pedro Design', text: ['Site para designer: serviços, planos,', 'portfólio e contato direto no WhatsApp.'], url: 'pdrdesign.com.br' },
+  { img: 'pryzegear', cat: 'Landing Page', name: 'PryzeGear', text: ['Comunidade de setups high-end, com', 'chamada para o grupo VIP de ofertas.'], url: 'pryzegear.com.br' },
+  { img: 'listafnc', cat: 'Página de Vendas', name: 'LFNC', text: ['Contador de oferta, bônus, preço parcelado', 'e área de membros após a compra.'], url: 'listafnc.com.br' },
+  { img: 'listajota', cat: 'Página de Vendas', name: 'ListaJota', text: ['Prova social, prévia da planilha, bônus', 'e compra com acesso imediato.'], url: 'fantinn.github.io/ListaJota' },
+]
+add('04-projetos', 'Projetos no ar (carrossel)', [
+  (ctx) => {
+    bg(ctx, C.navy)
+    frame(ctx, C.white, C.bright, 'rgba(255,255,255,.6)', '1/5')
+    lines(ctx, ['Projetos', [['no ar', C.white], ['.', C.bright]]], M, 560, 150, C.white, 1.0)
+    lines(ctx, ['4 sites reais que eu criei,', 'do design ao código.'], M, 820, 42, 'rgba(255,255,255,.8)', 1.4, 500, 'left', 0)
+    swipe(ctx, C.white)
+  },
+  ...PROJECTS.map((p, i) => (ctx, imgs) => {
+    bg(ctx, C.light)
+    frame(ctx, C.ink, C.blue, C.ink2, `${i + 2}/5`)
+    line(ctx, [[p.cat.toUpperCase(), C.blue]], M, 250, 30, 700, 'left', 0.08)
+    line(ctx, [[p.name, C.ink]], M, 345, 92, 800)
+    const end = browser(ctx, imgs[p.img], M, 400, W - 2 * M, false)
+    lines(ctx, p.text, M, end + 80, 34, C.ink2, 1.45, 500, 'left', 0)
+    line(ctx, [['↗ ' + p.url, C.blue]], M, end + 200, 32, 700, 'left', 0)
+  }),
+])
+
+// 5 · Dúvida: Google
+add('05-google', 'Dúvida: aparece no Google?', [(ctx) => {
+  bg(ctx, C.white)
+  frame(ctx, C.ink, C.blue, C.ink2)
+  rr(ctx, M, 230, 330, 62, 31, C.light)
+  line(ctx, [['DÚVIDA FREQUENTE', C.blue]], M + 165, 272, 26, 700, 'center', 0.08)
+  lines(ctx, ['Meu site vai', 'aparecer no', [['Google', C.blue], ['?', C.ink]]], M, 440, 104, C.ink, 1.04)
+  line(ctx, [['Todo site sai com SEO técnico:', C.ink]], M, 800, 38, 700, 'left', 0)
+  bullets(ctx, ['Títulos e descrições otimizados', 'Dados estruturados e sitemap', 'Carregamento rápido', 'Cadastro no Google Search Console'], M, 880, 36, C.ink2, C.blue, 1.6)
+}])
+
+// 6 · O que é landing page
+add('06-landing-page', 'O que é landing page', [(ctx) => {
+  bg(ctx, C.blue)
+  frame(ctx, C.white, C.navy, 'rgba(255,255,255,.75)')
+  lines(ctx, ['O que é uma', [['landing page', C.white], ['?', C.sky]]], M, 360, 100, C.white, 1.06)
+  line(ctx, [['Uma página só, com um objetivo:', 'rgba(255,255,255,.85)']], M, 560, 40, 500, 'left', 0)
+  ;['fazer chamar no WhatsApp', 'fazer comprar', 'fazer deixar o contato'].forEach((t, i) => {
+    const y = 650 + i * 120
+    rr(ctx, M, y, W - 2 * M, 96, 22, 'rgba(255,255,255,.12)')
+    line(ctx, [[String(i + 1), C.sky]], M + 40, y + 64, 44, 800, 'left', 0)
+    line(ctx, [[t, C.white]], M + 110, y + 62, 40, 600, 'left', 0)
+  })
+  lines(ctx, ['Ideal para anúncios, lançamentos e para começar', 'a vender rápido, gastando pouco.'], M, 1070, 32, 'rgba(255,255,255,.8)', 1.45, 500, 'left', 0)
+}])
+
+// 7 · Serviços
+add('07-servicos', 'O que eu faço', [(ctx) => {
+  bg(ctx, C.navy)
+  frame(ctx, C.white, C.bright, 'rgba(255,255,255,.6)')
+  lines(ctx, [[['O que eu ', C.white], ['faço', C.sky]]], M, 320, 100, C.white)
+  const items = [
+    ['Sites & Landing Pages', 'Rápidos e feitos para converter'],
+    ['Lojas Online', 'Pix, cartão e frete integrados'],
+    ['Automação', 'Robôs que trabalham 24h por você'],
+    ['Aplicações Web', 'Sistemas, painéis e áreas de cliente'],
+    ['UI/UX Design', 'Do protótipo no Figma ao código'],
+    ['SEO & Performance', 'Carregar rápido e aparecer no Google'],
+  ]
+  items.forEach(([t, s], i) => {
+    const y = 440 + i * 128
+    dot(ctx, M + 12, y - 12, 12, C.bright)
+    line(ctx, [[t, C.white]], M + 48, y, 42, 700, 'left', -0.01)
+    line(ctx, [[s, 'rgba(255,255,255,.65)']], M + 48, y + 48, 30, 500, 'left', 0)
+  })
+}])
+
+// 8 · Quem faz
+add('08-quem-faz', 'Quem faz o seu site', [(ctx) => {
+  bg(ctx, C.white)
+  frame(ctx, C.ink, C.blue, C.ink2)
+  line(ctx, [['PRAZER,', C.blue]], M, 330, 34, 700, 'left', 0.08)
+  lines(ctx, ['Eu sou o', [['Gabriel Fantin', C.ink], ['.', C.blue]]], M, 450, 104, C.ink, 1.04)
+  lines(ctx, ['Desenvolvedor web e designer. Crio sites,', 'landing pages, lojas online e automações', 'para quem quer vender mais pela internet.'], M, 680, 38, C.ink2, 1.5, 500, 'left', 0)
+  bullets(ctx, ['Design, código, SEO e suporte: tudo comigo', 'Você aprova cada etapa antes de ir pro ar', 'Atendo todo o Brasil, 100% online'], M, 940, 34, C.ink, C.blue, 1.65)
+}])
+
+// 9 · Chamada final
+add('09-concorrente', 'Chamada: concorrente', [(ctx) => {
+  bg(ctx, C.blue)
+  frame(ctx, C.white, C.navy, 'rgba(255,255,255,.75)')
+  lines(ctx, ['Enquanto você', 'pensa, seu', 'concorrente já', [['está recebendo', C.white]], [['os clientes', C.white], ['.', C.navy]]], M, 380, 104, C.white, 1.04)
+  rr(ctx, M, 1000, W - 2 * M, 150, 75, C.white)
+  line(ctx, [['Chama no WhatsApp  ', C.ink], [WHATS, C.blue]], W / 2, 1090, 40, 700, 'center', 0)
+}])
+
+// ---------- capas dos destaques (stories 1080×1920, ícone no centro) ----------
+const HL = [
+  ['destaque-servicos', 'Serviços', (g, cx, cy) => { [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => rr(g, cx + a * 70 - 55, cy + b * 70 - 55, 110, 110, 22, C.white)) }],
+  ['destaque-planos', 'Planos', (g, cx, cy) => { g.fillStyle = C.white; line(g, [['R$', C.white]], cx, cy + 70, 210, 800, 'center', -0.04) }],
+  ['destaque-projetos', 'Projetos', (g, cx, cy) => {
+    g.strokeStyle = C.white; g.lineWidth = 26; g.beginPath(); g.roundRect(cx - 170, cy - 125, 340, 250, 30); g.stroke()
+    g.fillStyle = C.white; g.fillRect(cx - 170, cy - 125, 340, 70); ;[0, 1, 2].forEach((i) => dot(g, cx - 120 + i * 40, cy - 90, 11, C.navy))
+  }],
+  ['destaque-duvidas', 'Dúvidas', (g, cx, cy) => { line(g, [['?', C.white]], cx, cy + 105, 330, 800, 'center', 0) }],
+  ['destaque-contato', 'Contato', (g, cx, cy) => {
+    rr(g, cx - 175, cy - 130, 350, 230, 60, C.white)
+    g.beginPath(); g.moveTo(cx - 110, cy + 90); g.lineTo(cx - 150, cy + 160); g.lineTo(cx - 40, cy + 95); g.closePath(); g.fill()
+    ;[-1, 0, 1].forEach((i) => dot(g, cx + i * 80, cy - 15, 22, C.navy))
+  }],
+  ['destaque-sobre', 'Sobre', (g, cx, cy) => { const h = 260, w = monoWidth(h); drawMonogram(g, cx - w / 2, cy - h / 2, h, C.white, C.bright) }],
+]
+
+// ---------- montagem da página ----------
+window.__png = {}
+async function build() {
+  await document.fonts.ready
+  const names = [...new Set(PROJECTS.map((p) => p.img))]
+  const imgs = Object.fromEntries(await Promise.all(names.map(async (n) => [n, await loadImg(`/public/projects/${n}.webp`)])))
+  const out = document.getElementById('out')
+
+  const rendered = POSTS.map((p) => ({ ...p, urls: p.slides.map((draw, i) => {
+    const c = canvas(); draw(c.getContext('2d'), imgs)
+    const url = c.toDataURL('image/png')
+    window.__png[`${p.id}${p.slides.length > 1 ? '-' + (i + 1) : ''}.png`] = url
+    return url
+  }) }))
+
+  // Prévia do feed: post mais novo primeiro
+  out.insertAdjacentHTML('beforeend', '<h2>Prévia do perfil</h2>')
+  const feed = document.createElement('div'); feed.className = 'feed'
+  ;[...rendered].reverse().forEach((p) => { const i = new Image(); i.src = p.urls[0]; feed.append(i) })
+  out.append(feed)
+
+  out.insertAdjacentHTML('beforeend', '<h2>Destaques</h2>')
+  const hl = document.createElement('div'); hl.className = 'hl'
+  HL.forEach(([id, label, icon]) => {
+    const c = canvas(1080, 1920), g = c.getContext('2d')
+    // O Instagram mostra só um círculo no meio: ícone ampliado para ocupar bem esse círculo
+    bg(g, C.navy, 1080, 1920)
+    if (id === 'destaque-sobre') { const h = 400, w = monoWidth(h); drawMonogram(g, 540 - w / 2, 960 - h / 2, h, C.white, C.bright) } // sem ampliar: bordas nítidas
+    else { g.save(); g.translate(540, 960); g.scale(1.55, 1.55); icon(g, 0, 0); g.restore() }
+    const url = c.toDataURL('image/png'); window.__png[`${id}.png`] = url
+    hl.insertAdjacentHTML('beforeend', `<div class="item"><img src="${url}"><a href="${url}" download="${id}.png">${label}</a></div>`)
+  })
+  out.append(hl)
+
+  rendered.forEach((p, n) => {
+    out.insertAdjacentHTML('beforeend', `<h2>${n + 1}. ${p.title}</h2>`)
+    const row = document.createElement('div'); row.className = 'row'
+    p.urls.forEach((url, i) => {
+      const name = `${p.id}${p.urls.length > 1 ? '-' + (i + 1) : ''}.png`
+      row.insertAdjacentHTML('beforeend', `<div class="item"><img src="${url}"><a href="${url}" download="${name}">Baixar ${p.urls.length > 1 ? i + 1 : 'PNG'}</a></div>`)
+    })
+    out.append(row)
+  })
+  document.body.dataset.ready = '1'
+}
+build()
+</script>
+</body>
+</html>

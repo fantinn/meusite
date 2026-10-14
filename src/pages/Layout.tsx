@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { ArrowRight, Check, MessageCircle } from 'lucide-react'
 import { brand, guides, projectSrcSet, projects } from '../content'
-import { INSTALLMENTS, pricing } from '../pricing'
+import { installmentText, pricing } from '../pricing'
 
 // Páginas de conteúdo (criação de sites, landing page, sobre): HTML estático gerado no build,
 // sem nenhum JavaScript no navegador. Carregam instantâneo e o Google lê tudo de primeira.
@@ -71,8 +71,10 @@ export function Document({ page, css }: { page: PageMeta; css: string }) {
         <meta name="twitter:title" content={page.title} />
         <meta name="twitter:description" content={page.description} />
         <meta name="twitter:image" content={`${SITE}/og.jpg`} />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
         <link rel="icon" type="image/png" sizes="512x512" href="/logo-gf.png" />
-        <link rel="apple-touch-icon" href="/logo-gf.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         {[breadcrumbLd(page.path, page.crumb), ...page.jsonLd].map((ld, i) => (
           <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(ld) }} />
         ))}
@@ -200,7 +202,7 @@ export function Faq({ items }: { items: { q: string; a: string }[] }) {
 
 export function Prices() {
   const rows = [
-    { name: 'Landing Page', p: pricing.landing, note: 'Página única, pronta em até 5 dias' },
+    { name: 'Landing Page', p: pricing.landing, note: 'Página única, pronta em até 4 dias' },
     { name: 'Loja Online', p: pricing.loja, note: 'Até 90 produtos, Pix, cartão e frete' },
     { name: 'Motion & Vídeos', p: pricing.automacao, note: 'Vídeo em motion sob medida para redes e anúncios' },
   ]
@@ -212,7 +214,7 @@ export function Prices() {
             <h3>{name}</h3>
             <p>{note}</p>
             <div className="pg-price__value"><small>a partir de</small> R$ {brl(p.price)}</div>
-            <div className="pg-price__sub">ou {INSTALLMENTS}x de R$ {brl(Math.ceil(p.price / INSTALLMENTS))} sem juros</div>
+            <div className="pg-price__sub">{installmentText(p)}</div>
             <div className="pg-price__sub">+ manutenção a partir de R$ {p.careAnnual}/mês</div>
           </div>
         ))}

@@ -2,12 +2,15 @@ import { useRef, useState, type FormEvent, type SyntheticEvent } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, CheckCircle2, Linkedin, Mail, MessageCircle } from 'lucide-react'
 import { brand } from '../content'
+import Devices from './Devices'
 import FlowBackground from './FlowBackground'
 import HoldButton from './HoldButton'
 import Reveal,{ SectionHead, ease } from './Reveal'
 
+const wa = (text: string) => `https://wa.me/${brand.whatsappNumber}?text=${encodeURIComponent(text)}`
+
 const channels = [
-  { icon: MessageCircle, label: 'WhatsApp', value: brand.whatsappLabel, href: `https://wa.me/${brand.whatsappNumber}` },
+  { icon: MessageCircle, label: 'WhatsApp', value: brand.whatsappLabel, href: wa('Olá! Vim pelo seu site.') },
   { icon: Mail, label: 'E-mail', value: brand.email, href: `mailto:${brand.email}` },
   { icon: Linkedin, label: 'LinkedIn', value: 'Conecte-se comigo', href: brand.linkedin },
 ]
@@ -21,7 +24,7 @@ export default function Contact() {
     const form = formRef.current
     if (!form) return
     const data = new FormData(form)
-    const text = `Olá! Meu nome é ${data.get('name')}.\nTenho interesse em: *${data.get('service')}*\n\n${data.get('message')}`
+    const text = `Olá! Meu nome é ${data.get('name')}.\nTenho interesse em: *${data.get('service')}*`
     const url = `https://wa.me/${brand.whatsappNumber}?text=${encodeURIComponent(text)}`
     // Se o navegador bloquear a nova aba (comum no iPhone), abre na mesma aba
     if (!window.open(url, '_blank', 'noopener')) window.location.href = url
@@ -41,15 +44,18 @@ export default function Contact() {
       <div className="container">
         <Reveal className="cta">
           <FlowBackground />
-          <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 600, letterSpacing: '-0.03em', lineHeight: 1.1 }}>Vamos tirar sua ideia do papel?</h2>
-          <p>Conte um pouco sobre o seu projeto e receba uma proposta em até 24 horas.</p>
-          <motion.a href="#form" className="btn btn--primary" whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
-            Começar conversa <ArrowRight size={18} />
-          </motion.a>
+          <div className="cta__copy">
+            <h2 className="cta__title" style={{ fontWeight: 600, letterSpacing: '-0.03em', lineHeight: 1.1 }}>Vamos tirar sua ideia do papel?</h2>
+            <p>Me chame no WhatsApp e receba uma proposta em até 24 horas.</p>
+            <motion.a href={wa('Olá! Vim pelo seu site e quero um orçamento.')} target="_blank" rel="noreferrer" className="btn btn--primary" whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>
+              <MessageCircle size={18} /> Chamar no WhatsApp
+            </motion.a>
+          </div>
+          <Devices />
         </Reveal>
 
         <div style={{ marginTop: 'clamp(64px,10vw,112px)' }}>
-          <SectionHead kicker="Contato" title="Fale comigo." text="Preencha o formulário e a mensagem chega direto no meu WhatsApp. Se preferir, escolha outro canal." still />
+          <SectionHead kicker="Contato" title="Fale comigo." text="Toque no WhatsApp ou deixe sua mensagem aqui do lado." still />
         </div>
 
         <div className="contact">
@@ -77,10 +83,6 @@ export default function Contact() {
                 </select>
                 <label htmlFor="service">Serviço</label>
               </div>
-              <div className="field">
-                <textarea id="message" name="message" placeholder=" " required />
-                <label htmlFor="message">Conte sobre o projeto</label>
-              </div>
               <AnimatePresence mode="wait" initial={false}>
                 {sent ? (
                   <motion.div key="ok" className="form__success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease }}>
@@ -98,8 +100,8 @@ export default function Contact() {
                       icon={<MessageCircle size={18} />}
                       doneIcon={<CheckCircle2 size={18} />}
                       doneLabel="Abrindo o WhatsApp…"
-                      backgroundColor="#0067b8"
-                      fillColor="#25d366"
+                      backgroundColor="#1faa59"
+                      fillColor="#128c4a"
                       textColor="#ffffff"
                       fillTextColor="#ffffff"
                       size="lg"

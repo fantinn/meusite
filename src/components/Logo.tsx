@@ -54,7 +54,7 @@ export default function Logo({ intro = true }: { intro?: boolean }) {
       ref={scope}
       href="/"
       className={`logo wm${intro && !reduce ? ' wm--intro' : ' is-live'}`}
-      aria-label={brand.name}
+      aria-label={`fantın, ${brand.name}`}
       onMouseEnter={hop}
       onFocus={hop}
     >
