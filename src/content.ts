@@ -1,12 +1,7 @@
 // Edite aqui os textos do site.
 import type { LucideIcon } from 'lucide-react'
-<<<<<<< HEAD
 import { Code2, Palette, Smartphone, Film, Search, ShoppingBag } from 'lucide-react'
-import { INSTALLMENTS, pricing, type PlanId, type PlanPricing } from './pricing'
-=======
-import { Code2, Palette, Smartphone, Zap, Search, ShoppingBag } from 'lucide-react'
 import { pricing, type PlanId, type PlanPricing } from './pricing'
->>>>>>> bfeb4456e7ddc60021d28e7be68c054918d450a4
 
 export const brand = {
   name: 'Gabriel Fantin',
