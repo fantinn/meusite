@@ -85,8 +85,8 @@ function Body() {
             <p>Para profissionais e criativos mostrarem trabalhos, serviços e receberem contatos de novos clientes.</p>
           </div>
           <div className="pg-card">
-            <h3>Automação</h3>
-            <p>Integrações entre site, WhatsApp, CRM, e-mail e planilhas para eliminar tarefas manuais do dia a dia.</p>
+            <h3>Motion & Vídeos</h3>
+            <p>Vídeos em motion design para apresentar sua marca, lançar produtos e chamar atenção nas redes sociais.</p>
           </div>
         </div>
       </Section>

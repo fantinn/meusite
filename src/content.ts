@@ -1,6 +1,6 @@
 // Edite aqui os textos do site.
 import type { LucideIcon } from 'lucide-react'
-import { Code2, Palette, Smartphone, Zap, Search, ShoppingBag } from 'lucide-react'
+import { Code2, Palette, Smartphone, Film, Search, ShoppingBag } from 'lucide-react'
 import { INSTALLMENTS, pricing, type PlanId, type PlanPricing } from './pricing'
 
 export const brand = {
@@ -53,7 +53,7 @@ export const services: Service[] = [
   { icon: Palette, title: 'UI/UX Design', text: 'Interfaces limpas e intuitivas, com design system consistente do protótipo ao código.', tags: ['Figma', 'Protótipos', 'Design System'] },
   { icon: Smartphone, title: 'Aplicações Web', text: 'Sistemas sob medida, dashboards e áreas de cliente com autenticação e banco de dados.', tags: ['Full-stack', 'APIs', 'Cloud'] },
   { icon: ShoppingBag, title: 'Lojas Online', text: 'Lojas virtuais com checkout fluido, integrações de pagamento e gestão simplificada.', tags: ['Pagamentos', 'Estoque', 'Analytics'] },
-  { icon: Zap, title: 'Automação', text: 'Elimine tarefas repetitivas com integrações, bots e fluxos automatizados.', tags: ['Integrações', 'Bots', 'Workflows'] },
+  { icon: Film, title: 'Motion & Vídeos', text: 'Vídeos em motion design para apresentar sua marca, produto ou campanha com impacto.', tags: ['Motion', 'Vídeo', 'Social'] },
   { icon: Search, title: 'SEO & Performance', text: 'Auditoria técnica e melhorias para carregar rápido e aparecer no Google.', tags: ['Core Web Vitals', 'Auditoria'], link: { href: '/criacao-de-sites', label: 'Criação de sites completa' } },
 ]
 
@@ -87,7 +87,7 @@ export const stats = [
 
 export const testimonials = [
   { quote: 'Entrega impecável e dentro do prazo. O site ficou exatamente como imaginávamos — só que melhor.', name: 'Mariana Costa', role: 'CEO, Aurora' },
-  { quote: 'Comunicação clara do começo ao fim. A automação mudou a rotina da nossa equipe.', name: 'Rafael Lima', role: 'COO, Fluxo' },
+  { quote: 'Comunicação clara do começo ao fim. Os vídeos em motion deram outra cara para a nossa marca.', name: 'Rafael Lima', role: 'COO, Fluxo' },
   { quote: 'Design moderno e performance excelente. Nossos pacientes elogiam a facilidade de agendar.', name: 'Dra. Paula Souza', role: 'Clínica Vita' },
 ]
 
@@ -149,18 +149,18 @@ export const plans: Plan[] = [
   {
     ...pricing.automacao,
     id: 'automacao',
-    icon: Zap,
-    name: 'Automação',
-    desc: 'Robôs e integrações que trabalham por você 24h e eliminam tarefas manuais.',
+    icon: Film,
+    name: 'Motion & Vídeos',
+    desc: 'Vídeos em motion design sob medida para redes sociais, lançamentos e anúncios.',
     from: true,
     features: [
-      'Fluxo automatizado completo',
-      'Integração com WhatsApp, CRM, e-mail e planilhas',
-      'Documentação do fluxo',
+      'Vídeo em motion sob medida',
+      'Roteiro, animação e trilha',
+      'Formatos para Reels, Stories e anúncios',
     ],
     careFeatures: [
-      'Servidor e monitoramento 24h',
-      'Correção de falhas',
+      'Ajustes e revisões',
+      'Novas versões e formatos',
       'Suporte por WhatsApp',
     ],
   },
@@ -200,6 +200,6 @@ export const faq = [
   },
   {
     q: 'Quem é Gabriel Fantin?',
-    a: 'Sou desenvolvedor web e designer. Crio sites, landing pages, lojas online e automações para empresas e profissionais que querem vender mais pela internet, cuidando de tudo: design, código, SEO e suporte.',
+    a: 'Sou desenvolvedor web e designer. Crio sites, landing pages, lojas online e vídeos em motion para empresas e profissionais que querem vender mais pela internet, cuidando de tudo: design, código, SEO e suporte.',
   },
 ]

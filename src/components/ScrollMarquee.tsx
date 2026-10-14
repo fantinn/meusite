@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
 
 const ROWS = [
-  'Sites · Lojas Online · Automação · Landing Pages · ',
+  'Sites · Lojas Online · Motion · Landing Pages · ',
   'Rápido · Bonito · Seguro · Feito para vender · ',
 ]
 

@@ -31,8 +31,8 @@ export const pricing: Record<PlanId, PlanPricing> = {
     careAnnual: 49,
   },
   automacao: {
-    name: 'Automação',
-    checkoutDesc: 'Fluxo automatizado completo integrando WhatsApp, CRM, e-mail e planilhas, com documentação.',
+    name: 'Motion & Vídeos',
+    checkoutDesc: 'Vídeo em motion design sob medida, com roteiro, animação, trilha e formatos para redes sociais.',
     price: 500,
     care: 59,
     careAnnual: 49,

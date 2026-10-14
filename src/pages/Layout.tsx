@@ -202,7 +202,7 @@ export function Prices() {
   const rows = [
     { name: 'Landing Page', p: pricing.landing, note: 'Página única, pronta em até 5 dias' },
     { name: 'Loja Online', p: pricing.loja, note: 'Até 90 produtos, Pix, cartão e frete' },
-    { name: 'Automação', p: pricing.automacao, note: 'WhatsApp, CRM, e-mail e planilhas' },
+    { name: 'Motion & Vídeos', p: pricing.automacao, note: 'Vídeo em motion sob medida para redes e anúncios' },
   ]
   return (
     <>

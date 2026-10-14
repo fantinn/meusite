@@ -72,7 +72,7 @@ export default function Contact() {
                 <select id="service" name="service" defaultValue="Landing Page">
                   <option>Landing Page</option>
                   <option>Loja Online</option>
-                  <option>Automação</option>
+                  <option>Motion & Vídeos</option>
                   <option>Outro projeto</option>
                 </select>
                 <label htmlFor="service">Serviço</label>

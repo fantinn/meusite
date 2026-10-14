@@ -16,7 +16,7 @@ function Body() {
             <div>
               <h1>Gabriel Fantin</h1>
               <p className="pg-hero__lead">
-                Desenvolvedor web e designer. Crio sites, landing pages, lojas online e automações que ajudam empresas e profissionais a
+                Desenvolvedor web e designer. Crio sites, landing pages, lojas online e vídeos em motion que ajudam empresas e profissionais a
                 vender mais pela internet.
               </p>
             </div>
@@ -95,7 +95,7 @@ export const sobre: PageMeta = {
   file: 'gabriel-fantin.html',
   crumb: 'Sobre Gabriel Fantin',
   title: 'Gabriel Fantin | Desenvolvedor Web e Designer (Fantin)',
-  description: 'Conheça Gabriel Fantin, desenvolvedor web e designer que cria sites, landing pages, lojas online e automações. Veja projetos, como eu trabalho e fale comigo.',
+  description: 'Conheça Gabriel Fantin, desenvolvedor web e designer que cria sites, landing pages, lojas online e vídeos em motion. Veja projetos, como eu trabalho e fale comigo.',
   jsonLd: [
     {
       '@context': 'https://schema.org',
@@ -111,7 +111,7 @@ export const sobre: PageMeta = {
         url: `${SITE}/`,
         image: `${SITE}/logo-gf.png`,
         sameAs: [brand.github],
-        knowsAbout: ['Criação de sites', 'Landing pages', 'Lojas online', 'UI/UX Design', 'SEO', 'Automação', ...tech],
+        knowsAbout: ['Criação de sites', 'Landing pages', 'Lojas online', 'UI/UX Design', 'SEO', 'Motion Design', ...tech],
       },
     },
   ],
