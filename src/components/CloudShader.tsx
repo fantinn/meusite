@@ -241,7 +241,10 @@ export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
       sun: gl.getUniformLocation(program, 'u_sun'),
     }
 
+    // Com "movimento reduzido" (comum no Windows com efeitos de animação desligados) as nuvens não param:
+    // seguem numa deriva bem mais lenta, que não incomoda e não deixa o céu com cara de imagem travada.
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const rate = reduced ? speed * 0.35 : speed
     let raf = 0
     let visible = false
     let t = 40 // começa "adiantado" para as nuvens já estarem espalhadas pelo céu
@@ -271,7 +274,7 @@ export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
     }
 
     const loop = (now: number) => {
-      t += Math.min((now - last) / 1000, 0.1) * speed
+      t += Math.min((now - last) / 1000, 0.1) * rate
       last = now
       draw()
       if (visible) raf = requestAnimationFrame(loop)
@@ -286,7 +289,7 @@ export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
     const io = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting
       cancelAnimationFrame(raf)
-      if (visible && !reduced) {
+      if (visible) {
         last = performance.now()
         raf = requestAnimationFrame(loop)
       }
