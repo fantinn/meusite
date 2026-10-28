@@ -23,16 +23,20 @@ Orçamento em até 24h 👇
 
 ## Destaques (stories fixados)
 
-Poste cada capa como story e crie o destaque com o nome abaixo. Na hora de editar o destaque, escolha a imagem como capa.
+Tudo em `destaques/` (gerador: `marca/destaques.html`).
 
-| Arquivo | Nome do destaque | O que colocar dentro |
+1. Poste os stories de cada destaque, na ordem dos números.
+2. Crie o destaque com o nome abaixo e selecione esses stories.
+3. Em "Editar destaque" → "Editar capa", toque no ícone da galeria e escolha a capa (`capa-*.png`). A capa não precisa ser postada.
+
+| Destaque | Capa | Stories |
 |---|---|---|
-| `destaque-servicos.png` | Serviços | O post 7 e um story por serviço |
-| `destaque-planos.png` | Planos | Os 5 slides do post 3 |
-| `destaque-projetos.png` | Projetos | Os slides do post 4 e um vídeo navegando em cada site |
-| `destaque-duvidas.png` | Dúvidas | Os posts 5 e 6 e as perguntas que chegarem na DM |
-| `destaque-contato.png` | Contato | Story com o link do WhatsApp (figurinha de link) |
-| `destaque-sobre.png` | Sobre | O post 8 e uma foto sua trabalhando |
+| Serviços | `capa-servicos.png` | `servicos-1` e `-2` |
+| Planos | `capa-planos.png` | `planos-1` a `-4` |
+| Projetos | `capa-projetos.png` | `projetos-1` a `-4` (dica: figurinha de link com o site de cada um) |
+| Dúvidas | `capa-duvidas.png` | `duvidas-1` a `-3` |
+| Contato | `capa-contato.png` | `contato-1` (dica: figurinha de link do WhatsApp) |
+| Sobre | `capa-sobre.png` | `sobre-1` e `-2` (uma foto sua trabalhando aqui ajuda muito) |
 
 ## Posts, na ordem de publicação
 
@@ -46,7 +50,7 @@ Carrossel = selecionar todos os arquivos do post, na ordem dos números.
 ```
 Prazer, eu sou o Gabriel 👋
 
-Crio sites, landing pages, lojas online e automações para quem quer vender mais pela internet.
+Crio sites, landing pages, lojas online e vídeos em motion para quem quer vender mais pela internet.
 
 Por aqui vou mostrar projetos, explicar como funciona ter um site profissional e responder as dúvidas que mais aparecem.
 
@@ -78,13 +82,13 @@ Quanto custa ter um site profissional? 💸
 Sem "depende" e sem letra miúda:
 • Landing page: a partir de R$ 400
 • Loja online: a partir de R$ 700
-• Automação: a partir de R$ 500
+• Motion & vídeos: a partir de R$ 500
 
-Tudo em até 5x sem juros. Depois, a manutenção (hospedagem, domínio, SSL e suporte) fica a partir de R$ 29/mês.
+Loja em até 10x sem juros. Depois, a manutenção (hospedagem, domínio, SSL e suporte) fica a partir de R$ 29/mês.
 
 O projeto é seu. Me chama que eu te mando a proposta com o valor exato em até 24h.
 
-#quantocustaumsite #criacaodesites #lojavirtual #landingpage #automacao
+#quantocustaumsite #criacaodesites #lojavirtual #landingpage #motiondesign
 ```
 
 ### 4 · `04-projetos-1.png` → `-5.png` (carrossel)
@@ -142,7 +146,7 @@ O que eu faço 🛠️
 
 • Sites e landing pages
 • Lojas online com Pix, cartão e frete
-• Automações que trabalham 24h por você
+• Vídeos em motion para marca e anúncios
 • Sistemas e áreas de cliente
 • Design de interface (UI/UX)
 • SEO e performance
@@ -150,7 +154,7 @@ O que eu faço 🛠️
 Do design ao código, eu cuido de tudo.
 Qual desses o seu negócio precisa agora?
 
-#desenvolvedorweb #webdesign #automacao #lojavirtual #uxdesign
+#desenvolvedorweb #webdesign #motiondesign #lojavirtual #uxdesign
 ```
 
 ### 8 · `08-quem-faz.png`
@@ -190,7 +194,7 @@ Seu cliente pesquisa no Google, acha o concorrente… e você nem aparece.
 Sem site, você é invisível.
 
 Eu resolvo isso em 5 dias: site profissional com WhatsApp integrado, aparecendo no Google e perfeito no celular.
-Landing page a partir de R$ 400, em até 5x sem juros.
+Landing page a partir de R$ 400.
 
 📲 Chama no WhatsApp: (27) 99286-4820
 🌐 fantin.tech

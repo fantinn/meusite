@@ -64,7 +64,7 @@ function bullets(ctx, items, x, y, size, color, dotColor, gap = 1.7) {
 function frame(ctx, ink, dotC, sub, page) {
   drawMonogram(ctx, M, M - 14, 64, ink, dotC)
   ctx.fillStyle = sub; line(ctx, [[SITE, sub]], W - M, M + 36, 28, 600, 'right', 0)
-  ctx.fillStyle = sub; line(ctx, [['Gabriel Fantin · sites e automações', sub]], M, H - M + 20, 26, 500, 'left', 0)
+  ctx.fillStyle = sub; line(ctx, [['Gabriel Fantin · sites e motion', sub]], M, H - M + 20, 26, 500, 'left', 0)
   if (page) line(ctx, [[page, sub]], W - M, H - M + 20, 26, 600, 'right', 0)
 }
 function swipe(ctx, color) { line(ctx, [['arrasta para o lado  →', color]], W - M, H - M - 40, 30, 600, 'right', 0) }
@@ -130,9 +130,9 @@ add('03-quanto-custa', 'Quanto custa (carrossel)', [
     line(ctx, [['Valores reais, sem letra miúda.', 'rgba(255,255,255,.8)']], M, 900, 38, 500, 'left', 0)
     swipe(ctx, C.white)
   },
-  (ctx) => plan('Landing Page', 400, 'ou 5x de R$ 80 sem juros', ['Página única com design personalizado', 'Botão de WhatsApp e formulário', 'SEO + Google Analytics', 'Entrega em até 5 dias'], 29, 'Hospedagem, domínio, SSL e suporte.')(ctx, '2/5'),
-  (ctx) => plan('Loja Online', 700, 'ou 5x de R$ 140 sem juros', ['Até 90 produtos cadastrados', 'Pix e cartão integrados', 'Frete calculado automático', 'Painel de pedidos e estoque'], 49, 'Hospedagem, domínio, SSL e backups.')(ctx, '3/5'),
-  (ctx) => plan('Automação', 500, 'ou 5x de R$ 100 sem juros', ['Fluxo automatizado completo', 'WhatsApp, CRM, e-mail e planilhas', 'Documentação do fluxo', 'Monitoramento 24h'], 49, 'Servidor, correção de falhas e suporte.')(ctx, '4/5'),
+  (ctx) => plan('Landing Page', 400, 'à vista no Pix ou cartão', ['Página única com design personalizado', 'Botão de WhatsApp e formulário', 'SEO + Google Analytics', 'Entrega em até 5 dias'], 29, 'Hospedagem, domínio, SSL e suporte.')(ctx, '2/5'),
+  (ctx) => plan('Loja Online', 700, 'ou 10x de R$ 70 sem juros', ['Até 90 produtos cadastrados', 'Pix e cartão integrados', 'Frete calculado automático', 'Painel de pedidos e estoque'], 49, 'Hospedagem, domínio, SSL e backups.')(ctx, '3/5'),
+  (ctx) => plan('Motion & Vídeos', 500, 'à vista no Pix ou cartão', ['Vídeo em motion sob medida', 'Roteiro, animação e trilha', 'Formatos para Reels e Stories', 'Versões para anúncios'], 49, 'Ajustes, revisões e novos formatos.')(ctx, '4/5'),
   (ctx) => {
     bg(ctx, C.navy)
     frame(ctx, C.white, C.bright, 'rgba(255,255,255,.6)', '5/5')
@@ -204,7 +204,7 @@ add('07-servicos', 'O que eu faço', [(ctx) => {
   const items = [
     ['Sites & Landing Pages', 'Rápidos e feitos para converter'],
     ['Lojas Online', 'Pix, cartão e frete integrados'],
-    ['Automação', 'Robôs que trabalham 24h por você'],
+    ['Motion & Vídeos', 'Vídeos animados para marca e anúncios'],
     ['Aplicações Web', 'Sistemas, painéis e áreas de cliente'],
     ['UI/UX Design', 'Do protótipo no Figma ao código'],
     ['SEO & Performance', 'Carregar rápido e aparecer no Google'],
@@ -223,7 +223,7 @@ add('08-quem-faz', 'Quem faz o seu site', [(ctx) => {
   frame(ctx, C.ink, C.blue, C.ink2)
   line(ctx, [['PRAZER,', C.blue]], M, 330, 34, 700, 'left', 0.08)
   lines(ctx, ['Eu sou o', [['Gabriel Fantin', C.ink], ['.', C.blue]]], M, 450, 104, C.ink, 1.04)
-  lines(ctx, ['Desenvolvedor web e designer. Crio sites,', 'landing pages, lojas online e automações', 'para quem quer vender mais pela internet.'], M, 680, 38, C.ink2, 1.5, 500, 'left', 0)
+  lines(ctx, ['Desenvolvedor web e designer. Crio sites,', 'landing pages, lojas online e vídeos em motion', 'para quem quer vender mais pela internet.'], M, 680, 38, C.ink2, 1.5, 500, 'left', 0)
   bullets(ctx, ['Design, código, SEO e suporte: tudo comigo', 'Você aprova cada etapa antes de ir pro ar', 'Atendo todo o Brasil, 100% online'], M, 940, 34, C.ink, C.blue, 1.65)
 }])
 

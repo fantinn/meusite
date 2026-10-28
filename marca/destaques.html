@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Destaques Instagram</title>
+<style>
+  body { margin: 0; padding: 24px; font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f5f5; color: #1b1b1b; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  h2 { font-size: 16px; margin: 32px 0 12px; }
+  p { margin: 0 0 16px; color: #505050; }
+  .prof { display: inline-flex; gap: 16px; padding: 18px 20px 14px; border-radius: 14px; margin: 0 12px 12px 0; }
+  .prof.dark { background: #000; color: #f5f5f5; }
+  .prof.light { background: #fff; color: #000; }
+  .prof figure { margin: 0; text-align: center; font-size: 12px; }
+  .prof img { display: block; width: 64px; height: 64px; border-radius: 50%; object-fit: cover; padding: 3px; margin-bottom: 6px; }
+  .prof.dark img { border: 1px solid #363636; }
+  .prof.light img { border: 1px solid #dbdbdb; }
+  .row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+  .item { flex: 0 0 auto; text-align: center; font-size: 12px; }
+  .item img { display: block; height: 480px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.18); margin-bottom: 6px; }
+  .item a { color: #0067b8; text-decoration: none; font-weight: 600; }
+</style>
+<script src="brand.js"></script>
+</head>
+<body>
+<h1>Instagram · destaques</h1>
+<p>Capas (1080×1920, o Instagram recorta o círculo do meio) e os stories de cada destaque.</p>
+<div id="out"></div>
+<script>
+const SW = 1080, SH = 1920, M = 96
+const PROJ = [
+  { img: 'pdrdesign', name: 'Pedro Design', cat: 'Site e portfólio', url: 'pdrdesign.com.br', glow: '#ff8a1f',
+    text: 'Site de designer com serviços, planos mensais, projetos e contato direto pelo WhatsApp.' },
+  { img: 'pryzegear', name: 'PryzeGear', cat: 'Landing page', url: 'pryzegear.com.br', glow: '#a78bfa',
+    text: 'Comunidade de setups high-end, com níveis de setup e entrada no grupo VIP de ofertas.' },
+  { img: 'listafnc', name: 'LFNC', cat: 'Página de vendas', url: 'listafnc.com.br', glow: '#60a5fa',
+    text: 'Contador de oferta, bônus, dúvidas frequentes e área de membros liberada após a compra.' },
+  { img: 'listajota', name: 'ListaJota', cat: 'Página de vendas', url: '', glow: '#4ade80',
+    text: 'Prévia da planilha de fornecedores, bônus, depoimentos e acesso imediato após a compra.' },
+]
+
+// ---------- ajudantes ----------
+const cv = (w = SW, h = SH) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c }
+const loadImg = (src) => new Promise((ok, err) => { const i = new Image(); i.onload = () => ok(i); i.onerror = err; i.src = src })
+function rr(g, x, y, w, h, r, fill, stroke, lw = 2) {
+  g.beginPath(); g.roundRect(x, y, w, h, r)
+  if (fill) { g.fillStyle = fill; g.fill() }
+  if (stroke) { g.strokeStyle = stroke; g.lineWidth = lw; g.stroke() }
+}
+function dot(g, x, y, r, col) { g.fillStyle = col; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill() }
+// Texto com trechos de cores: [['texto ', cor], ['destaque', cor2]]
+function tx(g, parts, x, y, size, weight = 700, align = 'left', spacing = -0.02) {
+  g.font = font(weight, size); g.letterSpacing = `${spacing * size}px`; g.textBaseline = 'alphabetic'
+  if (typeof parts === 'string') parts = [[parts, g.fillStyle]]
+  const total = parts.reduce((w, [t]) => w + g.measureText(t).width, 0)
+  let cx = align === 'center' ? x - total / 2 : align === 'right' ? x - total : x
+  parts.forEach(([t, col]) => { g.fillStyle = col; g.fillText(t, cx, y); cx += g.measureText(t).width })
+  g.letterSpacing = '0px'
+  return total
+}
+function wrap(g, text, maxW) {
+  const out = []; let cur = ''
+  text.split(' ').forEach((w) => { const t = cur ? cur + ' ' + w : w; if (g.measureText(t).width > maxW && cur) { out.push(cur); cur = w } else cur = t })
+  if (cur) out.push(cur)
+  return out
+}
+// Parágrafo com quebra automática; devolve a linha de base da última linha
+function para(g, text, x, y, maxW, size, weight, col, lh = 1.32, spacing = -0.005) {
+  g.font = font(weight, size); g.letterSpacing = `${spacing * size}px`
+  const L = text.split('\n').flatMap((t) => wrap(g, t, maxW))
+  g.fillStyle = col; L.forEach((l, i) => g.fillText(l, x, y + i * size * lh))
+  g.letterSpacing = '0px'
+  return y + (L.length - 1) * size * lh
+}
+const paraH = (g, text, maxW, size, weight, lh = 1.32, spacing = -0.005) => { g.font = font(weight, size); g.letterSpacing = `${spacing * size}px`; const n = text.split('\n').flatMap((t) => wrap(g, t, maxW)).length; g.letterSpacing = '0px'; return n * size * lh }
+
+// ---------- ícones de linha (grade 24, no estilo do site) ----------
+const IC = {
+  code: ['m18 16 4-4-4-4', 'm6 8-4 4 4 4', 'm14.5 4-5 16'],
+  bag: ['M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z', 'M3 6h18', 'M16 10a4 4 0 0 1-8 0'],
+  zap: ['M13 2 3 14h9l-1 8 10-12h-9l1-8z'],
+  layout: [{ r: [3, 3, 18, 18, 2.5] }, 'M3 9h18', 'M9 21V9'],
+  pen: ['M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z', 'm18 13-1.375-6.874a1 1 0 0 0-.746-.776L3.235 2.028a1 1 0 0 0-1.207 1.207L5.35 15.879a1 1 0 0 0 .776.746L13 18', 'm2.3 2.3 7.286 7.286', { c: [11, 11, 2] }],
+  search: [{ c: [11, 11, 8] }, 'm21 21-4.3-4.3'],
+  check: ['M20 6 9 17l-5-5'],
+  clock: [{ c: [12, 12, 10] }, 'M12 6v6l4 2'],
+  send: ['m22 2-7 20-4-9-9-4Z', 'M22 2 11 13'],
+  globe: [{ c: [12, 12, 10] }, 'M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20', 'M2 12h20'],
+  chat: ['M7.9 20A9 9 0 1 0 4 16.1L2 22Z'],
+  user: ['M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2', { c: [12, 7, 4] }],
+  layers: ['m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z', 'm22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65', 'm22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65'],
+  help: [{ c: [12, 12, 10] }, 'M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3', 'M12 17h.01'],
+  shield: ['M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z', 'm9 12 2 2 4-4'],
+  phone: [{ r: [5, 2, 14, 20, 2.5] }, 'M12 18h.01'],
+  headset: ['M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3'],
+  rocket: ['M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z', 'm12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z', 'M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0', 'M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5'],
+  arrow: ['M5 12h14', 'm12 5 7 7-7 7'],
+  film: [{ r: [3, 3, 18, 18, 2.5] }, 'M7 3v18', 'M3 7.5h4', 'M3 12h18', 'M3 16.5h4', 'M17 3v18', 'M17 7.5h4', 'M17 16.5h4'],
+}
+function drawIcon(g, list, x, y, s, col, lw = 2) {
+  g.save(); g.translate(x, y); g.scale(s / 24, s / 24)
+  g.strokeStyle = col; g.lineWidth = lw; g.lineCap = 'round'; g.lineJoin = 'round'
+  list.forEach((p) => {
+    let P
+    if (typeof p === 'string') P = new Path2D(p)
+    else if (p.c) { P = new Path2D(); P.arc(p.c[0], p.c[1], p.c[2], 0, Math.PI * 2) }
+    else { P = new Path2D(); P.roundRect(...p.r) }
+    if (p.fill) { g.fillStyle = p.fill; g.fill(P) } else g.stroke(P)
+  })
+  g.restore()
+}
+// Quadradinho azul com o ícone branco (igual aos cards do site)
+function tile(g, x, y, s, name) {
+  const gr = g.createLinearGradient(x, y, x + s, y + s); gr.addColorStop(0, C.bright); gr.addColorStop(1, C.blue)
+  rr(g, x, y, s, s, s * 0.28, gr)
+  rr(g, x + 1, y + 1, s - 2, s - 2, s * 0.28, null, 'rgba(255,255,255,.22)', 2)
+  drawIcon(g, IC[name], x + s * 0.25, y + s * 0.25, s * 0.5, '#fff', 2.1)
+}
+
+// ---------- capas dos destaques ----------
+// Mesma linguagem: ícone de linha branco + o pingo azul do "i" do monograma
+const B = C.bright
+const COVERS = [
+  ['servicos', 'Serviços', [{ r: [3, 3, 7.5, 7.5, 2.2] }, { r: [13.5, 3, 7.5, 7.5, 2.2] }, { r: [3, 13.5, 7.5, 7.5, 2.2] }, { c: [17.25, 17.25, 3.9], fill: B }]],
+  ['planos', 'Planos', ['M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z', { c: [7.3, 7.3, 2.1], fill: B }]],
+  ['projetos', 'Projetos', [{ r: [1.5, 3.5, 21, 17, 3 ] }, 'M1.5 8.6h21', { c: [5, 6.05, 1], fill: B }, { c: [8, 6.05, 1], fill: '#fff' }, { c: [11, 6.05, 1], fill: '#fff' }, 'm9.6 11.9-2.9 2.6 2.9 2.6', 'm14.4 11.9 2.9 2.6-2.9 2.6']],
+  ['duvidas', 'Dúvidas', [{ c: [12, 12, 10] }, 'M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3', { c: [12, 17.3, 1.45], fill: B }]],
+  ['contato', 'Contato', ['M7.9 20A9 9 0 1 0 4 16.1L2 22Z', { c: [8, 12, 1.35], fill: '#fff' }, { c: [12, 12, 1.35], fill: '#fff' }, { c: [16, 12, 1.35], fill: B }]],
+  ['sobre', 'Sobre', ['M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2', { c: [12, 7, 4] }, { c: [19.6, 4.4, 2.3], fill: B }]],
+]
+function coverBg(g, w = SW, h = SH) {
+  const lg = g.createLinearGradient(0, 0, w, h); lg.addColorStop(0, '#0b4385'); lg.addColorStop(0.5, C.navy); lg.addColorStop(1, '#03193a')
+  g.fillStyle = lg; g.fillRect(0, 0, w, h)
+  const rg = g.createRadialGradient(w / 2, h / 2 - 60, 0, w / 2, h / 2 - 60, 620); rg.addColorStop(0, 'rgba(61,155,233,.28)'); rg.addColorStop(1, 'rgba(61,155,233,0)')
+  g.fillStyle = rg; g.fillRect(0, 0, w, h)
+}
+function cover(list) {
+  const c = cv(), g = c.getContext('2d'), s = 500
+  coverBg(g)
+  drawIcon(g, list, SW / 2 - s / 2, SH / 2 - s / 2, s, '#fff', 1.6)
+  return c
+}
+
+// ---------- base dos stories ----------
+let GRID
+function storyBg(g, glow = C.blue, k = 'aa') {
+  g.fillStyle = C.navy; g.fillRect(0, 0, SW, SH)
+  let rg = g.createRadialGradient(SW * 0.92, 140, 0, SW * 0.92, 140, 1100); rg.addColorStop(0, glow + k); rg.addColorStop(1, glow + '00')
+  g.fillStyle = rg; g.fillRect(0, 0, SW, SH)
+  rg = g.createRadialGradient(0, SH, 0, 0, SH, 900); rg.addColorStop(0, 'rgba(61,155,233,.22)'); rg.addColorStop(1, 'rgba(61,155,233,0)')
+  g.fillStyle = rg; g.fillRect(0, 0, SW, SH)
+  // grade de pontinhos bem sutil, sumindo para baixo
+  if (!GRID) {
+    GRID = cv(); const q = GRID.getContext('2d')
+    for (let y = 27; y < SH; y += 54) for (let x = 27; x < SW; x += 54) dot(q, x, y, 2, '#fff')
+    q.globalCompositeOperation = 'destination-in'
+    const fade = q.createLinearGradient(0, 0, 0, SH); fade.addColorStop(0, 'rgba(0,0,0,.09)'); fade.addColorStop(0.55, 'rgba(0,0,0,.03)'); fade.addColorStop(1, 'rgba(0,0,0,0)')
+    q.fillStyle = fade; q.fillRect(0, 0, SW, SH)
+  }
+  g.drawImage(GRID, 0, 0)
+}
+// Selo do topo: pingo azul + nome do destaque (+ paginação)
+function kicker(g, label, page) {
+  const y = 300
+  dot(g, M + 9, y - 11, 9, C.bright)
+  g.fillStyle = C.sky; tx(g, label.toUpperCase(), M + 34, y, 30, 700, 'left', 0.16)
+  if (page) { g.fillStyle = 'rgba(255,255,255,.55)'; tx(g, page, SW - M, y, 30, 600, 'right', 0.06) }
+}
+function title(g, lines, y, size = 96) {
+  lines.forEach((l, i) => { g.fillStyle = '#fff'; tx(g, typeof l === 'string' ? [[l, '#fff']] : l, M, y + i * size * 1.06, size, 800, 'left', -0.03) })
+  return y + (lines.length - 1) * size * 1.06
+}
+function footer(g, cta) {
+  const y = 1668, h = 44, w = monoWidth(h)
+  drawMonogram(g, M, y - h + 4, h, '#fff', C.bright)
+  g.fillStyle = 'rgba(255,255,255,.7)'; tx(g, cta || 'fantin.tech', SW - M, y, 32, 600, 'right', 0)
+}
+function card(g, x, y, w, h, r = 40) {
+  rr(g, x, y, w, h, r, 'rgba(255,255,255,.055)', 'rgba(255,255,255,.11)', 2)
+}
+function check(g, x, y, s = 40) {
+  dot(g, x + s / 2, y + s / 2, s / 2, C.bright)
+  drawIcon(g, IC.check, x + s * 0.24, y + s * 0.25, s * 0.52, '#fff', 3.4)
+}
+// Lista com check; devolve a linha de base da última linha (draw = false só mede)
+function checks(g, items, x, y, maxW, size = 38, gap = 30, draw = true) {
+  const tw = maxW - size * 1.55
+  items.forEach((t, i) => {
+    const n = paraH(g, t, tw, size, 500) / (size * 1.32)
+    if (draw) { check(g, x, y - size * 0.92, size * 1.05); para(g, t, x + size * 1.55, y, tw, size, 500, 'rgba(255,255,255,.92)') }
+    y += (n - 1) * size * 1.32 + (i < items.length - 1 ? size + gap : 0)
+  })
+  return y
+}
+function pill(g, text, x, y, size, col, bg, icon) {
+  g.font = font(600, size); const tw = g.measureText(text).width, ih = icon ? size * 1.1 : 0, pad = size * 0.8
+  const w = tw + pad * 2 + (icon ? ih + size * 0.45 : 0), h = size * 2.1
+  rr(g, x, y, w, h, h / 2, bg)
+  if (icon) drawIcon(g, IC[icon], x + pad, y + (h - ih) / 2, ih, col, 2.2)
+  g.fillStyle = col; tx(g, text, x + pad + (icon ? ih + size * 0.45 : 0), y + h / 2 + size * 0.36, size, 600, 'left', 0)
+  return w
+}
+
+// ---------- stories ----------
+const STORIES = []
+const story = (hl, draw) => STORIES.push({ hl, draw })
+
+// Serviços
+story('servicos', (g) => {
+  storyBg(g); kicker(g, 'Serviços', '1/2')
+  title(g, ['O que eu faço'], 430)
+  para(g, 'Do design ao código, eu cuido de tudo.', M, 515, 888, 40, 500, 'rgba(255,255,255,.72)')
+  const rows = [
+    ['code', 'Sites e landing pages', 'Páginas rápidas que viram clientes'],
+    ['bag', 'Lojas online', 'Pix, cartão e frete integrados'],
+    ['film', 'Motion e vídeos', 'Vídeos animados para marca e anúncios'],
+    ['layout', 'Sistemas web', 'Painéis e áreas de cliente sob medida'],
+    ['pen', 'UI/UX design', 'Interfaces limpas, do protótipo ao código'],
+    ['search', 'SEO e performance', 'Rápido e pronto para o Google'],
+  ]
+  rows.forEach(([ic, t, d], i) => {
+    const y = 600 + i * 162
+    card(g, M, y, SW - 2 * M, 142, 34)
+    tile(g, M + 26, y + 26, 90, ic)
+    g.fillStyle = '#fff'; tx(g, t, M + 146, y + 64, 40, 700, 'left', -0.015)
+    g.fillStyle = 'rgba(255,255,255,.66)'; tx(g, d, M + 146, y + 110, 30, 500, 'left', 0)
+  })
+  footer(g)
+})
+story('servicos', (g) => {
+  storyBg(g); kicker(g, 'Serviços', '2/2')
+  title(g, ['Todo projeto', [['inclui', '#fff'], ['.', C.bright]]], 430)
+  card(g, M, 640, SW - 2 * M, 640)
+  checks(g, ['Design exclusivo para o seu negócio', 'Feito primeiro para o celular', 'Botão de WhatsApp integrado', 'SEO técnico para aparecer no Google', 'Hospedagem, domínio e SSL', 'Suporte direto comigo'], M + 56, 752, 776, 38, 52)
+  // destaque do prazo
+  const y = 1320, h = 250
+  const gr = g.createLinearGradient(M, y, SW - M, y + h); gr.addColorStop(0, C.blue); gr.addColorStop(1, '#0a4c93')
+  rr(g, M, y, SW - 2 * M, h, 40, gr); rr(g, M + 1, y + 1, SW - 2 * M - 2, h - 2, 40, null, 'rgba(255,255,255,.18)', 2)
+  drawIcon(g, IC.rocket, M + 56, y + 75, 100, '#fff', 1.8)
+  g.fillStyle = '#fff'; tx(g, 'No ar em até 4 dias', M + 196, y + 118, 52, 800, 'left', -0.02)
+  g.fillStyle = 'rgba(255,255,255,.78)'; tx(g, 'depois que você envia as informações', M + 196, y + 170, 31, 500, 'left', 0)
+  footer(g)
+})
+
+// Planos
+const PLANS = [
+  { icon: 'code', name: 'Landing Page', desc: 'Uma página de alta conversão para apresentar seu negócio e captar clientes.',
+    feat: ['Página única com design personalizado', 'Botão de WhatsApp e formulário', 'SEO + Google Analytics', 'Entrega em até 4 dias'],
+    care: ['Hospedagem, domínio e SSL', '1 alteração de conteúdo por mês', 'Suporte por WhatsApp'] },
+  { icon: 'bag', name: 'Loja Online', desc: 'Loja completa para vender todos os dias, com pagamento e frete integrados.',
+    feat: ['Até 90 produtos cadastrados', 'Pix e cartão integrados', 'Cálculo de frete automático', 'Painel de pedidos e estoque'],
+    care: ['Hospedagem, domínio, SSL e backups', '1h de ajustes por mês', 'Suporte por WhatsApp'] },
+  { icon: 'film', name: 'Motion & Vídeos', desc: 'Vídeos em motion design sob medida para redes sociais, lançamentos e anúncios.',
+    feat: ['Vídeo em motion sob medida', 'Roteiro, animação e trilha', 'Formatos para Reels, Stories e anúncios'],
+    care: ['Ajustes e revisões', 'Novas versões e formatos', 'Suporte por WhatsApp'] },
+]
+story('planos', (g) => {
+  storyBg(g); kicker(g, 'Planos', '1/4')
+  title(g, ['Um plano para', [['cada objetivo', '#fff'], ['.', C.bright]]], 430)
+  PLANS.forEach((p, i) => {
+    const y = 650 + i * 232
+    card(g, M, y, SW - 2 * M, 206, 36)
+    tile(g, M + 30, y + 30, 100, p.icon)
+    g.fillStyle = '#fff'; tx(g, p.name, M + 162, y + 76, 44, 700, 'left', -0.015)
+    para(g, p.desc, M + 162, y + 124, 680, 30, 500, 'rgba(255,255,255,.66)', 1.3)
+  })
+  const y = 1360
+  card(g, M, y, SW - 2 * M, 190, 36)
+  drawIcon(g, IC.shield, M + 40, y + 59, 72, C.bright, 1.9)
+  para(g, 'O projeto é seu: você paga uma vez pela criação,\ne a manutenção mantém tudo no ar e seguro.', M + 146, y + 82, 720, 33, 500, 'rgba(255,255,255,.88)', 1.4)
+  footer(g, 'Valores em fantin.tech')
+})
+PLANS.forEach((p, n) => story('planos', (g) => {
+  storyBg(g); kicker(g, 'Planos', `${n + 2}/4`)
+  tile(g, M, 360, 116, p.icon)
+  g.fillStyle = '#fff'; tx(g, p.name, M, 600, 100, 800, 'left', -0.03)
+  const dEnd = para(g, p.desc, M, 672, 860, 38, 500, 'rgba(255,255,255,.75)')
+  let y = dEnd + 66
+  const block = (label, items) => {
+    const first = y + 148, h = checks(g, items, M + 50, first, 788, 36, 28, false) - y + 62
+    card(g, M, y, SW - 2 * M, h, 36)
+    g.fillStyle = C.sky; tx(g, label.toUpperCase(), M + 50, y + 72, 26, 700, 'left', 0.14)
+    checks(g, items, M + 50, first, 788, 36, 28)
+    y += h + 26
+  }
+  block('No projeto', p.feat)
+  block('Na manutenção', p.care)
+  footer(g, 'Orçamento em até 24h')
+}))
+
+// Projetos: navegador (print do computador) + celular (print do celular) sobrepostos
+let IMGS = {}, MOB = {}
+PROJ.forEach((p, n) => story('projetos', (g) => {
+  storyBg(g, p.glow, '88'); kicker(g, 'Projetos', `${n + 1}/${PROJ.length}`)
+  g.fillStyle = '#fff'; tx(g, p.name, M, 470, 108, 800, 'left', -0.03)
+  pill(g, p.cat, M, 520, 30, '#fff', 'rgba(255,255,255,.12)')
+  const im = IMGS[p.img], x = M - 6, w = 830, bar = 50, ih = Math.round(w * 0.62), y = 660, h = ih + bar
+  const glow = g.createRadialGradient(SW / 2, 1050, 0, SW / 2, 1050, 700); glow.addColorStop(0, p.glow + '50'); glow.addColorStop(1, p.glow + '00')
+  g.fillStyle = glow; g.fillRect(0, 300, SW, 1500)
+  g.save(); g.shadowColor = 'rgba(0,8,25,.55)'; g.shadowBlur = 70; g.shadowOffsetY = 30; rr(g, x, y, w, h, 24, '#0e1d33'); g.restore()
+  g.save(); g.beginPath(); g.roundRect(x, y, w, h, 24); g.clip()
+  g.fillStyle = '#13243d'; g.fillRect(x, y, w, bar)
+  ;['#ff5f57', '#febc2e', '#28c840'].forEach((c, i) => dot(g, x + 32 + i * 26, y + bar / 2, 8, c))
+  rr(g, x + 140, y + 12, w - 280, bar - 24, 13, 'rgba(255,255,255,.07)')
+  if (p.url) { g.fillStyle = 'rgba(255,255,255,.6)'; tx(g, p.url, x + w / 2, y + bar / 2 + 8, 22, 500, 'center', 0) }
+  g.drawImage(im, 0, 0, im.width, Math.min(im.height, im.width * 0.62), x, y + bar, w, ih)
+  g.restore()
+  rr(g, x, y, w, h, 24, null, 'rgba(255,255,255,.14)', 2)
+  // celular
+  const mi = MOB[p.img], pw = 300, ph = 630, px = SW - M - pw + 26, py = 890, br = 50, bz = 11
+  g.save(); g.shadowColor = 'rgba(0,6,20,.65)'; g.shadowBlur = 90; g.shadowOffsetY = 36; rr(g, px, py, pw, ph, br, '#05080f'); g.restore()
+  const sx = px + bz, sy = py + bz, sw = pw - 2 * bz, sh = ph - 2 * bz
+  g.save(); g.beginPath(); g.roundRect(sx, sy, sw, sh, br - bz); g.clip()
+  g.drawImage(mi, 0, 0, mi.width, (mi.width * sh) / sw, sx, sy, sw, sh)
+  g.restore()
+  rr(g, px + pw / 2 - 40, sy + 11, 80, 22, 11, '#000')
+  rr(g, px + 1.5, py + 1.5, pw - 3, ph - 3, br, null, 'rgba(255,255,255,.28)', 3)
+  para(g, p.text, M, 1330, px - M - 56, 36, 500, 'rgba(255,255,255,.84)', 1.38)
+  footer(g)
+}))
+
+// Dúvidas
+const FAQ = [
+  ['Em quanto tempo meu site fica pronto?', 'Em até 4 dias, contados a partir do envio das\ninformações do negócio: textos, fotos e logo.'],
+  ['Meu site vai aparecer no Google?', 'Todo site sai com SEO técnico: títulos otimizados,\nsitemap, carregamento rápido e Search Console.\nA posição cresce com o tempo.'],
+  ['O site funciona bem no celular?', 'Sim. Todo projeto é pensado primeiro para o\ncelular e depois adaptado para o computador.'],
+  ['Preciso ter domínio e hospedagem?', 'Não. A manutenção já inclui hospedagem, domínio\ne SSL. Se você já tem um domínio, eu uso o seu.'],
+  ['O que eu preciso enviar para começar?', 'Textos, fotos e o logo, se tiver. Se precisar,\neu ajudo a escrever os textos.'],
+  ['Como funciona o atendimento?', '100% online e direto comigo. Você aprova\ncada etapa antes de o site ir para o ar.'],
+]
+for (let s = 0; s < 3; s++) story('duvidas', (g) => {
+  storyBg(g); kicker(g, 'Dúvidas', `${s + 1}/3`)
+  title(g, ['Dúvidas', [['frequentes', '#fff'], ['.', C.bright]]], 430)
+  let y = 640
+  FAQ.slice(s * 2, s * 2 + 2).forEach(([q, a]) => {
+    const qh = paraH(g, q, 680, 44, 700, 1.22, -0.015), ah = paraH(g, a, 792, 34, 500, 1.42), h = 70 + qh + 34 + ah + 50
+    card(g, M, y, SW - 2 * M, h, 40)
+    tile(g, M + 44, y + 50, 84, 'help')
+    para(g, q, M + 156, y + 96, 680, 44, 700, '#fff', 1.22, -0.015)
+    g.fillStyle = 'rgba(255,255,255,.1)'; g.fillRect(M + 48, y + 70 + qh + 16, SW - 2 * M - 96, 2)
+    para(g, a, M + 48, y + 70 + qh + 34 + 46, 792, 34, 500, 'rgba(255,255,255,.78)', 1.42)
+    y += h + 36
+  })
+  footer(g, s === 2 ? 'Outra dúvida? Me chama no Direct' : 'fantin.tech')
+})
+
+// Contato
+story('contato', (g) => {
+  storyBg(g); kicker(g, 'Contato')
+  title(g, ['Vamos tirar', 'seu projeto', [['do papel', C.sky], ['?', '#fff']]], 470, 112)
+  para(g, 'Orçamento sem compromisso, com resposta em até 24h.', M, 830, 820, 40, 500, 'rgba(255,255,255,.75)')
+  const rows = [['send', 'Direct', 'Me manda um oi por aqui'], ['globe', 'fantin.tech', 'Projetos, planos e valores'], ['chat', 'WhatsApp', 'Link na bio']]
+  rows.forEach(([ic, t, d], i) => {
+    const y = 960 + i * 196
+    card(g, M, y, SW - 2 * M, 170, 38)
+    tile(g, M + 34, y + 34, 102, ic)
+    g.fillStyle = '#fff'; tx(g, t, M + 170, y + 80, 44, 700, 'left', -0.015)
+    g.fillStyle = 'rgba(255,255,255,.66)'; tx(g, d, M + 170, y + 128, 31, 500, 'left', 0)
+    drawIcon(g, IC.arrow, SW - M - 92, y + 61, 48, 'rgba(255,255,255,.55)', 2)
+  })
+  footer(g, '@fantinsi')
+})
+
+// Sobre
+story('sobre', (g) => {
+  storyBg(g); kicker(g, 'Sobre', '1/2')
+  const mh = 150; drawMonogram(g, M, 380, mh, '#fff', C.bright)
+  title(g, ['Prazer, eu sou', [['o Gabriel', '#fff'], ['.', C.bright]]], 690, 100)
+  para(g, 'Desenvolvedor web e designer. Crio sites, landing pages, lojas online e vídeos em motion para quem quer vender mais pela internet.', M, 880, 888, 40, 500, 'rgba(255,255,255,.8)', 1.38)
+  const rows = [['user', 'Você fala direto comigo, do oi ao site no ar'], ['layers', 'Design, código, SEO e suporte num lugar só'], ['globe', 'Atendo todo o Brasil, 100% online']]
+  rows.forEach(([ic, t], i) => {
+    const y = 1130 + i * 150
+    card(g, M, y, SW - 2 * M, 128, 32)
+    tile(g, M + 24, y + 24, 80, ic)
+    para(g, t, M + 132, y + 76, 720, 33, 600, '#fff', 1.25, -0.01)
+  })
+  footer(g)
+})
+story('sobre', (g) => {
+  storyBg(g); kicker(g, 'Sobre', '2/2')
+  title(g, ['Como', [['funciona', '#fff'], ['.', C.bright]]], 430)
+  const steps = [
+    ['Conversa', 'Você me conta do seu negócio\npelo Direct ou WhatsApp.'],
+    ['Proposta', 'Você recebe o valor exato\ndo projeto em até 24h.'],
+    ['Criação', 'Eu desenho e desenvolvo,\ne você aprova cada etapa.'],
+    ['No ar', 'Site publicado em até 4 dias,\ncom suporte depois.'],
+  ]
+  const x0 = M + 44, y0 = 680, step = 236
+  g.strokeStyle = 'rgba(156,195,232,.35)'; g.lineWidth = 4; g.setLineDash([2, 14]); g.lineCap = 'round'
+  g.beginPath(); g.moveTo(x0, y0 + 44); g.lineTo(x0, y0 + step * 3 - 44); g.stroke(); g.setLineDash([])
+  steps.forEach(([t, d], i) => {
+    const y = y0 + i * step
+    const gr = g.createLinearGradient(x0 - 44, y - 44, x0 + 44, y + 44); gr.addColorStop(0, C.bright); gr.addColorStop(1, C.blue)
+    dot(g, x0, y, 46, C.navy); dot(g, x0, y, 44, gr)
+    g.fillStyle = '#fff'; tx(g, String(i + 1), x0, y + 15, 42, 800, 'center', 0)
+    g.fillStyle = '#fff'; tx(g, t, x0 + 92, y + 6, 50, 800, 'left', -0.02)
+    para(g, d, x0 + 92, y + 64, 700, 34, 500, 'rgba(255,255,255,.72)', 1.36)
+  })
+  footer(g, 'Me chama no Direct')
+})
+
+// ---------- montagem da página ----------
+window.__png = {}
+async function build() {
+  await document.fonts.ready
+  IMGS = Object.fromEntries(await Promise.all(PROJ.map(async (p) => [p.img, await loadImg(`/public/projects/${p.img}.webp`)])))
+  MOB = Object.fromEntries(await Promise.all(PROJ.map(async (p) => [p.img, await loadImg(`sites/${p.img}.png`)])))
+  const out = document.getElementById('out')
+
+  const caps = COVERS.map(([id, label, list]) => { const url = cover(list).toDataURL('image/png'); window.__png[`capa-${id}.png`] = url; return { id, label, url } })
+  out.insertAdjacentHTML('beforeend', '<h2>Como fica no perfil</h2>')
+  ;['dark', 'light'].forEach((m) => out.insertAdjacentHTML('beforeend', `<div class="prof ${m}">${caps.map((c) => `<figure><img src="${c.url}"><span>${c.label}</span></figure>`).join('')}</div>`))
+  out.insertAdjacentHTML('beforeend', '<h2>Capas</h2>')
+  const rc = document.createElement('div'); rc.className = 'row'
+  caps.forEach((c) => rc.insertAdjacentHTML('beforeend', `<div class="item"><img src="${c.url}"><a href="${c.url}" download="capa-${c.id}.png">${c.label}</a></div>`))
+  out.append(rc)
+
+  COVERS.forEach(([id, label]) => {
+    const list = STORIES.filter((s) => s.hl === id)
+    out.insertAdjacentHTML('beforeend', `<h2>${label} · ${list.length} ${list.length > 1 ? 'stories' : 'story'}</h2>`)
+    const row = document.createElement('div'); row.className = 'row'
+    list.forEach((s, i) => {
+      const c = cv(); s.draw(c.getContext('2d'))
+      const name = `${id}-${i + 1}.png`, url = c.toDataURL('image/png'); window.__png[name] = url
+      row.insertAdjacentHTML('beforeend', `<div class="item"><img src="${url}"><a href="${url}" download="${name}">Baixar ${i + 1}</a></div>`)
+    })
+    out.append(row)
+  })
+  document.body.dataset.ready = '1'
+}
+// Salva tudo numa pasta via servidorzinho local (porta 5199)
+window.__save = async () => {
+  for (const [n, url] of Object.entries(window.__png)) await fetch(`http://localhost:5199/?n=${n}`, { method: 'POST', body: await (await fetch(url)).arrayBuffer() }) // sem content-type: evita o preflight
+  return Object.keys(window.__png).length
+}
+build()
+</script>
+</body>
+</html>
