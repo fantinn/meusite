@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reel Fim da 6x1</title>
+<style>
+  body { margin: 0; padding: 20px; font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f5f5; color: #1b1b1b; display: flex; gap: 24px; align-items: flex-start; }
+  #c { height: 86vh; aspect-ratio: 9 / 16; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.15); background: #062a55; }
+  .side { display: flex; flex-direction: column; gap: 10px; max-width: 320px; }
+  button { font: 600 15px 'Segoe UI', sans-serif; padding: 10px 16px; border-radius: 8px; border: 0; background: #0067b8; color: #fff; cursor: pointer; }
+  button.alt { background: #e3e8ef; color: #1b1b1b; }
+  input[type=range] { width: 100%; }
+  #status { font-size: 13px; color: #505050; min-height: 18px; }
+</style>
+<script src="brand.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mp4-muxer@5.1.3/build/mp4-muxer.min.js"></script>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<div class="side">
+  <h3 style="margin:0">Reel · Fim da 6x1</h3>
+  <button id="play">▶ Tocar</button>
+  <input id="seek" type="range" min="0" max="1000" value="0" />
+  <button id="export" class="alt">Exportar MP4</button>
+  <div id="status"></div>
+</div>
+<script>
+const W = 1080, H = 1920, FPS = 60
+const WHATS = '(27) 99286-4820'
+const out = document.getElementById('c'), octx = out.getContext('2d')
+
+// ---------- tempo e easing ----------
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v))
+const prog = (t, s, d) => clamp((t - s) / d)
+const lerp = (a, b, p) => a + (b - a) * p
+const outQuint = (p) => 1 - Math.pow(1 - p, 5)
+const outCubic = (p) => 1 - Math.pow(1 - p, 3)
+const inCubic = (p) => p * p * p
+const inOutQuint = (p) => (p < 0.5 ? 16 * p ** 5 : 1 - Math.pow(-2 * p + 2, 5) / 2)
+const smooth = (p) => p * p * (3 - 2 * p)
+// mola: passa um pouco do ponto e assenta (t em segundos desde o início)
+const spring = (t, k = 9, w = 13) => (t <= 0 ? 0 : 1 - Math.exp(-k * t) * Math.cos(w * t))
+
+// ---------- desenho (g = contexto da camada atual) ----------
+let g
+const setFont = (size, weight = 800, track = -0.04) => { g.font = font(weight, size); g.letterSpacing = `${track * size}px`; g.textBaseline = 'alphabetic' }
+const fillBg = (c) => { g.fillStyle = c; g.fillRect(0, 0, W, H) }
+const circle = (x, y, r, c, a = 1) => { g.globalAlpha = a; g.fillStyle = c; g.beginPath(); g.arc(x, y, Math.max(0, r), 0, Math.PI * 2); g.fill(); g.globalAlpha = 1 }
+const rr = (x, y, w, h, r, c) => { g.fillStyle = c; g.beginPath(); g.roundRect(x, y, w, h, r); g.fill() }
+function glow(x, y, r, color, a) { const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, color.replace('A', a)); gr.addColorStop(1, color.replace('A', 0)); g.fillStyle = gr; g.fillRect(0, 0, W, H) }
+
+// Texto que "soca" a tela: entra grande e desfocado e assenta nítido
+function punch(parts, x, y, size, t, start, { weight = 800, align = 'center', from = 1.35, dur = 0.55 } = {}) {
+  const p = outQuint(prog(t, start, dur)); if (p <= 0) return
+  if (typeof parts === 'string') parts = [[parts, C.white]]
+  setFont(size, weight)
+  const wt = parts.reduce((w, [s]) => w + g.measureText(s).width, 0)
+  const x0 = align === 'center' ? x - wt / 2 : x
+  g.save(); g.translate(x0 + wt / 2, y - size * 0.35); g.scale(lerp(from, 1, p), lerp(from, 1, p)); g.translate(-(x0 + wt / 2), -(y - size * 0.35))
+  g.globalAlpha = clamp(p * 1.8); g.filter = `blur(${(1 - p) * 16}px)`
+  let cx = x0; parts.forEach(([s, c]) => { g.fillStyle = c; g.fillText(s, cx, y); cx += g.measureText(s).width })
+  g.restore(); g.filter = 'none'
+}
+// Linha que sobe por trás de uma máscara
+function rise(parts, x, y, size, t, start, { weight = 800, align = 'left', dur = 0.6 } = {}) {
+  const p = outQuint(prog(t, start, dur)); if (p <= 0) return
+  if (typeof parts === 'string') parts = [[parts, C.white]]
+  setFont(size, weight)
+  const wt = parts.reduce((w, [s]) => w + g.measureText(s).width, 0)
+  let cx = align === 'center' ? x - wt / 2 : x
+  g.save(); g.beginPath(); g.rect(0, y - size * 1.05, W, size * 1.38); g.clip()
+  parts.forEach(([s, c]) => { g.fillStyle = c; g.fillText(s, cx, y + (1 - p) * size * 1.15); cx += g.measureText(s).width })
+  g.restore()
+}
+
+// Ícones de traço (desenhos no estilo Lucide, grade 24×24) que se desenham sozinhos
+const ICONS = {
+  search: ['M11 3a8 8 0 1 0 0 16a8 8 0 1 0 0-16', 'M21 21l-4.3-4.3'],
+  chat: ['M7.9 20A9 9 0 1 0 4 16.1L2 22Z', 'M8 12h.01', 'M12 12h.01', 'M16 12h.01'],
+  phone: ['M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z', 'M12 18h.01'],
+  cart: ['M8 20a1 1 0 1 0 0 2a1 1 0 1 0 0-2', 'M19 20a1 1 0 1 0 0 2a1 1 0 1 0 0-2', 'M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12'],
+  rocket: ['M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z', 'm12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z', 'M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0', 'M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5'],
+  eyeOff: ['M9.88 9.88a3 3 0 1 0 4.24 4.24', 'M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68', 'M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61', 'm2 2 20 20'],
+  check: ['M20 6 9 17l-5-5'],
+  x: ['M18 6 6 18', 'm6 6 12 12'],
+  star: ['M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'],
+  pin: ['M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z', 'M12 7a3 3 0 1 0 0 6a3 3 0 1 0 0-6'],
+  moon: ['M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'],
+  bag: ['M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z', 'M3 6h18', 'M16 10a4 4 0 0 1-8 0'],
+  truck: ['M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2', 'M15 18H9', 'M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14', 'M17 16a2 2 0 1 0 0 4a2 2 0 1 0 0-4', 'M7 16a2 2 0 1 0 0 4a2 2 0 1 0 0-4'],
+  card: ['M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z', 'M2 10h20'],
+  box: ['m7.5 4.27 9 5.15', 'M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z', 'm3.3 7 8.7 5 8.7-5', 'M12 22V12'],
+  calendar: ['M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z', 'M16 2v4', 'M8 2v4', 'M3 10h18'],
+  globe: ['M12 2a10 10 0 1 0 0 20a10 10 0 1 0 0-20', 'M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20', 'M2 12h20'],
+  chart: ['M3 3v18h18', 'M18 17V9', 'M13 17V5', 'M8 17v-3'],
+}
+const PATHS = Object.fromEntries(Object.entries(ICONS).map(([k, v]) => [k, v.map((d) => new Path2D(d))]))
+function icon(name, cx, cy, size, color, p = 1, width = 2, fillStar = false) {
+  const s = size / 24
+  g.save(); g.translate(cx - size / 2, cy - size / 2); g.scale(s, s)
+  g.strokeStyle = color; g.lineWidth = width; g.lineCap = 'round'; g.lineJoin = 'round'
+  g.setLineDash([120, 120]); g.lineDashOffset = 120 * (1 - clamp(p))
+  PATHS[name].forEach((path) => { g.stroke(path); if (fillStar && p >= 1) { g.fillStyle = color; g.fill(path) } })
+  g.restore()
+}
+// Ícone dentro de um círculo que entra com mola
+function badge(name, cx, cy, r, bg, fg, t, start) {
+  const sp = spring(t - start); if (sp <= 0) return
+  g.save(); g.translate(cx, cy); g.scale(sp, sp); circle(0, 0, r, bg); g.restore()
+  icon(name, cx, cy, r * 1.05, fg, outCubic(prog(t, start + 0.12, 0.5)), 2.2)
+}
+
+// ---------- monograma (só no final) ----------
+let monoL = null
+function logo(x0, y0, MH, t, start) {
+  const T = t - start; if (T < 0) return
+  const m = MONO, u = MH / (2 + m.gap), s = m.s * u, mw = monoWidth(MH)
+  if (!monoL) { monoL = document.createElement('canvas'); monoL.width = Math.ceil(mw) + 40; monoL.height = MH + 40; drawMonogram(monoL.getContext('2d'), 20, 20, MH, C.white, 'rgba(0,0,0,0)') }
+  const colF = [0, m.F * u], colA = [(m.F + m.lg) * u, (m.F + m.lg + m.A) * u], colN = [(m.F + m.lg + m.A + m.gap) * u, mw]
+  const top2 = u + m.gap * u, dotD = s * 1.3
+  ;[[colF, 0, u, 0], [colA, 0, u, 0.06], [colF, top2, MH, 0.12], [colA, top2 + dotD, MH, 0.18], [colN, 0, MH, 0.24]].forEach(([[a, b], y1, y2, d]) => {
+    const p = outQuint(prog(T, d, 0.8)); if (p <= 0) return
+    g.save(); g.beginPath(); g.rect(x0 + a - 4, y0 + y1 - 4, b - a + 8, y2 - y1 + 8); g.clip()
+    g.globalAlpha = clamp(p * 1.6); g.filter = `blur(${(1 - p) * 14}px)`
+    g.drawImage(monoL, x0 - 20, y0 - 20 + (1 - p) * 110); g.restore()
+  })
+  g.filter = 'none'
+  const dx = x0 + (m.F + m.lg + m.A / 2) * u, dy = y0 + top2 + dotD / 2, r = dotD / 2
+  const tA = 0.6, tF = 0.85, tL = 1.15
+  if (T < tA) return
+  if (T < tL) {
+    const pa = outCubic(prog(T, tA, 0.2)), pf = prog(T, tF, tL - tF)
+    g.save(); g.translate(dx, lerp(dy - 300, dy, inCubic(pf))); g.scale(1 - pf * 0.12, 1 + pf * 0.22); circle(0, 0, r * pa, C.bright, pa); g.restore()
+  } else {
+    const pi = prog(T, tL, 0.5), sq = Math.sin(pi * Math.PI) * Math.pow(1 - pi, 1.5)
+    g.save(); g.translate(dx, dy + r); g.scale(1 + sq * 0.55, 1 - sq * 0.4); circle(0, -r, r, C.bright); g.restore()
+    const pr = outCubic(prog(T, tL, 0.9)); if (pr < 1) circle(dx, dy, r * (1 + pr * 4), C.bright, 0.5 * (1 - pr))
+    if (T > tL + 1) { const q = ((T - tL - 1) % 1.6) / 1.6; circle(dx, dy, r * (1 + outCubic(q) * 3), C.bright, 0.45 * (1 - q)) }
+  }
+}
+
+// ---------- peças: balão de mensagem, celular, notificação ----------
+const SHIRT = new Path2D('M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z')
+const RED = '#e5484d', GREEN = '#22a35a'
+// Balão de conversa; x é a borda esquerda (side 'L') ou direita (side 'R'); entra com mola a partir do canto
+function bubble(text, x, y, sp, { size = 50, side = 'L', bg = '#ffffff', fg = C.ink, weight = 600 } = {}) {
+  if (sp <= 0) return
+  setFont(size, weight, -0.01)
+  const tw = g.measureText(text).width, padX = size * 0.62, bw = tw + padX * 2, bh = size * 1.9
+  const bx = side === 'L' ? x : x - bw
+  const ax = side === 'L' ? bx : bx + bw, ay = y + bh
+  g.save(); g.translate(ax, ay); g.scale(sp, sp); g.translate(-ax, -ay)
+  g.globalAlpha *= clamp(sp * 1.5)
+  rr(bx, y, bw, bh, bh / 2, bg)
+  // rabinho do lado de quem mandou
+  g.beginPath(); if (side === 'L') { g.moveTo(bx + 4, y + bh - 30); g.lineTo(bx - 10, y + bh + 4); g.lineTo(bx + 34, y + bh - 6) } else { g.moveTo(bx + bw - 4, y + bh - 30); g.lineTo(bx + bw + 10, y + bh + 4); g.lineTo(bx + bw - 34, y + bh - 6) }
+  g.fill()
+  g.fillStyle = fg; g.fillText(text, bx + padX, y + bh * 0.66)
+  g.restore()
+}
+// Celular: moldura + tela; desenha o conteúdo com a tela recortada (sx, sy, sw, sh)
+function phone(x, y, w, h, screen, content) {
+  g.save(); g.shadowColor = 'rgba(0,0,0,.45)'; g.shadowBlur = 70; g.shadowOffsetY = 34
+  rr(x, y, w, h, 78, '#0b0f17'); g.restore()
+  const b = 16, sx = x + b, sy = y + b, sw = w - b * 2, sh = h - b * 2
+  g.save(); g.beginPath(); g.roundRect(sx, sy, sw, sh, 64); g.clip()
+  g.fillStyle = screen; g.fillRect(sx, sy, sw, sh)
+  content(sx, sy, sw, sh)
+  rr(x + w / 2 - 80, sy + 18, 160, 44, 22, '#0b0f17') // ilha da câmera
+  g.restore()
+}
+// Notificação de venda no estilo do sistema do celular
+function notif(title, body, time, y, sp) {
+  if (sp <= 0) return
+  const x = 90, w = W - 180, h = 150
+  g.save(); g.translate(W / 2, y + h / 2); g.scale(lerp(0.85, 1, sp), lerp(0.85, 1, sp)); g.translate(-W / 2, -(y + h / 2) - (1 - sp) * 160)
+  g.globalAlpha = clamp(sp * 1.4)
+  g.shadowColor = 'rgba(0,20,50,.35)'; g.shadowBlur = 50; g.shadowOffsetY = 18
+  rr(x, y, w, h, 40, 'rgba(255,255,255,.97)'); g.shadowColor = 'transparent'
+  rr(x + 28, y + 33, 84, 84, 22, C.blue); icon('bag', x + 70, y + 75, 46, '#ffffff', 1, 2.2)
+  setFont(38, 800, -0.01); g.fillStyle = C.ink; g.fillText(title, x + 140, y + 66)
+  setFont(32, 500, 0); g.fillStyle = '#8a94a3'; g.textAlign = 'right'; g.fillText(time, x + w - 34, y + 64); g.textAlign = 'left'
+  setFont(36, 500, -0.01); g.fillStyle = C.ink2; g.fillText(body, x + 140, y + 114)
+  g.restore()
+}
+
+// ---------- telas do celular (o mesmo aparelho atravessa as cenas 4, 5 e 6) ----------
+const TR = 0.34 // duração das transições zoom/push
+const PH = { x: 250, y: 300, w: 580, h: 1260, cx: 540, cy: 930 } // posição do celular na cena 4
+// Desenha o celular centrado em (cx, cy) com escala s
+function phoneAt(cx, cy, s, content) {
+  g.save(); g.translate(cx, cy); g.scale(s, s); g.translate(-PH.cx, -PH.cy)
+  phone(PH.x, PH.y, PH.w, PH.h, '#f6f7f9', content); g.restore()
+}
+function statusBar(sx, sy, time) { setFont(30, 700, 0); g.fillStyle = C.ink; g.fillText(time, sx + 54, sy + 50) }
+
+// ---------- peças da 6x1 ----------
+const DAYS = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D']
+// Semana em quadradinhos: trabalho (vidro) e folga (verde). O sábado vira folga em flipAt.
+function week(t, y, start, flipAt) {
+  const s = 124, gap = 18, x0 = (W - (s * 7 + gap * 6)) / 2
+  DAYS.forEach((d, i) => {
+    const sp = spring(t - start - i * 0.07, 9, 13); if (sp <= 0) return
+    const x = x0 + i * (s + gap), cx = x + s / 2, cy = y + s / 2
+    const isFlip = i === 5, fp = isFlip ? prog(t, flipAt, 0.36) : 0
+    const off = i === 6 || (isFlip && fp >= 0.5)
+    const sx = isFlip && fp > 0 && fp < 1 ? Math.abs(Math.cos(fp * Math.PI)) : 1
+    g.save(); g.translate(cx, cy); g.scale(sp * sx, sp); g.translate(-cx, -cy)
+    rr(x, y, s, s, 30, off ? GREEN : 'rgba(255,255,255,.13)')
+    setFont(56, 800, 0); g.fillStyle = '#ffffff'; g.textAlign = 'center'; g.fillText(d, cx, cy + 20); g.textAlign = 'left'
+    g.restore()
+    if (isFlip && fp >= 1) { const q = outCubic(prog(t, flipAt + 0.36, 0.7)); if (q < 1) circle(cx, cy, s * 0.5 * (1 + q * 1.6), GREEN, 0.45 * (1 - q)) }
+  })
+  const lp = outCubic(prog(t, start + 0.6, 0.5))
+  if (lp > 0) {
+    g.globalAlpha = lp; setFont(34, 600, 0); g.textAlign = 'center'
+    g.fillStyle = 'rgba(255,255,255,.65)'; g.fillText('trabalho', x0 + (s * 5 + gap * 4) / 2, y + s + 64)
+    g.fillStyle = '#5fd18c'; g.fillText('folga', x0 + 6 * (s + gap) + s / 2, y + s + 64)
+    g.textAlign = 'left'; g.globalAlpha = 1
+  }
+}
+// Notificação com ícone escolhido
+function notifIc(ic, title, body, time, y, sp) {
+  if (sp <= 0) return
+  const x = 90, w = W - 180, h = 150
+  g.save(); g.translate(W / 2, y + h / 2); g.scale(lerp(0.85, 1, sp), lerp(0.85, 1, sp)); g.translate(-W / 2, -(y + h / 2) - (1 - sp) * 160)
+  g.globalAlpha = clamp(sp * 1.4)
+  g.shadowColor = 'rgba(0,20,50,.35)'; g.shadowBlur = 50; g.shadowOffsetY = 18
+  rr(x, y, w, h, 40, 'rgba(255,255,255,.97)'); g.shadowColor = 'transparent'
+  rr(x + 28, y + 33, 84, 84, 22, ic === 'chat' ? GREEN : C.blue); icon(ic, x + 70, y + 75, 46, '#ffffff', 1, 2.2)
+  setFont(38, 800, -0.01); g.fillStyle = C.ink; g.fillText(title, x + 140, y + 66)
+  setFont(32, 500, 0); g.fillStyle = '#8a94a3'; g.textAlign = 'right'; g.fillText(time, x + w - 34, y + 64); g.textAlign = 'left'
+  setFont(36, 500, -0.01); g.fillStyle = C.ink2; g.fillText(body, x + 140, y + 114)
+  g.restore()
+}
+// Carimbo inclinado (entra grande e assenta)
+function stamp(text, cx, cy, t, start, color = RED) {
+  const ss = prog(t, start, 0.28); if (ss <= 0) return
+  const k = lerp(2.2, 1, outCubic(ss))
+  setFont(96, 900, 0.03); const tw = g.measureText(text).width + 120
+  g.save(); g.translate(cx, cy); g.rotate(-0.14); g.scale(k, k); g.globalAlpha = clamp(ss * 2)
+  rr(-tw / 2, -88, tw, 176, 26, 'rgba(229,72,77,.14)')
+  g.strokeStyle = color; g.lineWidth = 12; g.beginPath(); g.roundRect(-tw / 2, -88, tw, 176, 26); g.stroke()
+  g.fillStyle = color; g.textAlign = 'center'; g.fillText(text, 0, 34); g.textAlign = 'left'
+  g.restore()
+}
+// Site no celular: endereço, vitrine e botão do WhatsApp sendo tocado
+function siteScreen(t, sx, sy, sw, sh) {
+  g.fillStyle = '#ffffff'; g.fillRect(sx, sy, sw, sh)
+  statusBar(sx, sy, '10:12')
+  rr(sx + 30, sy + 90, sw - 60, 76, 38, '#f1f4f8'); icon('globe', sx + 82, sy + 128, 36, C.ink2, 1, 2)
+  setFont(30, 600, 0); g.fillStyle = C.ink2; g.fillText('seunegocio.com.br', sx + 118, sy + 139)
+  const px = sx + 34, pw = sw - 68, py = sy + 200
+  const gr = g.createLinearGradient(px, py, px + pw, py + 430); gr.addColorStop(0, '#0b3a73'); gr.addColorStop(1, '#0067b8')
+  g.fillStyle = gr; g.beginPath(); g.roundRect(px, py, pw, 430, 34); g.fill()
+  setFont(60, 900, -0.03); g.fillStyle = '#ffffff'; g.fillText('Aberto', px + 40, py + 120); g.fillText('todo dia.', px + 40, py + 190)
+  setFont(30, 500, 0); g.fillStyle = 'rgba(255,255,255,.8)'; g.fillText('Veja os produtos e', px + 40, py + 260); g.fillText('peça pelo WhatsApp.', px + 40, py + 302)
+  circle(px + pw - 90, py + 350, 40, C.bright, 0.9)
+  ;[0, 1].forEach((i) => { const cx = px + i * (pw / 2 + 8), cw = pw / 2 - 8; rr(cx, py + 460, cw, 220, 26, '#eef3f9'); rr(cx + 24, py + 600, cw * 0.6, 20, 10, '#cfd9e6'); rr(cx + 24, py + 636, cw * 0.38, 20, 10, C.blue) })
+  const by = py + 720, tap = prog(t, 1.25, 0.3), press = Math.sin(tap * Math.PI) * 0.06
+  g.save(); g.translate(sx + sw / 2, by + 55); g.scale(1 - press, 1 - press)
+  rr(-pw / 2, -55, pw, 110, 55, GREEN)
+  setFont(34, 800, 0); const bt = 'Chamar no WhatsApp', gx = -(g.measureText(bt).width + 60) / 2
+  icon('chat', gx + 20, 0, 42, '#ffffff', 1, 2.4); g.fillStyle = '#fff'; g.fillText(bt, gx + 60, 12)
+  g.restore()
+  if (tap > 0 && tap < 1) circle(sx + sw / 2 + 60, by + 55, 30 + outCubic(tap) * 90, '#ffffff', 0.5 * (1 - tap))
+}
+
+// ---------- cenas ----------
+const SCENES = [
+  { // 1 · gancho: a semana 6x1 e o sábado virando folga
+    dur: 4.3, out: 'push',
+    draw(t) {
+      fillBg(C.navy); glow(W / 2, 900, 950, 'rgba(0,103,184,A)', 0.32)
+      icon('calendar', W / 2, 330, 120, C.sky, outCubic(prog(t, 0.05, 0.7)), 2)
+      week(t, 520, 0.2, 2.35)
+      punch('A escala', W / 2, 1010, 120, t, 0.75)
+      const sh = t > 2.3 && t < 2.6 ? Math.sin(t * 95) * 12 * (2.6 - t) * 3 : 0
+      g.save(); g.translate(sh, 0); punch([['6x1', C.bright]], W / 2, 1290, 280, t, 0.95, { from: 1.8 })
+      // risco vermelho atravessando o "6x1"
+      const sp = outQuint(prog(t, 2.2, 0.35))
+      if (sp > 0) { g.save(); g.translate(W / 2, 1195); g.rotate(-0.08); rr(-300, -14, 600 * sp, 28, 14, RED); g.restore() }
+      g.restore()
+      rise('tá com os dias', W / 2, 1530, 96, t, 2.55, { align: 'center' })
+      rise([['contados', C.sky], ['.', C.white]], W / 2, 1650, 96, t, 2.7, { align: 'center' })
+    },
+  },
+  { // 2 · equipe de folga, cliente chamando no sábado e ninguém responde
+    dur: 4.6, in: 'push', out: 'push',
+    draw(t) {
+      fillBg('#031631'); glow(W / 2, 1000, 900, 'rgba(0,103,184,A)', 0.2)
+      rise([['Mais folga ', C.sky], ['pra equipe.', C.white]], W / 2, 230, 84, t, 0.1, { align: 'center' })
+      const ps = spring(t - 0.3, 7, 11)
+      if (ps > 0) {
+        g.save(); g.translate(0, (1 - ps) * 700)
+        phone(250, 340, 580, 1100, '#ffffff', (sx, sy, sw) => {
+          setFont(30, 700, 0); g.fillStyle = C.ink; g.fillText('10:12', sx + 54, sy + 50)
+          g.fillStyle = '#f4f6f9'; g.fillRect(sx, sy + 80, sw, 130)
+          circle(sx + 74, sy + 145, 38, C.sky); setFont(36, 800, -0.01); g.fillStyle = C.ink; g.fillText('Cliente', sx + 130, sy + 140)
+          setFont(28, 500, 0); g.fillStyle = GREEN; g.fillText('online', sx + 130, sy + 178)
+          setFont(26, 600, 0); g.textAlign = 'center'; rr(sx + sw / 2 - 70, sy + 240, 140, 44, 22, '#eef1f5'); g.fillStyle = C.ink2; g.fillText('Sábado', sx + sw / 2, sy + 271); g.textAlign = 'left'
+          const lost = outCubic(prog(t, 2.6, 0.4))
+          ;[['Oi! Tá aberto hoje?', 0.7], ['Queria fazer um pedido', 1.1], ['Alguém??', 1.6]].forEach(([s, st], i) => {
+            g.globalAlpha = lerp(1, 0.45, lost); bubble(s, sx + 36, sy + 330 + i * 118, spring(t - st, 10, 14), { size: 38, bg: '#e9edf2', weight: 500 }); g.globalAlpha = 1
+          })
+        })
+        g.restore()
+      }
+      stamp('FECHADO', W / 2, 1080, t, 2.6)
+      rise('Mas e o cliente', W / 2, 1610, 80, t, 2.0, { align: 'center' })
+      rise([['que chama no ', C.white], ['sábado?', '#ff6b6b']], W / 2, 1720, 80, t, 2.2, { align: 'center' })
+    },
+  },
+  { // 3 · a virada: "Seu site não tira folga."
+    dur: 2.4, in: 'push', out: 'zoom',
+    draw(t) {
+      fillBg(C.blue); glow(W / 2, 800, 900, 'rgba(255,255,255,A)', 0.13)
+      punch('Seu site', W / 2, 700, 135, t, 0.08)
+      punch('não tira', W / 2, 850, 135, t, 0.24)
+      punch([['folga', C.white], ['.', C.navy]], W / 2, 1090, 230, t, 0.44, { from: 1.6 })
+      const bs = spring(t - 0.95)
+      if (bs > 0) {
+        for (let i = 0; i < 3; i++) { const a = t * 2.4 + (i * Math.PI * 2) / 3, r = 190 * bs; circle(W / 2 + Math.cos(a) * r, 1420 + Math.sin(a) * r * 0.45, 22 * bs, C.white, 0.85) }
+        g.save(); g.translate(W / 2, 1420); g.scale(bs, bs); circle(0, 0, 120, C.white); g.restore()
+        icon('globe', W / 2, 1420, 130, C.blue, outCubic(prog(t, 1.05, 0.5)), 2.2)
+      }
+    },
+  },
+  { // 4 · o site atendendo e vendendo no sábado, domingo e feriado
+    dur: 5.2, in: 'zoom', out: 'zoom',
+    draw(t) {
+      fillBg('#ffffff'); glow(W / 2, 900, 900, 'rgba(0,103,184,A)', 0.07)
+      rise([['Ele atende e vende ', C.ink], ['todo dia', C.blue], [':', C.ink]], W / 2, 210, 66, t, 0.05, { align: 'center' })
+      const ps = spring(t - 0.15, 7, 11)
+      if (ps > 0) phoneAt(PH.cx, PH.cy + (1 - ps) * 800, 1, (sx, sy, sw, sh) => siteScreen(t, sx, sy, sw, sh))
+      ;[['bag', 'Novo pedido', 'Sábado · pago no Pix', '10:14'], ['chat', 'Nova mensagem', 'Domingo · "tem horário?"', '21:40'], ['bag', 'Novo pedido', 'Feriado · cartão', '08:05']].forEach(([ic, a, b, h], i) => {
+        notifIc(ic, a, b, h, 330 + i * 175, spring(t - 2.0 - i * 0.4, 9, 13))
+      })
+      rise([['Enquanto a equipe ', C.ink], ['descansa.', C.blue]], W / 2, 1760, 68, t, 3.4, { align: 'center' })
+    },
+  },
+  { // 5 · final: marca + contato
+    dur: 5.0, in: 'zoom',
+    draw(t) {
+      fillBg(C.navy); glow(W / 2, 1000, 950, 'rgba(0,103,184,A)', 0.35)
+      punch('Seu site no ar', W / 2, 420, 116, t, 0.15)
+      punch([['em até ', C.white], ['5 dias', C.sky]], W / 2, 560, 116, t, 0.32)
+      const MH = 250, mw = monoWidth(MH)
+      logo((W - mw) / 2, 720, MH, t, 0.75)
+      const pp = spring(t - 2.3)
+      if (pp > 0) {
+        g.save(); g.translate(W / 2, 1360); g.scale(pp, pp)
+        g.shadowColor = 'rgba(0,0,0,.35)'; g.shadowBlur = 40; g.shadowOffsetY = 14
+        rr(-420, -75, 840, 150, 75, '#ffffff'); g.shadowColor = 'transparent'
+        icon('chat', -320, 0, 62, C.blue, outCubic(prog(t, 2.4, 0.5)), 2.4)
+        setFont(60, 800, -0.01); g.fillStyle = C.blue; g.fillText(WHATS, -262, 21); g.restore()
+      }
+      rise([['fantin.tech', C.sky]], W / 2, 1530, 56, t, 2.55, { align: 'center', weight: 600 })
+      rise([['Landing page a partir de R$ 400', 'rgba(255,255,255,.7)']], W / 2, 1640, 42, t, 2.75, { align: 'center', weight: 500 })
+    },
+  },
+]
+
+// cada cena começa onde a anterior termina, menos a sobreposição da transição
+SCENES.forEach((s, i) => { const p = SCENES[i - 1]; s.start = p ? p.end - (p.out && p.out !== 'cut' ? TR : 0) : 0; s.end = s.start + s.dur })
+const DURATION = SCENES[SCENES.length - 1].end
+
+// ---------- composição: cada cena numa camada; transições entre camadas ----------
+const layer = document.createElement('canvas'); layer.width = W; layer.height = H
+const lctx = layer.getContext('2d')
+function render(t) {
+  octx.save(); octx.fillStyle = C.navy; octx.fillRect(0, 0, W, H)
+  SCENES.forEach((s) => {
+    if (t < s.start || t >= s.end) return
+    const lt = t - s.start
+    g = lctx; g.save(); g.clearRect(0, 0, W, H)
+    // leve aproximação contínua da câmera em cada cena: nada fica parado
+    const z = 1 + (s.cam ?? 0.035) * (lt / (s.end - s.start))
+    g.translate(W / 2, H / 2); g.scale(z, z); g.translate(-W / 2, -H / 2)
+    s.draw(lt); g.restore(); g.filter = 'none'; g.globalAlpha = 1
+    // transições
+    let alpha = 1, scale = 1, dy = 0, blur = 0
+    const pin = s.in ? inOutQuint(prog(lt, 0, TR)) : 1
+    const pout = s.out && s.out !== 'cut' ? inOutQuint(prog(t, s.end - TR, TR)) : 0
+    if (s.in === 'zoom') { scale *= lerp(0.86, 1, pin); alpha *= clamp(pin * 1.6); blur += (1 - pin) * 14 }
+    if (s.in === 'push') { dy += (1 - pin) * H * 0.55; blur += (1 - pin) * 14 }
+    if (s.out === 'zoom') { scale *= lerp(1, 1.25, pout); alpha *= 1 - pout * 0.35; blur += pout * 14 }
+    if (s.out === 'push') { dy -= pout * H * 0.45; blur += pout * 14; alpha *= 1 - pout * 0.6 }
+    octx.save(); octx.globalAlpha = alpha; if (blur > 0.3) octx.filter = `blur(${blur}px)`
+    octx.translate(W / 2, H / 2 + dy); octx.scale(scale, scale); octx.translate(-W / 2, -H / 2)
+    octx.drawImage(layer, 0, 0); octx.restore()
+  })
+  octx.restore()
+}
+
+// ---------- efeitos sonoros ----------
+// Todos os sons são sintetizados aqui (sem arquivos de terceiros) e marcados no tempo exato de cada animação.
+const SR = 48000
+const SCN = Object.fromEntries(SCENES.map((s, i) => [i + 1, s.start])) // início de cada cena, para escrever os tempos em relação a ela
+
+// Narração (ElevenLabs): uma fala por cena, gerada por scripts/tts-6x1.mjs em marca/audio/6x1-N.mp3.
+// Sem os arquivos, o reel sai só com os efeitos (e o texto na tela conta a história do mesmo jeito).
+const VOICE = [
+  [1, 0.15, 'A escala seis por um tá com os dias contados.'],
+  [2, 0.1, 'Mais folga pra equipe. Mas e o cliente que chama no sábado?'],
+  [3, 0.05, 'Seu site não tira folga.'],
+  [4, 0.15, 'Ele mostra seus produtos, atende no WhatsApp e vende até no domingo.'],
+  [5, 0.15, 'Site no ar em até cinco dias. Chama a Fantin no WhatsApp.'],
+]
+let VOICE_BUFS = []
+async function loadVoice() {
+  const dec = new OfflineAudioContext(2, 1, SR)
+  VOICE_BUFS = await Promise.all(VOICE.map(async (_, i) => {
+    try { const r = await fetch(`audio/6x1-${i + 1}.mp3`, { cache: 'no-store' }); if (!r.ok) return null; return await dec.decodeAudioData(await r.arrayBuffer()) } catch { return null }
+  }))
+  return VOICE_BUFS.filter(Boolean).length
+}
+
+function buildCues() {
+  const c = []
+  const at = (scene, lt) => SCN[scene] + lt
+  // 1 · semana 6x1
+  c.push(['air', at(1, 0.05), { f: 800 }])
+  DAYS.forEach((_, i) => c.push(['pop', at(1, 0.2 + i * 0.07), { f: 520 + i * 60 }]))
+  c.push(['thump', at(1, 0.75), { gain: 0.5, f: 115 }])
+  c.push(['impact', at(1, 0.95)])
+  c.push(['swish', at(1, 2.2), { dur: 0.3 }])
+  c.push(['ding', at(1, 2.53), { f: 1047, gain: 0.35 }])
+  c.push(['whoosh', SCENES[0].end - TR - 0.05, { dur: 0.45 }])
+  // 2 · cliente no sábado
+  c.push(['swish', at(2, 0.3), { dur: 0.3 }])
+  ;[0.7, 1.1, 1.6].forEach((t, i) => c.push(['notif', at(2, t), { f: 988 + i * 60, gain: 0.2 }]))
+  c.push(['impact', at(2, 2.6)])
+  c.push(['error', at(2, 2.7)])
+  c.push(['whoosh', SCENES[1].end - TR - 0.05, { dur: 0.45, up: true }])
+  // 3 · virada
+  c.push(['thump', at(3, 0.08), { gain: 0.5, f: 120 }])
+  c.push(['thump', at(3, 0.24), { gain: 0.5, f: 110 }])
+  c.push(['impact', at(3, 0.44)])
+  c.push(['pop', at(3, 0.95), { f: 660 }])
+  c.push(['shimmer', at(3, 1.1)])
+  c.push(['whoosh', SCENES[2].end - TR - 0.05, { dur: 0.45 }])
+  // 4 · site vendendo
+  c.push(['swish', at(4, 0.15), { dur: 0.3 }])
+  c.push(['pop', at(4, 1.25), { f: 700 }])
+  ;[0, 1, 2].forEach((i) => { c.push(['notif', at(4, 2.0 + i * 0.4), { f: 1319 + i * 120, gain: 0.3 }]); if (i !== 1) c.push(['cash', at(4, 2.08 + i * 0.4)]) })
+  c.push(['whoosh', SCENES[3].end - TR - 0.05, { dur: 0.45 }])
+  // 5 · final
+  c.push(['thump', at(5, 0.15), { gain: 0.45, f: 110 }])
+  c.push(['thump', at(5, 0.32), { gain: 0.5, f: 100 }])
+  c.push(['pop', at(5, 2.3), { f: 660 }])
+  c.push(['ding', at(5, 2.35), { f: 784, gain: 0.5, long: true }])
+  c.push(['thump', at(5, 2.35), { gain: 0.6, f: 70 }])
+  c.push(['pad', at(5, 0.2), { dur: DURATION - SCN[5] - 0.2 }])
+  return c
+}
+
+// Ruído branco reaproveitado
+let NOISE = null
+function noiseBuf(ac) { if (!NOISE) { NOISE = ac.createBuffer(1, SR * 2, SR); const d = NOISE.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1 } return NOISE }
+function env(ac, node, t, a, peak, dec, out) {
+  const g = ac.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + dec)
+  node.connect(g); g.connect(out); return g
+}
+function osc(ac, type, f0, f1, t, dur) { const o = ac.createOscillator(); o.type = type; o.frequency.setValueAtTime(f0, t); if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t + dur); o.start(t); o.stop(t + dur + 0.05); return o }
+function noise(ac, t, dur) { const s = ac.createBufferSource(); s.buffer = noiseBuf(ac); s.start(t, Math.random()); s.stop(t + dur + 0.05); return s }
+function filt(ac, type, f, q = 1) { const b = ac.createBiquadFilter(); b.type = type; b.frequency.value = f; b.Q.value = q; return b }
+function pan(ac, from, to, t, dur, out) { const p = ac.createStereoPanner(); p.pan.setValueAtTime(from, t); p.pan.linearRampToValueAtTime(to, t + dur); p.connect(out); return p }
+
+const SFX = {
+  thump(ac, t, o, out) { env(ac, osc(ac, 'sine', o.f * 1.6, o.f * 0.45, t, 0.18), t, 0.004, o.gain, 0.22, out) },
+  thud(ac, t, o, out) { env(ac, osc(ac, 'sine', o.f, o.f * 0.5, t, 0.12), t, 0.003, 0.45, 0.16, out); const n = noise(ac, t, 0.05), lp = filt(ac, 'lowpass', 900); n.connect(lp); env(ac, lp, t, 0.002, 0.12, 0.06, out) },
+  impact(ac, t, o, out) {
+    env(ac, osc(ac, 'sine', 160, 38, t, 0.55), t, 0.003, 0.95, 0.6, out)
+    const n = noise(ac, t, 0.6), lp = filt(ac, 'lowpass', 2400); lp.frequency.setValueAtTime(4000, t); lp.frequency.exponentialRampToValueAtTime(300, t + 0.5); n.connect(lp); env(ac, lp, t, 0.002, 0.35, 0.55, out)
+  },
+  blip(ac, t, o, out) { env(ac, osc(ac, 'sine', o.f * 0.8, o.f, t, 0.06), t, 0.003, 0.22, 0.12, out) },
+  pop(ac, t, o, out) { env(ac, osc(ac, 'sine', o.f * 0.55, o.f * 1.15, t, 0.07), t, 0.002, 0.32, 0.1, out); const n = noise(ac, t, 0.02), hp = filt(ac, 'highpass', 3000); n.connect(hp); env(ac, hp, t, 0.001, 0.08, 0.02, out) },
+  key(ac, t, o, out) { const n = noise(ac, t, 0.03), bp = filt(ac, 'bandpass', 2600 + Math.random() * 1800, 2.5); n.connect(bp); env(ac, bp, t + (Math.random() - 0.5) * 0.008, 0.001, 0.22 + Math.random() * 0.12, 0.035, pan(ac, (Math.random() - 0.5) * 0.4, 0, t, 0.01, out)) },
+  tick(ac, t, o, out) { env(ac, osc(ac, 'sine', o.f, o.f, t, 0.04), t, 0.001, o.gain ?? 0.2, 0.05, out) },
+  ding(ac, t, o, out) { const d = o.long ? 2.2 : 1.1; [[1, 1], [2.003, 0.35], [3.01, 0.15]].forEach(([m, a]) => env(ac, osc(ac, 'sine', o.f * m, o.f * m, t, d), t, 0.004, o.gain * a, d, out)) },
+  error(ac, t, o, out) { [[330, 0], [233, 0.13]].forEach(([f, d]) => { const s = osc(ac, 'square', f, f, t + d, 0.12), lp = filt(ac, 'lowpass', 1400); s.connect(lp); env(ac, lp, t + d, 0.004, 0.13, 0.13, out) }) },
+  whoosh(ac, t, o, out) {
+    const n = noise(ac, t, o.dur), bp = filt(ac, 'bandpass', 500, 0.9)
+    bp.frequency.setValueAtTime(o.up ? 300 : 2500, t); bp.frequency.exponentialRampToValueAtTime(o.up ? 3500 : 350, t + o.dur)
+    n.connect(bp)
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.55, t + o.dur * 0.55); g.gain.exponentialRampToValueAtTime(0.0001, t + o.dur)
+    bp.connect(g); g.connect(pan(ac, -0.6, 0.6, t, o.dur, out))
+  },
+  swish(ac, t, o, out) { SFX.whoosh(ac, t, { dur: o.dur, up: true }, out) },
+  swell(ac, t, o, out) {
+    const n = noise(ac, t, o.dur), bp = filt(ac, 'bandpass', 400, 0.7); bp.frequency.setValueAtTime(200, t); bp.frequency.exponentialRampToValueAtTime(5000, t + o.dur)
+    n.connect(bp); const g = ac.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5, t + o.dur * 0.9); g.gain.exponentialRampToValueAtTime(0.0001, t + o.dur + 0.08); bp.connect(g); g.connect(out)
+    const s = osc(ac, 'sawtooth', 110, 440, t, o.dur), lp = filt(ac, 'lowpass', 900); s.connect(lp); const g2 = ac.createGain(); g2.gain.setValueAtTime(0.0001, t); g2.gain.exponentialRampToValueAtTime(0.08, t + o.dur * 0.9); g2.gain.exponentialRampToValueAtTime(0.0001, t + o.dur + 0.05); lp.connect(g2); g2.connect(out)
+  },
+  fall(ac, t, o, out) { env(ac, osc(ac, 'sine', o.from ?? 1400, o.to ?? 260, t, o.dur), t, 0.01, 0.16, o.dur, out) },
+  rocket(ac, t, o, out) {
+    const n = noise(ac, t, o.dur), bp = filt(ac, 'bandpass', 300, 1.2); bp.frequency.setValueAtTime(250, t); bp.frequency.exponentialRampToValueAtTime(4200, t + o.dur)
+    n.connect(bp); const g = ac.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.6, t + o.dur * 0.6); g.gain.exponentialRampToValueAtTime(0.0001, t + o.dur)
+    bp.connect(g); g.connect(pan(ac, -0.9, 0.9, t, o.dur, out))
+    const s = osc(ac, 'sawtooth', 90, 600, t, o.dur), lp = filt(ac, 'lowpass', 1200); s.connect(lp); env(ac, lp, t, o.dur * 0.5, 0.07, o.dur * 0.5, out)
+  },
+  shimmer(ac, t, o, out) { [2637, 2349, 2093, 1760, 1568, 1319, 1175, 988, 880].forEach((f, i) => env(ac, osc(ac, 'sine', f, f, t + i * 0.07, 0.5), t + i * 0.07, 0.004, 0.06, 0.45, pan(ac, Math.sin(i) * 0.6, Math.sin(i) * 0.6, t, 0.01, out))) },
+  cash(ac, t, o, out) { [[1319, 0], [1760, 0.08]].forEach(([f, d]) => env(ac, osc(ac, 'triangle', f, f, t + d, 0.4), t + d, 0.003, 0.22, 0.35, out)) },
+  air(ac, t, o, out) { const n = noise(ac, t, 0.3), bp = filt(ac, 'bandpass', o.f, 1.5); bp.frequency.exponentialRampToValueAtTime(o.f * 2.5, t + 0.25); n.connect(bp); env(ac, bp, t, 0.05, 0.12, 0.25, out) },
+  pad(ac, t, o, out) {
+    // acorde suave por baixo do final (Ré maior com 9ª), entra e sai devagar
+    ;(o.chord || [146.83, 220, 293.66, 369.99, 659.25]).forEach((f, i) => {
+      const s = osc(ac, 'sine', f, f, t, o.dur), g = ac.createGain()
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime((o.gain ?? 0.045) - i * 0.004, t + 1.2); g.gain.setValueAtTime((o.gain ?? 0.045) - i * 0.004, t + o.dur - 1.2); g.gain.exponentialRampToValueAtTime(0.0001, t + o.dur)
+      s.connect(g); g.connect(out)
+    })
+  },
+  // aviso de mensagem: duas notas curtas subindo
+  notif(ac, t, o, out) { [[1, 0], [1.335, 0.075]].forEach(([m, d]) => env(ac, osc(ac, 'sine', o.f * m, o.f * m, t + d, 0.18), t + d, 0.003, o.gain ?? 0.2, 0.16, out)) },
+}
+
+// Renderiza a trilha toda num buffer (offline): mesmos sons na prévia e no MP4
+let AUDIO = null
+async function renderAudio() {
+  const ac = new OfflineAudioContext(2, Math.ceil(DURATION * SR), SR)
+  const master = ac.createGain(); master.gain.value = 0.9
+  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4; comp.attack.value = 0.003; comp.release.value = 0.15
+  master.connect(comp); comp.connect(ac.destination)
+  // reverb curto (sala) em envio paralelo, para os sons não ficarem secos
+  const ir = ac.createBuffer(2, SR * 1.4, SR)
+  for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3) }
+  const verb = ac.createConvolver(); verb.buffer = ir
+  const wet = ac.createGain(); wet.gain.value = 0.18; verb.connect(wet); wet.connect(master)
+  const bus = ac.createGain(); bus.connect(master); bus.connect(verb)
+  buildCues().forEach(([name, t, o = {}]) => SFX[name](ac, Math.max(0.001, t), o, bus))
+  // narração por cima, com os efeitos mais baixos para a voz ficar clara
+  if (VOICE_BUFS.some(Boolean)) bus.gain.value = 0.5
+  VOICE.forEach(([sc, off], i) => { const b = VOICE_BUFS[i]; if (!b) return; const src = ac.createBufferSource(); src.buffer = b; const vg = ac.createGain(); vg.gain.value = 1.5; src.connect(vg); vg.connect(master); src.start(SCN[sc] + off) })
+  AUDIO = await ac.startRendering()
+  // normaliza o pico em -1 dB: volume forte sem estourar
+  let peak = 0
+  for (let ch = 0; ch < 2; ch++) { const d = AUDIO.getChannelData(ch); for (let i = 0; i < d.length; i++) peak = Math.max(peak, Math.abs(d[i])) }
+  const k = 0.89 / (peak || 1)
+  for (let ch = 0; ch < 2; ch++) { const d = AUDIO.getChannelData(ch); for (let i = 0; i < d.length; i++) d[i] *= k }
+  return AUDIO
+}
+
+// ---------- prévia (com som) ----------
+let playing = false, t0 = 0, cur = 0, liveCtx = null, liveSrc = null
+const seek = document.getElementById('seek'), status = document.getElementById('status')
+function stopSound() { if (liveSrc) { try { liveSrc.stop() } catch {} liveSrc = null } }
+function startSound(from) {
+  if (!AUDIO) return
+  liveCtx = liveCtx || new AudioContext({ sampleRate: SR })
+  stopSound(); liveSrc = liveCtx.createBufferSource(); liveSrc.buffer = AUDIO; liveSrc.connect(liveCtx.destination); liveSrc.start(0, from)
+}
+function loop(now) {
+  if (!playing) return
+  cur = (now - t0) / 1000
+  if (cur >= DURATION) { cur = 0; t0 = now; startSound(0) }
+  render(cur); seek.value = (cur / DURATION) * 1000
+  requestAnimationFrame(loop)
+}
+document.getElementById('play').onclick = () => {
+  playing = !playing
+  if (playing) { t0 = performance.now() - cur * 1000; startSound(cur); requestAnimationFrame(loop) } else stopSound()
+  document.getElementById('play').textContent = playing ? '❚❚ Pausar' : '▶ Tocar'
+}
+seek.oninput = () => { playing = false; stopSound(); document.getElementById('play').textContent = '▶ Tocar'; cur = (seek.value / 1000) * DURATION; render(cur) }
+
+// ---------- exportação: vídeo H.264 + áudio AAC (WebCodecs + mp4-muxer) ----------
+async function exportMp4() {
+  const audio = AUDIO || (await renderAudio())
+  const muxer = new Mp4Muxer.Muxer({
+    target: new Mp4Muxer.ArrayBufferTarget(), fastStart: 'in-memory',
+    video: { codec: 'avc', width: W, height: H, frameRate: FPS },
+    audio: { codec: 'aac', numberOfChannels: 2, sampleRate: SR },
+  })
+  const enc = new VideoEncoder({ output: (chunk, meta) => muxer.addVideoChunk(chunk, meta), error: (e) => { status.textContent = 'Erro: ' + e.message } })
+  enc.configure({ codec: 'avc1.64002A', width: W, height: H, bitrate: 8_000_000, framerate: FPS })
+  const aenc = new AudioEncoder({ output: (chunk, meta) => muxer.addAudioChunk(chunk, meta), error: (e) => { status.textContent = 'Erro áudio: ' + e.message } })
+  aenc.configure({ codec: 'mp4a.40.2', sampleRate: SR, numberOfChannels: 2, bitrate: 192000 })
+  // áudio em blocos de 1024 amostras, canais separados (planar)
+  const L = audio.getChannelData(0), Rch = audio.getChannelData(1), N = 1024
+  for (let i = 0; i < audio.length; i += N) {
+    const n = Math.min(N, audio.length - i), data = new Float32Array(n * 2)
+    data.set(L.subarray(i, i + n), 0); data.set(Rch.subarray(i, i + n), n)
+    const ad = new AudioData({ format: 'f32-planar', sampleRate: SR, numberOfFrames: n, numberOfChannels: 2, timestamp: Math.round((i / SR) * 1e6), data })
+    aenc.encode(ad); ad.close()
+  }
+  const total = Math.round(DURATION * FPS)
+  for (let f = 0; f < total; f++) {
+    render(f / FPS)
+    // Captura o quadro como bitmap: VideoFrame direto do canvas repetia o primeiro quadro
+    const bmp = await createImageBitmap(out)
+    const frame = new VideoFrame(bmp, { timestamp: Math.round((f * 1e6) / FPS), duration: Math.round(1e6 / FPS) })
+    enc.encode(frame, { keyFrame: f % 120 === 0 }); frame.close(); bmp.close()
+    if (enc.encodeQueueSize > 10) await new Promise((r) => setTimeout(r, 5))
+    if (f % 60 === 0) status.textContent = `Exportando… ${Math.round((f / total) * 100)}%`
+  }
+  await enc.flush(); await aenc.flush(); muxer.finalize()
+  const blob = new Blob([muxer.target.buffer], { type: 'video/mp4' })
+  status.textContent = `Pronto: ${(blob.size / 1e6).toFixed(1)} MB · ${DURATION.toFixed(1)}s`
+  return blob
+}
+document.getElementById('export').onclick = async () => {
+  const blob = await exportMp4()
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'fantin-reel-6x1.mp4'; a.click()
+}
+window.__export = exportMp4
+
+;(async () => {
+  await document.fonts.ready
+  render(2.9)
+  const voices = await loadVoice()
+  await renderAudio()
+  status.textContent = `Duração: ${DURATION.toFixed(1)}s · ${voices ? voices + ' falas de narração' : 'sem narração (rode scripts/tts-6x1.mjs)'}`
+  window.__voices = voices
+  document.body.dataset.ready = '1'
+})()
+</script>
+</body>
+</html>
