@@ -1,0 +1,193 @@
+{
+  "video": "C:/Users/gfant/Downloads/4ioOmPXRswNwZycPXenxbg.mp4",
+  "voiceId": "TX3LPaxmHKxFdv7VOQHJ",
+  "duration": 66,
+  "lines": [
+    {
+      "at": 0.25,
+      "text": "O Congresso aprovou o fim da escala seis por um."
+    },
+    {
+      "at": 3.25,
+      "text": "E tem uma conta que quase nenhum dono de loja fez ainda."
+    },
+    {
+      "at": 6,
+      "text": "Essa é a semana de uma loja pequena."
+    },
+    {
+      "at": 9,
+      "text": "Seis dias aberta. A funcionária trabalha seis e folga um."
+    },
+    {
+      "at": 12.5,
+      "text": "A regra nova: dois dias de descanso por semana."
+    },
+    {
+      "at": 15.75,
+      "text": "Pro dono, a conta fecha de um jeito só:"
+    },
+    {
+      "at": 19,
+      "text": "ou contrata mais gente, ou reveza, ou fecha."
+    },
+    {
+      "at": 22.75,
+      "text": "Contratar custa. Revezar deixa o balcão vazio."
+    },
+    {
+      "at": 25.75,
+      "text": "E fechar perde venda."
+    },
+    {
+      "at": 28.5,
+      "text": "Aí um cliente chega no sábado,"
+    },
+    {
+      "at": 31.75,
+      "text": "e encontra a porta fechada."
+    },
+    {
+      "at": 34.75,
+      "text": "Ele não espera segunda-feira. Pega o celular,"
+    },
+    {
+      "at": 38,
+      "text": "pesquisa, e compra de quem respondeu primeiro."
+    },
+    {
+      "at": 41.25,
+      "text": "Agora, a mesma loja com um site:"
+    },
+    {
+      "at": 44.5,
+      "text": "atende domingo, feriado, três da manhã,"
+    },
+    {
+      "at": 47.75,
+      "text": "mostra o que você vende, quanto custa e como comprar,"
+    },
+    {
+      "at": 51.25,
+      "text": "e manda o pedido pronto pro seu WhatsApp."
+    },
+    {
+      "at": 54.5,
+      "text": "A lei mudou a semana da loja."
+    },
+    {
+      "at": 58,
+      "text": "Mas a do seu cliente continua tendo sete dias."
+    },
+    {
+      "at": 61.75,
+      "text": "Comenta site, que eu te mostro como a sua loja vende nos sete dias."
+    }
+  ],
+  "sfx": {
+    "whoosh": {
+      "prompt": "soft airy swoosh transition, clean, subtle, modern UI motion graphics",
+      "seconds": 0.8
+    },
+    "pop": {
+      "prompt": "tiny soft bubble pop, clean UI sound, gentle",
+      "seconds": 0.5
+    },
+    "tick": {
+      "prompt": "very soft short wooden click tick, minimal UI",
+      "seconds": 0.5
+    },
+    "thud": {
+      "prompt": "soft low muted thump, felt mallet on wood, subtle",
+      "seconds": 0.8
+    },
+    "nope": {
+      "prompt": "soft gentle two-note descending UI error tone, muted, not harsh",
+      "seconds": 0.6
+    },
+    "bubble": {
+      "prompt": "soft chat message bubble appear sound, light pluck",
+      "seconds": 0.6
+    },
+    "typing": {
+      "prompt": "quiet smartphone screen tapping, typing on glass touchscreen",
+      "seconds": 2
+    },
+    "steps": {
+      "prompt": "soft footsteps walking away on a smooth floor, light, fading out",
+      "seconds": 1.8
+    },
+    "rise": {
+      "prompt": "gentle magical rising shimmer with soft sparkle, hopeful reveal, clean",
+      "seconds": 1.6
+    },
+    "chime": {
+      "prompt": "pleasant short smartphone message notification chime, two soft notes",
+      "seconds": 1
+    },
+    "glow": {
+      "prompt": "soft warm glowing shimmer swell, airy, subtle",
+      "seconds": 1.5
+    },
+    "hit": {
+      "prompt": "soft cinematic logo hit with warm low boom and gentle reverb tail, not loud",
+      "seconds": 2
+    },
+    "trilha1": {
+      "prompt": "soft lo-fi hip hop instrumental music loop, mellow electric piano chords in a minor key, gentle muted kick and soft brushed snare, warm vinyl texture, thoughtful and calm, 90 BPM, background music",
+      "seconds": 30,
+      "loop": true
+    },
+    "trilha2": {
+      "prompt": "upbeat light pop instrumental music loop, bright plucked synth chords in a major key, bouncy bass, crisp claps and soft hi-hats, optimistic and modern, 100 BPM, background music for a product video",
+      "seconds": 30,
+      "loop": true
+    }
+  },
+  "cues": [
+    ["trilha1", 0, 2.2, 42.2],
+    ["trilha2", 40.8, 0.85],
+    ["whoosh", 0, 0.8],
+    ["tick", 6.5],
+    ["pop", 6.8, 0.6],
+    ["pop", 7.1, 0.5],
+    ["pop", 7.4, 0.5],
+    ["tick", 7.5],
+    ["tick", 8.25],
+    ["tick", 8.75],
+    ["tick", 9],
+    ["tick", 9.25],
+    ["tick", 9.75],
+    ["tick", 10.5],
+    ["thud", 10.5],
+    ["tick", 13],
+    ["thud", 13.75],
+    ["pop", 19.75],
+    ["pop", 21],
+    ["pop", 22],
+    ["nope", 23.1],
+    ["nope", 24.1],
+    ["nope", 26.1],
+    ["whoosh", 28.75],
+    ["bubble", 32.25],
+    ["thud", 32.4, 0.6],
+    ["bubble", 35.75],
+    ["typing", 36, 0.7],
+    ["bubble", 38.75],
+    ["steps", 39.2, 0.7],
+    ["whoosh", 40.8],
+    ["rise", 42],
+    ["glow", 44.7],
+    ["tick", 45.25],
+    ["tick", 45.5],
+    ["tick", 45.75],
+    ["tick", 46],
+    ["tick", 46.25],
+    ["tick", 46.5],
+    ["tick", 46.75],
+    ["chime", 52],
+    ["glow", 57.75],
+    ["whoosh", 61.4],
+    ["hit", 62]
+  ]
+}

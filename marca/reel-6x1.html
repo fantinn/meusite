@@ -357,7 +357,7 @@ const SCENES = [
         setFont(60, 800, -0.01); g.fillStyle = C.blue; g.fillText(WHATS, -262, 21); g.restore()
       }
       rise([['fantin.tech', C.sky]], W / 2, 1530, 56, t, 2.55, { align: 'center', weight: 600 })
-      rise([['Landing page a partir de R$ 400', 'rgba(255,255,255,.7)']], W / 2, 1640, 42, t, 2.75, { align: 'center', weight: 500 })
+      rise([['Orçamento em até 24h', 'rgba(255,255,255,.7)']], W / 2, 1640, 42, t, 2.75, { align: 'center', weight: 500 })
     },
   },
 ]
@@ -399,7 +399,7 @@ function render(t) {
 const SR = 48000
 const SCN = Object.fromEntries(SCENES.map((s, i) => [i + 1, s.start])) // início de cada cena, para escrever os tempos em relação a ela
 
-// Narração (ElevenLabs): uma fala por cena, gerada por scripts/tts-6x1.mjs em marca/audio/6x1-N.mp3.
+// Narração (ElevenLabs): uma fala por cena, gerada por scripts/tts.mjs 6x1 em marca/audio/6x1-N.mp3.
 // Sem os arquivos, o reel sai só com os efeitos (e o texto na tela conta a história do mesmo jeito).
 const VOICE = [
   [1, 0.15, 'A escala seis por um tá com os dias contados.'],
@@ -611,7 +611,7 @@ window.__export = exportMp4
   render(2.9)
   const voices = await loadVoice()
   await renderAudio()
-  status.textContent = `Duração: ${DURATION.toFixed(1)}s · ${voices ? voices + ' falas de narração' : 'sem narração (rode scripts/tts-6x1.mjs)'}`
+  status.textContent = `Duração: ${DURATION.toFixed(1)}s · ${voices ? voices + ' falas de narração' : 'sem narração (rode node scripts/tts.mjs 6x1)'}`
   window.__voices = voices
   document.body.dataset.ready = '1'
 })()

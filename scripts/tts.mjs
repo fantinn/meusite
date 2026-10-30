@@ -1,6 +1,7 @@
-// Gera a narração do reel da 6x1 com a ElevenLabs: uma fala por cena em marca/audio/6x1-N.mp3.
+// Gera a narração de um reel com a ElevenLabs: uma fala por cena em marca/audio/<nome>-N.mp3.
+// As falas vêm da lista VOICE do próprio gerador (marca/reel-<nome>.html), então o texto fica num lugar só.
 // Precisa de ELEVENLABS_API_KEY no .env (raiz do projeto). ELEVENLABS_VOICE_ID é opcional.
-// Uso: node scripts/tts-6x1.mjs   → depois abra marca/reel-6x1.html e exporte o MP4.
+// Uso: node scripts/tts.mjs 6x1   → depois abra marca/reel-6x1.html e exporte o MP4.
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -13,14 +14,14 @@ const KEY = process.env.ELEVENLABS_API_KEY || env.ELEVENLABS_API_KEY
 const VOICE_ID = process.env.ELEVENLABS_VOICE_ID || env.ELEVENLABS_VOICE_ID || 'JBFqnCBsd6RMkjVDRZzb'
 if (!KEY) { console.error('Falta ELEVENLABS_API_KEY no .env do meusite.'); process.exit(1) }
 
-// Mesmas falas de VOICE em marca/reel-6x1.html, na mesma ordem
-const LINES = [
-  'A escala seis por um tá com os dias contados.',
-  'Mais folga pra equipe. Mas e o cliente que chama no sábado?',
-  'Seu site não tira folga.',
-  'Ele mostra seus produtos, atende no WhatsApp e vende até no domingo.',
-  'Site no ar em até cinco dias. Chama a Fantin no WhatsApp.',
-]
+const name = process.argv[2]
+const html = name && join(root, 'marca', `reel-${name}.html`)
+if (!html || !existsSync(html)) { console.error('Uso: node scripts/tts.mjs <nome>  (ex.: 6x1, loja, sites)'); process.exit(1) }
+
+// Linhas no formato  [cena, atraso, 'texto'],  dentro de  const VOICE = [ ... ]
+const block = readFileSync(html, 'utf8').match(/const VOICE = \[([\s\S]*?)\n\]/)
+const LINES = block ? [...block[1].matchAll(/\[\s*\d+\s*,\s*[\d.]+\s*,\s*'([^']+)'\s*\]/g)].map((m) => m[1]) : []
+if (!LINES.length) { console.error(`Nenhuma fala em VOICE de ${html}`); process.exit(1) }
 
 const out = join(root, 'marca', 'audio')
 mkdirSync(out, { recursive: true })
@@ -39,6 +40,7 @@ for (const [i, text] of LINES.entries()) {
     }),
   })
   if (!res.ok) { console.error(`Fala ${i + 1}: ${res.status} ${await res.text()}`); process.exit(1) }
-  writeFileSync(join(out, `6x1-${i + 1}.mp3`), Buffer.from(await res.arrayBuffer()))
-  console.log(`ok 6x1-${i + 1}.mp3`)
+  const buf = Buffer.from(await res.arrayBuffer())
+  writeFileSync(join(out, `${name}-${i + 1}.mp3`), buf)
+  console.log(`ok ${name}-${i + 1}.mp3  ~${(buf.length / 16000).toFixed(1)}s  "${text}"`)
 }
