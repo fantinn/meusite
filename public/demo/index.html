@@ -53,8 +53,8 @@
   .balao.novo { animation: estalar .35s ease; }
   .servico { transition: transform .15s ease, border-color .15s ease; }
   .servico:active { transform: scale(.97); }
-  .foto svg { transition: transform .6s cubic-bezier(.2,.7,.2,1); }
-  .foto:hover svg { transform: scale(1.05); }
+  .foto img { transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .foto:hover img { transform: scale(1.05); }
   .faixa { animation: subir .6s 1.2s cubic-bezier(.2,.7,.2,1) both; }
 
   * { box-sizing: border-box; }
@@ -139,7 +139,8 @@
   .fotos { padding-bottom: 64px; }
   .fotos-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
   .foto { min-width: 0; aspect-ratio: 3 / 4; border-radius: 18px; background: var(--suave); position: relative; overflow: hidden; margin: 0; }
-  .foto svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .foto:first-child img { object-position: 50% 12%; }
   .foto figcaption { position: absolute; left: 12px; bottom: 12px; padding: 6px 12px; border-radius: 999px; background: var(--fundo); color: var(--tinta); font-size: .85rem; font-weight: 600; }
   .fotos .obs { margin-top: 16px; font-size: .95rem; opacity: .8; }
   .foto:first-child { grid-column: 1 / -1; aspect-ratio: 16 / 10; }
@@ -245,7 +246,7 @@
   <section class="fotos largura">
     <h2>Seu trabalho em destaque</h2>
     <div class="fotos-grade" id="fotos"></div>
-    <p class="obs">Imagens de exemplo. No site pronto entram as fotos do seu trabalho.</p>
+    <p class="obs">Fotos de exemplo, de banco de imagens. No site pronto entram as fotos do seu trabalho.</p>
   </section>
 </main>
 
@@ -334,15 +335,8 @@
     motivo: () => '<svg class="arcos" viewBox="0 0 320 220"><path d="M30 120 Q95 40 160 96" stroke-width="16"/><path d="M178 96 Q238 44 296 118" stroke-width="16"/><path class="fino" d="M52 160 Q96 186 142 162" stroke-width="5"/><path class="fino" d="M190 162 Q236 186 280 160" stroke-width="5"/></svg>',
   };
 
-  // Imagens de exemplo: ilustrações em SVG nas cores do tema (não são fotos do negócio).
-  const CENA_ESPACO = '<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="var(--suave)"/><rect y="300" width="300" height="100" fill="var(--tinta)" opacity=".12"/><path d="M90 300V150a60 60 0 0 1 120 0v150z" fill="var(--fundo)" stroke="var(--tinta)" stroke-width="5"/><path d="M112 290V160a38 38 0 0 1 26-36" fill="none" stroke="var(--cor)" stroke-width="5" stroke-linecap="round" opacity=".5"/><circle cx="48" cy="96" r="20" fill="var(--cor)"/><rect x="45" y="0" width="6" height="80" fill="var(--tinta)"/><rect x="214" y="250" width="62" height="56" rx="14" fill="var(--cor)"/><rect x="240" y="306" width="10" height="44" fill="var(--tinta)"/><rect x="216" y="346" width="58" height="8" rx="4" fill="var(--tinta)"/></svg>';
-  const CENA_DETALHE = '<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="var(--suave)"/><rect y="290" width="300" height="110" fill="var(--fundo)"/><rect x="60" y="170" width="52" height="124" rx="12" fill="var(--cor)"/><rect x="74" y="146" width="24" height="28" rx="6" fill="var(--tinta)"/><rect x="128" y="120" width="60" height="174" rx="16" fill="var(--tinta)"/><rect x="146" y="92" width="24" height="32" rx="6" fill="var(--cor)"/><rect x="140" y="190" width="36" height="44" rx="6" fill="var(--fundo)" opacity=".85"/><circle cx="226" cy="258" r="36" fill="var(--fundo)" stroke="var(--tinta)" stroke-width="5"/><circle cx="226" cy="258" r="18" fill="var(--cor)"/></svg>';
-  const CENAS = {
-    salao: '<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="var(--suave)"/><path d="M70 400c0-70 30-110 80-110s80 40 80 110z" fill="var(--fundo)"/><ellipse cx="150" cy="190" rx="58" ry="70" fill="var(--fundo)"/><path d="M84 200c-22-90 20-140 70-140s96 44 66 150c20 40 10 100-10 130-6-60-30-70-24-150-30 6-66-10-80-44-10 30-14 40-22 54z" fill="var(--cor)"/><path d="M96 330c-30-40-36-90-12-130" fill="none" stroke="var(--cor)" stroke-width="26" stroke-linecap="round"/></svg>',
-    barbearia: '<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="var(--suave)"/><path d="M60 400c0-64 36-100 90-100s90 36 90 100z" fill="var(--tinta)" opacity=".85"/><ellipse cx="150" cy="190" rx="60" ry="74" fill="#d9a77c"/><path d="M90 170c-4-70 30-96 62-96s64 22 60 96c-14-30-34-44-60-44s-48 14-62 44z" fill="var(--cor)"/><path d="M92 196c4 50 26 74 58 74s54-24 58-74c-6 26-26 36-58 36s-52-10-58-36z" fill="#3a2a22"/></svg>',
-    manicure: '<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="var(--suave)"/><path d="M70 400V250c0-20 30-20 30 0v-90c0-20 30-20 30 0v-20c0-20 30-20 30 0v24c0-20 30-20 30 0v100l22-40c10-18 36-4 28 16l-40 100v60z" fill="#e8b89a"/><rect x="72" y="234" width="26" height="30" rx="12" fill="var(--cor)"/><rect x="102" y="144" width="26" height="32" rx="12" fill="var(--cor)"/><rect x="132" y="124" width="26" height="32" rx="12" fill="var(--cor)"/><rect x="162" y="148" width="26" height="32" rx="12" fill="var(--cor)"/></svg>',
-    sobrancelha: '<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="var(--suave)"/><ellipse cx="150" cy="230" rx="118" ry="150" fill="#e8c3a6"/><path d="M52 176q44-44 84-10" fill="none" stroke="var(--cor)" stroke-width="14" stroke-linecap="round"/><path d="M164 166q40-34 84 10" fill="none" stroke="var(--cor)" stroke-width="14" stroke-linecap="round"/><path d="M66 222q30 22 60 0M174 222q30 22 60 0" fill="none" stroke="var(--tinta)" stroke-width="6" stroke-linecap="round"/><path d="M70 228l-8 10M84 234l-4 12M100 236v12M116 232l4 12M184 232l-4 12M200 236v12M216 234l4 12M230 228l8 10" stroke="var(--tinta)" stroke-width="4" stroke-linecap="round"/><path d="M128 320q22 14 44 0" fill="none" stroke="var(--cor)" stroke-width="8" stroke-linecap="round" opacity=".7"/></svg>',
-  };
+  // Fotos de exemplo: banco gratuito Pexels (licença livre para uso comercial), em /demo/img.
+  const LEGENDAS = { salao: ['O resultado', 'O espaço', 'Os produtos'], barbearia: ['O resultado', 'O espaço', 'O balcão'], manicure: ['O resultado', 'O atendimento', 'O cuidado'], sobrancelha: ['O resultado', 'O espaço', 'O atendimento'] };
 
   const params = new URLSearchParams(location.search);
   const slug = params.get('s') || (location.pathname.match(/^\/para\/([^/]+)/) || [])[1] || '';
@@ -395,8 +389,8 @@
   });
   balao.textContent = mensagem();
 
-  document.getElementById('fotos').innerHTML = [[CENAS[tipo], 'O resultado'], [CENA_ESPACO, 'O espaço'], [CENA_DETALHE, 'Os produtos']]
-    .map(([svg, legenda]) => `<figure class="foto">${svg}<figcaption>${legenda}</figcaption></figure>`).join('');
+  document.getElementById('fotos').innerHTML = LEGENDAS[tipo]
+    .map((legenda, i) => `<figure class="foto"><img src="/demo/img/${tipo}-${i + 1}.jpg" alt="" loading="lazy" width="900" height="1200"><figcaption>${legenda}</figcaption></figure>`).join('');
 
   // revelação ao rolar
   const alvos = document.querySelectorAll('.agendar h2, .agendar .apoio, .servicos li, .conversa, .info > div, .fotos h2, .foto, .proposta h2, .proposta p, .proposta .btn');
