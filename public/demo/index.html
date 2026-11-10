@@ -202,7 +202,7 @@
     </div>
     <div class="onde" id="onde">
       <h2>Onde fica</h2>
-      <p>Jacareí, SP</p>
+      <p id="cidade">Jacareí, SP</p>
       <p class="obs">No site pronto entram o seu endereço, o mapa do Google e o botão de como chegar.</p>
     </div>
   </section>
@@ -222,7 +222,7 @@
     <h2>Este é um modelo feito para <span data-nome></span>.</h2>
     <p>O site pronto vai ao ar em até 5 dias, com os seus serviços, as suas fotos e o seu WhatsApp. Ele também aparece no Google quando alguém procura pelo seu negócio.</p>
     <a class="btn btn-cor" data-quero href="https://wa.me/5527992864820">Quero esse site</a>
-    <small>Feito por Gabriel Fantin, de Jacareí. <a href="https://fantin.tech">fantin.tech</a></small>
+    <small>Feito por Gabriel Fantin, <span id="feito">de Jacareí</span>. <a href="https://fantin.tech">fantin.tech</a></small>
   </div>
 </footer>
 
@@ -233,6 +233,7 @@
 
 <script>
   // Leads: slug -> nome, tipo (salao | barbearia | manicure), nota e avaliações reais do Google Maps.
+  const SJC = 'São José dos Campos';
   const LEADS = {
     'diego-werner':    { n: 'Studiio Diego Werner', t: 'salao', nota: '5,0', av: 325 },
     'ju-passos':       { n: 'Ju Passos Arte & Beleza', t: 'salao', nota: '5,0', av: 126 },
@@ -242,24 +243,51 @@
     'tais-dias':       { n: 'Studio Tais Dias', t: 'manicure', nota: '5,0', av: 12 },
     'studio-divas':    { n: "Studio Diva's", t: 'salao', nota: '4,9', av: 12 },
     'rei-do-corte':    { n: 'Rei do Corte Hair Style', t: 'barbearia', nota: '5,0', av: 11 },
+    'ponto-hair':      { n: 'Ponto Hair', t: 'salao', nota: '4,4', av: 150 },
+    'studio-pires':    { n: 'Studio Pires Beauty Center', t: 'salao', nota: '5,0', av: 61 },
+    // São José dos Campos (c = cidade; sem c, vale Jacareí)
+    'a-experiencia':     { n: 'A Experiência', t: 'manicure', nota: '4,8', av: 353, c: SJC },
+    'mih-nail-designer': { n: 'Mih Nail Designer', t: 'manicure', nota: '4,8', av: 102, c: SJC },
+    'studio-tal':        { n: 'Studio Tal', t: 'manicure', nota: '5,0', av: 92, c: SJC },
+    'beatriz-amelia':    { n: 'Espaço Beatriz Amélia Nails', t: 'manicure', nota: '4,9', av: 81, c: SJC },
+    'nakamura-studio':   { n: 'Nakamura Studio', t: 'manicure', nota: '5,0', av: 79, c: SJC },
+    'joyce-larissa':     { n: 'Studio Joyce Larissa', t: 'manicure', nota: '5,0', av: 68, c: SJC },
+    'nathalia-cardial':  { n: 'Nathalia Cardial Nails', t: 'manicure', nota: '5,0', av: 53, c: SJC },
+    'top-nails':         { n: 'Studio Top Nails', t: 'manicure', nota: '4,9', av: 51, c: SJC },
+    'camila-santos':     { n: 'Camila Santos Manicure e Pedicure', t: 'manicure', nota: '5,0', av: 34, c: SJC },
+    'ana-nogueira':      { n: 'Studio Ana Nogueira', t: 'manicure', nota: '5,0', av: 30, c: SJC },
+    'moni':              { n: 'Moni Alongamento de Unhas', t: 'manicure', nota: '5,0', av: 24, c: SJC },
+    'mari-silva':        { n: 'Mari Silva Nails', t: 'manicure', nota: '5,0', av: 24, c: SJC },
+    'tais-roberta':      { n: 'Tais Roberta Nail Designer', t: 'manicure', nota: '5,0', av: 22, c: SJC },
+    'sttefany-nails':    { n: 'Sttefany Nails', t: 'manicure', nota: '5,0', av: 22, c: SJC },
+    'amanda-demetrio':   { n: 'Amanda Demétrio', t: 'manicure', nota: '5,0', av: 20, c: SJC },
+    'gabriela-oliveira': { n: 'Gabriela Oliveira Nail Designer', t: 'manicure', nota: '4,9', av: 19, c: SJC },
+    'taina-martins':     { n: 'Tainá Martins Studio de Unhas', t: 'manicure', nota: '5,0', av: 16, c: SJC },
+    'carla-santos':      { n: 'Studio Carla Santos', t: 'manicure', nota: '5,0', av: 13, c: SJC },
+    'suzam-nails':       { n: 'Suzam Nails', t: 'manicure', nota: '5,0', av: 12, c: SJC },
+    'roman-barbearia':   { n: 'Roman Barbearia', t: 'barbearia', nota: '5,0', av: 401, c: SJC },
+    'mardukbarber':      { n: 'Barbearia Mardukbarber', t: 'barbearia', nota: '4,9', av: 260, c: SJC },
+    'braga-barbearia':   { n: 'Braga Barbearia Visagista', t: 'barbearia', nota: '4,9', av: 212, c: SJC },
+    'thiago-valle':      { n: 'Thiago Valle Barbearia', t: 'barbearia', nota: '5,0', av: 211, c: SJC },
+    'caio-barbershop':   { n: 'Caio Barbershop', t: 'barbearia', nota: '5,0', av: 59, c: SJC },
   };
 
   const TIPOS = {
     salao: {
       padrao: 'Seu Salão',
-      chamada: 'Cabelo, cor e cuidado em Jacareí. Marque seu horário em um toque.',
+      chamada: 'Cabelo, cor e cuidado em {CIDADE}. Marque seu horário em um toque.',
       servicos: ['Corte', 'Escova', 'Coloração', 'Mechas', 'Hidratação', 'Penteado', 'Maquiagem', 'Progressiva'],
       motivo: n => `<div class="espelho"><span>${n.replace(/^(studiio|studio|salão|salao|espaço|espaco)\s+/i, '').charAt(0).toUpperCase()}</span></div>`,
     },
     barbearia: {
       padrao: 'Sua Barbearia',
-      chamada: 'Corte e barba em Jacareí. Marque seu horário em um toque.',
+      chamada: 'Corte e barba em {CIDADE}. Marque seu horário em um toque.',
       servicos: ['Corte', 'Barba', 'Corte e barba', 'Sobrancelha', 'Pezinho', 'Pigmentação'],
       motivo: () => '<div class="poste"></div>',
     },
     manicure: {
       padrao: 'Seu Studio',
-      chamada: 'Unhas feitas com calma em Jacareí. Marque seu horário em um toque.',
+      chamada: 'Unhas feitas com calma em {CIDADE}. Marque seu horário em um toque.',
       servicos: ['Manicure', 'Pedicure', 'Esmaltação em gel', 'Alongamento', 'Manutenção', 'Blindagem'],
       motivo: () => '<div class="esmaltes"><i></i><i></i><i></i><i></i><i></i></div>',
     },
@@ -275,7 +303,10 @@
   document.body.dataset.tipo = tipo;
   document.title = nome + ' | modelo de site';
   document.querySelectorAll('[data-nome]').forEach(el => { el.textContent = nome; });
-  document.getElementById('chamada').textContent = cfg.chamada;
+  const cidade = lead.c || params.get('c') || 'Jacareí';
+  document.getElementById('chamada').textContent = cfg.chamada.replace('{CIDADE}', cidade);
+  document.getElementById('cidade').textContent = cidade + ', SP';
+  document.getElementById('feito').textContent = cidade === 'Jacareí' ? 'de Jacareí' : 'aqui do Vale do Paraíba';
   document.getElementById('motivo').innerHTML = cfg.motivo(nome);
   document.getElementById('inicial').textContent = nome.charAt(0).toUpperCase();
 
