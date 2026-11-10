@@ -27,6 +27,36 @@
     --fundo: #f3f5ff; --tinta: #1c1a4a; --cor: #d92c68; --sobre-cor: #fff; --suave: #dde2ff;
   }
 
+  body[data-tipo="sobrancelha"] {
+    --fundo: #eef3ee; --tinta: #2a2320; --cor: #8a4b2f; --sobre-cor: #fff; --suave: #d9e5da;
+  }
+
+  /* sobrancelha: dois arcos que se desenham */
+  .arcos { width: 100%; height: auto; display: block; }
+  .arcos path { fill: none; stroke: var(--cor); stroke-linecap: round; stroke-dasharray: 400; stroke-dashoffset: 400; animation: desenhar 1.4s .5s cubic-bezier(.6,0,.2,1) forwards; }
+  .arcos path:nth-child(2) { animation-delay: .8s; }
+  .arcos path.fino { stroke: var(--tinta); opacity: .5; animation-delay: 1.5s; }
+  @keyframes desenhar { to { stroke-dashoffset: 0; } }
+
+  /* animações: uma entrada no topo, revelação ao rolar, resposta ao toque */
+  @keyframes subir { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+  @keyframes flutuar { 50% { transform: translateY(-10px); } }
+  @keyframes estalar { 0% { transform: scale(.94); } 60% { transform: scale(1.03); } 100% { transform: scale(1); } }
+  .hero h1 { animation: subir .8s cubic-bezier(.2,.7,.2,1) both; }
+  .hero .chamada { animation: subir .8s .15s cubic-bezier(.2,.7,.2,1) both; }
+  .hero .hero-acoes { animation: subir .8s .3s cubic-bezier(.2,.7,.2,1) both; }
+  .motivo { animation: subir .9s .25s cubic-bezier(.2,.7,.2,1) both; }
+  .motivo > * { animation: flutuar 6s 1.2s ease-in-out infinite; }
+  .motivo > .poste { animation: girar 5s linear infinite; }
+  .revela { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); transition-delay: var(--atraso, 0s); }
+  .revela.visivel { opacity: 1; transform: none; }
+  .balao.novo { animation: estalar .35s ease; }
+  .servico { transition: transform .15s ease, border-color .15s ease; }
+  .servico:active { transform: scale(.97); }
+  .foto svg { transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .foto:hover svg { transform: scale(1.05); }
+  .faixa { animation: subir .6s 1.2s cubic-bezier(.2,.7,.2,1) both; }
+
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body { margin: 0; background: var(--fundo); color: var(--tinta); font-family: var(--corpo); font-size: 17px; line-height: 1.55; padding-bottom: 76px; -webkit-font-smoothing: antialiased; }
@@ -108,7 +138,10 @@
   /* fotos */
   .fotos { padding-bottom: 64px; }
   .fotos-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
-  .foto { min-width: 0; aspect-ratio: 3 / 4; border-radius: 18px; background: var(--suave); display: grid; place-items: end start; padding: 14px; font-size: .9rem; font-weight: 500; }
+  .foto { min-width: 0; aspect-ratio: 3 / 4; border-radius: 18px; background: var(--suave); position: relative; overflow: hidden; margin: 0; }
+  .foto svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .foto figcaption { position: absolute; left: 12px; bottom: 12px; padding: 6px 12px; border-radius: 999px; background: var(--fundo); color: var(--tinta); font-size: .85rem; font-weight: 600; }
+  .fotos .obs { margin-top: 16px; font-size: .95rem; opacity: .8; }
   .foto:first-child { grid-column: 1 / -1; aspect-ratio: 16 / 10; }
 
   /* proposta (quem fez) */
@@ -136,7 +169,9 @@
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .poste { animation: none; }
+    .poste, .motivo > .poste, .hero h1, .hero .chamada, .hero .hero-acoes, .motivo, .motivo > *, .faixa, .balao.novo { animation: none; }
+    .arcos path { animation: none; stroke-dashoffset: 0; }
+    .revela { opacity: 1; transform: none; transition: none; }
   }
 </style>
 </head>
@@ -209,11 +244,8 @@
 
   <section class="fotos largura">
     <h2>Seu trabalho em destaque</h2>
-    <div class="fotos-grade">
-      <div class="foto">Suas fotos entram aqui</div>
-      <div class="foto">Antes e depois</div>
-      <div class="foto">O espaço</div>
-    </div>
+    <div class="fotos-grade" id="fotos"></div>
+    <p class="obs">Imagens de exemplo. No site pronto entram as fotos do seu trabalho.</p>
   </section>
 </main>
 
@@ -243,6 +275,8 @@
     'tais-dias':       { n: 'Studio Tais Dias', t: 'manicure', nota: '5,0', av: 12 },
     'studio-divas':    { n: "Studio Diva's", t: 'salao', nota: '4,9', av: 12 },
     'rei-do-corte':    { n: 'Rei do Corte Hair Style', t: 'barbearia', nota: '5,0', av: 11 },
+    'julia-portugal':  { n: 'Studio Júlia Portugal', t: 'sobrancelha', c: 'Viana' },
+    'dg-cortes':       { n: 'DG Cortes', t: 'barbearia', c: 'Viana' },
     'ponto-hair':      { n: 'Ponto Hair', t: 'salao', nota: '4,4', av: 150 },
     'studio-pires':    { n: 'Studio Pires Beauty Center', t: 'salao', nota: '5,0', av: 61 },
     // São José dos Campos (c = cidade; sem c, vale Jacareí)
@@ -293,6 +327,23 @@
     },
   };
 
+  TIPOS.sobrancelha = {
+    padrao: 'Seu Studio',
+    chamada: 'Sobrancelhas desenhadas para o seu rosto em {CIDADE}. Marque seu horário em um toque.',
+    servicos: ['Design de sobrancelhas', 'Micropigmentação', 'Brow lamination', 'Design com henna', 'Lash lifting', 'Retoque'],
+    motivo: () => '<svg class="arcos" viewBox="0 0 320 220"><path d="M30 120 Q95 40 160 96" stroke-width="16"/><path d="M178 96 Q238 44 296 118" stroke-width="16"/><path class="fino" d="M52 160 Q96 186 142 162" stroke-width="5"/><path class="fino" d="M190 162 Q236 186 280 160" stroke-width="5"/></svg>',
+  };
+
+  // Imagens de exemplo: ilustrações em SVG nas cores do tema (não são fotos do negócio).
+  const CENA_ESPACO = '<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="var(--suave)"/><rect y="300" width="300" height="100" fill="var(--tinta)" opacity=".12"/><path d="M90 300V150a60 60 0 0 1 120 0v150z" fill="var(--fundo)" stroke="var(--tinta)" stroke-width="5"/><path d="M112 290V160a38 38 0 0 1 26-36" fill="none" stroke="var(--cor)" stroke-width="5" stroke-linecap="round" opacity=".5"/><circle cx="48" cy="96" r="20" fill="var(--cor)"/><rect x="45" y="0" width="6" height="80" fill="var(--tinta)"/><rect x="214" y="250" width="62" height="56" rx="14" fill="var(--cor)"/><rect x="240" y="306" width="10" height="44" fill="var(--tinta)"/><rect x="216" y="346" width="58" height="8" rx="4" fill="var(--tinta)"/></svg>';
+  const CENA_DETALHE = '<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="var(--suave)"/><rect y="290" width="300" height="110" fill="var(--fundo)"/><rect x="60" y="170" width="52" height="124" rx="12" fill="var(--cor)"/><rect x="74" y="146" width="24" height="28" rx="6" fill="var(--tinta)"/><rect x="128" y="120" width="60" height="174" rx="16" fill="var(--tinta)"/><rect x="146" y="92" width="24" height="32" rx="6" fill="var(--cor)"/><rect x="140" y="190" width="36" height="44" rx="6" fill="var(--fundo)" opacity=".85"/><circle cx="226" cy="258" r="36" fill="var(--fundo)" stroke="var(--tinta)" stroke-width="5"/><circle cx="226" cy="258" r="18" fill="var(--cor)"/></svg>';
+  const CENAS = {
+    salao: '<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="var(--suave)"/><path d="M70 400c0-70 30-110 80-110s80 40 80 110z" fill="var(--fundo)"/><ellipse cx="150" cy="190" rx="58" ry="70" fill="var(--fundo)"/><path d="M84 200c-22-90 20-140 70-140s96 44 66 150c20 40 10 100-10 130-6-60-30-70-24-150-30 6-66-10-80-44-10 30-14 40-22 54z" fill="var(--cor)"/><path d="M96 330c-30-40-36-90-12-130" fill="none" stroke="var(--cor)" stroke-width="26" stroke-linecap="round"/></svg>',
+    barbearia: '<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="var(--suave)"/><path d="M60 400c0-64 36-100 90-100s90 36 90 100z" fill="var(--tinta)" opacity=".85"/><ellipse cx="150" cy="190" rx="60" ry="74" fill="#d9a77c"/><path d="M90 170c-4-70 30-96 62-96s64 22 60 96c-14-30-34-44-60-44s-48 14-62 44z" fill="var(--cor)"/><path d="M92 196c4 50 26 74 58 74s54-24 58-74c-6 26-26 36-58 36s-52-10-58-36z" fill="#3a2a22"/></svg>',
+    manicure: '<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="var(--suave)"/><path d="M70 400V250c0-20 30-20 30 0v-90c0-20 30-20 30 0v-20c0-20 30-20 30 0v24c0-20 30-20 30 0v100l22-40c10-18 36-4 28 16l-40 100v60z" fill="#e8b89a"/><rect x="72" y="234" width="26" height="30" rx="12" fill="var(--cor)"/><rect x="102" y="144" width="26" height="32" rx="12" fill="var(--cor)"/><rect x="132" y="124" width="26" height="32" rx="12" fill="var(--cor)"/><rect x="162" y="148" width="26" height="32" rx="12" fill="var(--cor)"/></svg>',
+    sobrancelha: '<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><rect width="300" height="400" fill="var(--suave)"/><ellipse cx="150" cy="230" rx="118" ry="150" fill="#e8c3a6"/><path d="M52 176q44-44 84-10" fill="none" stroke="var(--cor)" stroke-width="14" stroke-linecap="round"/><path d="M164 166q40-34 84 10" fill="none" stroke="var(--cor)" stroke-width="14" stroke-linecap="round"/><path d="M66 222q30 22 60 0M174 222q30 22 60 0" fill="none" stroke="var(--tinta)" stroke-width="6" stroke-linecap="round"/><path d="M70 228l-8 10M84 234l-4 12M100 236v12M116 232l4 12M184 232l-4 12M200 236v12M216 234l4 12M230 228l8 10" stroke="var(--tinta)" stroke-width="4" stroke-linecap="round"/><path d="M128 320q22 14 44 0" fill="none" stroke="var(--cor)" stroke-width="8" stroke-linecap="round" opacity=".7"/></svg>',
+  };
+
   const params = new URLSearchParams(location.search);
   const slug = params.get('s') || (location.pathname.match(/^\/para\/([^/]+)/) || [])[1] || '';
   const lead = LEADS[slug] || {};
@@ -338,10 +389,22 @@
       b.setAttribute('aria-pressed', String(on));
       on ? escolhidos.add(s) : escolhidos.delete(s);
       balao.textContent = mensagem();
+      balao.classList.remove('novo'); void balao.offsetWidth; balao.classList.add('novo');
     });
     li.appendChild(b); lista.appendChild(li);
   });
   balao.textContent = mensagem();
+
+  document.getElementById('fotos').innerHTML = [[CENAS[tipo], 'O resultado'], [CENA_ESPACO, 'O espaço'], [CENA_DETALHE, 'Os produtos']]
+    .map(([svg, legenda]) => `<figure class="foto">${svg}<figcaption>${legenda}</figcaption></figure>`).join('');
+
+  // revelação ao rolar
+  const alvos = document.querySelectorAll('.agendar h2, .agendar .apoio, .servicos li, .conversa, .info > div, .fotos h2, .foto, .proposta h2, .proposta p, .proposta .btn');
+  alvos.forEach((el, i) => { el.classList.add('revela'); if (el.matches('.servicos li, .foto')) el.style.setProperty('--atraso', (i % 8) * 0.06 + 's'); });
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visivel'); io.unobserve(e.target); } }), { threshold: 0.15 });
+    alvos.forEach(el => io.observe(el));
+  } else alvos.forEach(el => el.classList.add('visivel'));
 
   document.getElementById('enviar').addEventListener('click', () => {
     const aviso = document.getElementById('aviso');
