@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Modelo de site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;1,6..96,500&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* Modelo de site para prospecção. Um arquivo só, três temas: salao, barbearia, manicure.
+     Uso: /demo?s=slug (ou /para/slug em produção). Leads ficam no objeto LEADS, no fim do arquivo. */
+  :root {
+    --fundo: #fbf3f5; --tinta: #2b1528; --cor: #b4235f; --sobre-cor: #fff; --suave: #f1d3dd;
+    --zap: #12824a;
+    --display: 'Bodoni Moda', Georgia, serif;
+    --corpo: 'Figtree', system-ui, sans-serif;
+    --peso-display: 500; --aperto: -0.035em;
+  }
+  body[data-tipo="barbearia"] {
+    --fundo: #10292d; --tinta: #f1f5f2; --cor: #e3a72f; --sobre-cor: #10292d; --suave: #1c3f44;
+    --display: 'Archivo Black', 'Arial Black', sans-serif;
+    --peso-display: 400; --aperto: -0.02em;
+  }
+  body[data-tipo="manicure"] {
+    --fundo: #f3f5ff; --tinta: #1c1a4a; --cor: #d92c68; --sobre-cor: #fff; --suave: #dde2ff;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--fundo); color: var(--tinta); font-family: var(--corpo); font-size: 17px; line-height: 1.55; padding-bottom: 76px; -webkit-font-smoothing: antialiased; }
+  h1, h2, p, ul, dl, dd { margin: 0; }
+  ul { padding: 0; list-style: none; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--cor); outline-offset: 3px; border-radius: 6px; }
+  .largura { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 26px; border: 0; border-radius: 999px; font: 600 1rem var(--corpo); text-decoration: none; cursor: pointer; }
+  .btn-zap { background: var(--zap); color: #fff; }
+  .btn-zap svg { width: 20px; height: 20px; fill: currentColor; flex: none; }
+  .btn-cor { background: var(--cor); color: var(--sobre-cor); }
+
+  /* topo */
+  .topo { display: none; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; max-width: 1080px; margin: 0 auto; }
+  .topo-marca { font: var(--peso-display) 1.15rem/1.1 var(--display); letter-spacing: var(--aperto); }
+  .topo nav { display: none; gap: 28px; font-weight: 500; }
+  .topo nav a { text-decoration: none; }
+  .topo nav a:hover { text-decoration: underline; text-underline-offset: 5px; }
+
+  /* hero */
+  .hero { display: grid; gap: 36px; padding-top: 48px; padding-bottom: 56px; align-items: center; }
+  .hero h1 { font: var(--peso-display) clamp(2.9rem, 13vw, 6.6rem)/0.94 var(--display); letter-spacing: var(--aperto); text-wrap: balance; overflow-wrap: anywhere; }
+  .chamada { margin-top: 22px; font-size: 1.2rem; line-height: 1.45; max-width: 30ch; }
+  .hero-acoes { margin-top: 28px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; }
+  .nota-google { font-weight: 500; }
+  .nota-google b { color: var(--cor); font-weight: 700; }
+
+  /* motivo de cada tema */
+  .motivo { justify-self: center; width: min(74vw, 340px); }
+  /* salão: espelho em arco com a inicial */
+  .espelho { aspect-ratio: 4 / 5; border-radius: 999px 999px 18px 18px; background: linear-gradient(155deg, #fff 0%, var(--suave) 38%, #e3a9bd 100%); box-shadow: 0 0 0 10px var(--fundo), 0 0 0 12px var(--tinta); display: grid; place-items: center; position: relative; overflow: hidden; }
+  .espelho::before { content: ''; position: absolute; inset: -20% 55% -20% -10%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent); transform: rotate(18deg); }
+  .espelho span { font: italic 500 clamp(8rem, 38vw, 13rem)/1 var(--display); color: var(--cor); position: relative; }
+  /* barbearia: poste listrado */
+  .poste { height: 320px; width: 96px; margin: 0 auto; border-radius: 48px; border: 5px solid var(--tinta); background: repeating-linear-gradient(-38deg, var(--tinta) 0 26px, #c8372d 26px 52px, var(--tinta) 52px 78px, #2f6fb5 78px 104px); background-size: 100% 133px; animation: girar 5s linear infinite; }
+  @keyframes girar { to { background-position: 0 133px; } }
+  /* manicure: leque de esmaltes */
+  .esmaltes { display: flex; justify-content: center; align-items: flex-end; gap: 10px; height: 190px; }
+  .esmaltes i { width: 46px; height: 132px; border-radius: 23px 23px 9px 9px; transform-origin: 50% 100%; box-shadow: inset 8px 0 0 rgba(255,255,255,.28); }
+  .esmaltes i:nth-child(1) { background: #7a1f4b; transform: translateY(26px) rotate(-14deg); }
+  .esmaltes i:nth-child(2) { background: #d92c68; transform: translateY(8px) rotate(-7deg); }
+  .esmaltes i:nth-child(3) { background: #ff9db7; }
+  .esmaltes i:nth-child(4) { background: #f3c9a8; transform: translateY(8px) rotate(7deg); }
+  .esmaltes i:nth-child(5) { background: #5b5bd6; transform: translateY(26px) rotate(14deg); }
+
+  /* agendar */
+  .agendar { background: var(--suave); padding: 56px 0 44px; }
+  h2 { font: var(--peso-display) clamp(1.9rem, 6.5vw, 3rem)/1.05 var(--display); letter-spacing: var(--aperto); text-wrap: balance; }
+  .apoio { margin-top: 12px; max-width: 44ch; }
+  .agendar-grade { display: grid; gap: 28px; margin-top: 30px; }
+  .servicos { display: grid; gap: 10px; align-content: start; }
+  .servico { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 58px; padding: 0 20px; border-radius: 16px; border: 2px solid transparent; background: var(--fundo); color: var(--tinta); font: 600 1.05rem var(--corpo); text-align: left; cursor: pointer; }
+  .servico .marca { width: 24px; height: 24px; border-radius: 50%; border: 2px solid currentColor; opacity: .35; flex: none; display: grid; place-items: center; }
+  .servico[aria-pressed="true"] { border-color: var(--cor); }
+  .servico[aria-pressed="true"] .marca { opacity: 1; background: var(--cor); border-color: var(--cor); }
+  .servico[aria-pressed="true"] .marca::after { content: ''; width: 9px; height: 5px; border-left: 2.5px solid var(--sobre-cor); border-bottom: 2.5px solid var(--sobre-cor); transform: rotate(-45deg) translate(1px, -1px); }
+
+  .conversa { background: #e9e2d8; color: #1c2b21; border-radius: 26px; padding: 0 0 18px; overflow: hidden; align-self: start; box-shadow: 0 18px 40px -22px rgba(0,0,0,.45); }
+  .conversa-topo { display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: #0e5a3f; color: #fff; }
+  .conversa-foto { width: 40px; height: 40px; border-radius: 50%; background: var(--cor); color: var(--sobre-cor); display: grid; place-items: center; font: 600 1.1rem var(--corpo); flex: none; }
+  .conversa-nome { font-weight: 600; line-height: 1.2; }
+  .conversa-status { font-size: .85rem; opacity: .8; }
+  .balao { margin: 22px 18px 0 54px; padding: 12px 14px; background: #d6f6c7; border-radius: 14px 4px 14px 14px; font-size: 1rem; line-height: 1.4; min-height: 3.4em; }
+  .conversa .btn { margin: 18px 18px 0; width: calc(100% - 36px); }
+  .aviso { margin: 14px 18px 0; font-size: .95rem; font-weight: 500; }
+  .exemplo { margin-top: 26px; font-size: .95rem; opacity: .8; }
+
+  /* horário e endereço */
+  .info { padding-block: 56px; display: grid; gap: 40px; }
+  .info h2 { margin-bottom: 18px; }
+  .horarios div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid color-mix(in srgb, var(--tinta) 18%, transparent); max-width: 380px; }
+  .horarios dt { font-weight: 600; }
+  .onde p + p { margin-top: 8px; }
+  .info .obs { opacity: .8; font-size: .95rem; }
+  .horarios + .obs { margin-top: 14px; }
+
+  /* fotos */
+  .fotos { padding-bottom: 64px; }
+  .fotos-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+  .foto { min-width: 0; aspect-ratio: 3 / 4; border-radius: 18px; background: var(--suave); display: grid; place-items: end start; padding: 14px; font-size: .9rem; font-weight: 500; }
+  .foto:first-child { grid-column: 1 / -1; aspect-ratio: 16 / 10; }
+
+  /* proposta (quem fez) */
+  .proposta { background: var(--tinta); color: var(--fundo); padding: 56px 0 64px; }
+  .proposta h2 { max-width: 18ch; }
+  .proposta p { margin-top: 16px; max-width: 46ch; }
+  .proposta .btn { margin-top: 26px; }
+  .proposta small { display: block; margin-top: 22px; font-size: .95rem; opacity: .8; }
+
+  .faixa { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 8px 8px 18px; border-radius: 999px; background: var(--tinta); color: var(--fundo); box-shadow: 0 10px 30px -10px rgba(0,0,0,.55); font-size: .92rem; font-weight: 500; line-height: 1.25; }
+  .faixa .btn { min-height: 44px; padding: 0 18px; font-size: .95rem; white-space: nowrap; }
+
+  @media (min-width: 820px) {
+    body { font-size: 18px; }
+    .topo, .topo nav { display: flex; }
+    .hero { grid-template-columns: 1.25fr .75fr; padding-top: 48px; padding-bottom: 88px; }
+    .agendar { padding: 88px 0 64px; }
+    .agendar-grade { grid-template-columns: 1fr 380px; gap: 44px; }
+    .servicos { grid-template-columns: 1fr 1fr; }
+    .info { grid-template-columns: 1fr 1fr; padding-block: 88px; }
+    .fotos-grade { grid-template-columns: repeat(3, 1fr); }
+    .foto, .foto:first-child { grid-column: auto; aspect-ratio: 3 / 4; }
+    .proposta { padding: 88px 0 110px; }
+    .faixa { left: auto; right: 20px; bottom: 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .poste { animation: none; }
+  }
+</style>
+</head>
+<body data-tipo="salao">
+
+<header class="topo">
+  <span class="topo-marca" data-nome></span>
+  <nav aria-label="Seções">
+    <a href="#agendar">Serviços</a>
+    <a href="#horario">Horário</a>
+    <a href="#onde">Onde fica</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero largura">
+    <div>
+      <h1 data-nome></h1>
+      <p class="chamada" id="chamada"></p>
+      <div class="hero-acoes">
+        <a class="btn btn-zap" href="#agendar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.800 13.500L3 21l4.700-1.200A9 9 0 1 0 12 3Z"/></svg>
+          Agendar pelo WhatsApp
+        </a>
+        <span class="nota-google" id="nota" hidden></span>
+      </div>
+    </div>
+    <div class="motivo" id="motivo" aria-hidden="true"></div>
+  </section>
+
+  <section class="agendar" id="agendar">
+    <div class="largura">
+      <h2>O que você quer fazer?</h2>
+      <p class="apoio">Toque nos serviços. A mensagem fica pronta e você só envia.</p>
+      <div class="agendar-grade">
+        <ul class="servicos" id="servicos"></ul>
+        <div class="conversa">
+          <div class="conversa-topo">
+            <span class="conversa-foto" id="inicial" aria-hidden="true"></span>
+            <span>
+              <span class="conversa-nome" data-nome></span><br />
+              <span class="conversa-status">responde pelo WhatsApp</span>
+            </span>
+          </div>
+          <p class="balao" id="balao" aria-live="polite"></p>
+          <button class="btn btn-zap" id="enviar" type="button">Enviar no WhatsApp</button>
+          <p class="aviso" id="aviso" hidden></p>
+        </div>
+      </div>
+      <p class="exemplo">Serviços de exemplo. No site pronto entram os seus, com os seus preços.</p>
+    </div>
+  </section>
+
+  <section class="info largura">
+    <div id="horario">
+      <h2>Horário</h2>
+      <dl class="horarios">
+        <div><dt>Segunda a sexta</dt><dd>9h às 19h</dd></div>
+        <div><dt>Sábado</dt><dd>8h às 17h</dd></div>
+        <div><dt>Domingo</dt><dd>Fechado</dd></div>
+      </dl>
+      <p class="obs">Horário de exemplo. No site pronto entra o seu.</p>
+    </div>
+    <div class="onde" id="onde">
+      <h2>Onde fica</h2>
+      <p>Jacareí, SP</p>
+      <p class="obs">No site pronto entram o seu endereço, o mapa do Google e o botão de como chegar.</p>
+    </div>
+  </section>
+
+  <section class="fotos largura">
+    <h2>Seu trabalho em destaque</h2>
+    <div class="fotos-grade">
+      <div class="foto">Suas fotos entram aqui</div>
+      <div class="foto">Antes e depois</div>
+      <div class="foto">O espaço</div>
+    </div>
+  </section>
+</main>
+
+<footer class="proposta">
+  <div class="largura">
+    <h2>Este é um modelo feito para <span data-nome></span>.</h2>
+    <p>O site pronto vai ao ar em até 5 dias, com os seus serviços, as suas fotos e o seu WhatsApp. Ele também aparece no Google quando alguém procura pelo seu negócio.</p>
+    <a class="btn btn-cor" data-quero href="https://wa.me/5527992864820">Quero esse site</a>
+    <small>Feito por Gabriel Fantin, de Jacareí. <a href="https://fantin.tech">fantin.tech</a></small>
+  </div>
+</footer>
+
+<div class="faixa">
+  <span>Modelo feito para você</span>
+  <a class="btn btn-cor" data-quero href="https://wa.me/5527992864820">Quero esse site</a>
+</div>
+
+<script>
+  // Leads: slug -> nome, tipo (salao | barbearia | manicure), nota e avaliações reais do Google Maps.
+  const LEADS = {
+    'diego-werner':    { n: 'Studiio Diego Werner', t: 'salao', nota: '5,0', av: 325 },
+    'ju-passos':       { n: 'Ju Passos Arte & Beleza', t: 'salao', nota: '5,0', av: 126 },
+    'cafune-na-juba':  { n: 'Cafune na Juba', t: 'salao', nota: '5,0', av: 82 },
+    'pablo-rebello':   { n: 'Make and Hair by Pablo Rebello', t: 'salao', nota: '4,9', av: 15 },
+    'thuany-de-paula': { n: 'Studio Thuany de Paula', t: 'salao', nota: '5,0', av: 13 },
+    'tais-dias':       { n: 'Studio Tais Dias', t: 'manicure', nota: '5,0', av: 12 },
+    'studio-divas':    { n: "Studio Diva's", t: 'salao', nota: '4,9', av: 12 },
+    'rei-do-corte':    { n: 'Rei do Corte Hair Style', t: 'barbearia', nota: '5,0', av: 11 },
+  };
+
+  const TIPOS = {
+    salao: {
+      padrao: 'Seu Salão',
+      chamada: 'Cabelo, cor e cuidado em Jacareí. Marque seu horário em um toque.',
+      servicos: ['Corte', 'Escova', 'Coloração', 'Mechas', 'Hidratação', 'Penteado', 'Maquiagem', 'Progressiva'],
+      motivo: n => `<div class="espelho"><span>${n.replace(/^(studiio|studio|salão|salao|espaço|espaco)\s+/i, '').charAt(0).toUpperCase()}</span></div>`,
+    },
+    barbearia: {
+      padrao: 'Sua Barbearia',
+      chamada: 'Corte e barba em Jacareí. Marque seu horário em um toque.',
+      servicos: ['Corte', 'Barba', 'Corte e barba', 'Sobrancelha', 'Pezinho', 'Pigmentação'],
+      motivo: () => '<div class="poste"></div>',
+    },
+    manicure: {
+      padrao: 'Seu Studio',
+      chamada: 'Unhas feitas com calma em Jacareí. Marque seu horário em um toque.',
+      servicos: ['Manicure', 'Pedicure', 'Esmaltação em gel', 'Alongamento', 'Manutenção', 'Blindagem'],
+      motivo: () => '<div class="esmaltes"><i></i><i></i><i></i><i></i><i></i></div>',
+    },
+  };
+
+  const params = new URLSearchParams(location.search);
+  const slug = params.get('s') || (location.pathname.match(/^\/para\/([^/]+)/) || [])[1] || '';
+  const lead = LEADS[slug] || {};
+  const tipo = TIPOS[lead.t || params.get('t')] ? (lead.t || params.get('t')) : 'salao';
+  const cfg = TIPOS[tipo];
+  const nome = lead.n || params.get('n') || cfg.padrao;
+
+  document.body.dataset.tipo = tipo;
+  document.title = nome + ' | modelo de site';
+  document.querySelectorAll('[data-nome]').forEach(el => { el.textContent = nome; });
+  document.getElementById('chamada').textContent = cfg.chamada;
+  document.getElementById('motivo').innerHTML = cfg.motivo(nome);
+  document.getElementById('inicial').textContent = nome.charAt(0).toUpperCase();
+
+  if (lead.nota && lead.av >= 5) {
+    const nota = document.getElementById('nota');
+    nota.innerHTML = `<b>★ ${lead.nota}</b> no Google, com ${lead.av} avaliações`;
+    nota.hidden = false;
+  }
+
+  const quero = 'https://wa.me/5527992864820?text=' + encodeURIComponent(`Oi, Gabriel! Vi o modelo de site de ${nome} e quero saber mais.`);
+  document.querySelectorAll('[data-quero]').forEach(a => { a.href = quero; });
+
+  const lista = document.getElementById('servicos');
+  const balao = document.getElementById('balao');
+  const escolhidos = new Set();
+  function mensagem() {
+    const itens = [...escolhidos];
+    if (!itens.length) return 'Olá! Quero agendar um horário.';
+    const texto = itens.length === 1 ? itens[0] : itens.slice(0, -1).join(', ') + ' e ' + itens[itens.length - 1];
+    return `Olá! Quero agendar: ${texto.toLowerCase()}. Tem horário essa semana?`;
+  }
+  cfg.servicos.forEach(s => {
+    const li = document.createElement('li');
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'servico'; b.setAttribute('aria-pressed', 'false');
+    b.innerHTML = `<span>${s}</span><span class="marca" aria-hidden="true"></span>`;
+    b.addEventListener('click', () => {
+      const on = b.getAttribute('aria-pressed') !== 'true';
+      b.setAttribute('aria-pressed', String(on));
+      on ? escolhidos.add(s) : escolhidos.delete(s);
+      balao.textContent = mensagem();
+    });
+    li.appendChild(b); lista.appendChild(li);
+  });
+  balao.textContent = mensagem();
+
+  document.getElementById('enviar').addEventListener('click', () => {
+    const aviso = document.getElementById('aviso');
+    aviso.textContent = `No site pronto, essa mensagem chega direto no WhatsApp de ${nome}.`;
+    aviso.hidden = false;
+  });
+</script>
+</body>
+</html>

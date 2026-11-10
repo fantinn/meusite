@@ -8,6 +8,7 @@
       "permanent": true
     }
   ],
+  "rewrites": [{ "source": "/para/:slug", "destination": "/demo" }],
   "headers": [
     {
       "source": "/assets/(.*)",
