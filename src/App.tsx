@@ -30,7 +30,9 @@ function Later({ C }: { C: ComponentType }) {
 
 export default function App() {
   return (
-    <MotionConfig reducedMotion="user">
+    // reducedMotion="never": as animações rodam sempre, mesmo com "reduzir movimento" ligado no sistema
+    // (muito PC com Windows vem com os efeitos desligados e o site ficava todo parado).
+    <MotionConfig reducedMotion="never">
       <ScrollProgress />
       <Navbar />
       <main>

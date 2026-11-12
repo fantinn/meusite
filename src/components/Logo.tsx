@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { stagger, useAnimate, useReducedMotion } from 'framer-motion'
+import { stagger, useAnimate } from 'framer-motion'
 import { brand } from '../content'
 
 // Logo "fantın" com o pingo do i animado.
@@ -15,7 +15,6 @@ const out = [0.22, 1, 0.36, 1] as const
 
 export default function Logo({ intro = true }: { intro?: boolean }) {
   const [scope, animate] = useAnimate()
-  const reduce = useReducedMotion()
   const busy = useRef(false)
 
   // Pingo encosta no i: achata, solta a onda e as letras respondem
@@ -26,7 +25,7 @@ export default function Logo({ intro = true }: { intro?: boolean }) {
   }
 
   useEffect(() => {
-    if (!intro || reduce) return
+    if (!intro) return
     // Com a abertura do site (index.html) a queda do pingo já aconteceu em tamanho grande:
     // o logo do menu chega pronto, só com o pulso.
     if (document.documentElement.hasAttribute('data-splash')) {
@@ -48,7 +47,7 @@ export default function Logo({ intro = true }: { intro?: boolean }) {
   }, [])
 
   const hop = async () => {
-    if (reduce || busy.current) return
+    if (busy.current) return
     busy.current = true
     await animate('.wm__dot', { y: ['0em', '-0.75em', '0em'], scaleY: [1, 1.12, 1] }, { duration: 0.5, times: [0, 0.45, 1], ease: ['easeOut', 'easeIn'] })
     await impact()
@@ -59,7 +58,7 @@ export default function Logo({ intro = true }: { intro?: boolean }) {
     <a
       ref={scope}
       href="/"
-      className={`logo wm${intro && !reduce ? ' wm--intro' : ' is-live'}`}
+      className={`logo wm${intro ? ' wm--intro' : ' is-live'}`}
       aria-label={`fantın, ${brand.name}`}
       onMouseEnter={hop}
       onFocus={hop}

@@ -795,13 +795,3 @@ a.pg-card h3::after {
   color: var(--text-3);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  *,
-  *::before,
-  *::after {
-    transition: none !important;
-  }
-}

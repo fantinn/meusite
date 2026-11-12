@@ -181,19 +181,6 @@
 @keyframes ss-n2 { 0%, 38% { opacity: 0; transform: translateY(-22px) scale(0.96); } 44%, 100% { opacity: 1; transform: none; } }
 @keyframes ss-n3 { 0%, 48% { opacity: 0; transform: translateY(-22px) scale(0.96); } 54%, 100% { opacity: 1; transform: none; } }
 
-/* Quem prefere menos movimento vê tudo parado, já montado */
-@media (prefers-reduced-motion: reduce) {
-  .ss,
-  .ss *,
-  .ss *::after {
-    animation: none !important;
-  }
-  .ss-num--1 { --n: 842; }
-  .ss-num--2 { --n: 64; }
-  .ss-num--3 { --n: 19; }
-  .ss-chart__line { stroke-dashoffset: 0; }
-}
-
 .ss-i::after { background: #4cc2ff; }
 .ss .ss-logo { color: #fff; }
 

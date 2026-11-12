@@ -238,37 +238,3 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hold-button {
-    transition:
-      background-color 160ms ease,
-      box-shadow var(--hb-release) ease;
-    transform: none !important;
-  }
-
-  .hold-button__fill,
-  .hold-button[data-direction='up'] .hold-button__fill {
-    clip-path: inset(0);
-    opacity: 0;
-    transition: opacity var(--hb-release) ease;
-  }
-
-  .hold-button__crest {
-    display: none;
-  }
-
-  .hold-button[data-phase='holding'] .hold-button__fill,
-  .hold-button[data-phase='done'] .hold-button__fill {
-    opacity: 1;
-    transition: opacity var(--hb-hold) linear;
-  }
-
-  .hold-button__pulse {
-    animation: none !important;
-  }
-
-  .hold-button__label > span {
-    transition: opacity 200ms ease;
-    filter: none !important;
-  }
-}

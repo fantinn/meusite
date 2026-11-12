@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 // - Fluem continuamente (cada onda com velocidade e frequência próprias)
 // - Se curvam em direção ao cursor
 // - Aceleram enquanto a página é rolada
-// Pausa quando sai da tela e respeita "reduzir movimento" do sistema.
+// Pausa quando sai da tela. Roda sempre, inclusive com "reduzir movimento" do sistema.
 const WAVES = [
   { amp: 0.16, freq: 1.6, speed: 0.55, y: 0.35, width: 2.2, color: [140, 210, 255], alpha: 0.55 },
   { amp: 0.22, freq: 1.1, speed: -0.4, y: 0.5, width: 1.4, color: [76, 194, 255], alpha: 0.45 },
@@ -23,7 +23,6 @@ export default function FlowBackground() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let w = 0
     let h = 0
     let raf = 0
@@ -104,13 +103,10 @@ export default function FlowBackground() {
     host.addEventListener('pointerleave', onLeave)
     window.addEventListener('resize', resize)
 
-    if (reduced) {
-      draw()
-    }
     const io = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting
       cancelAnimationFrame(raf)
-      if (visible && !reduced) raf = requestAnimationFrame(loop)
+      if (visible) raf = requestAnimationFrame(loop)
     })
     io.observe(canvas)
 

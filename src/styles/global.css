@@ -263,12 +263,10 @@ img, svg {
   will-change: transform;
 }
 
-/* Antes do JS rodar a entrada, letras e pingo ficam escondidos (só se a animação estiver ligada) */
-@media (prefers-reduced-motion: no-preference) {
-  .wm--intro .wm__l,
-  .wm--intro .wm__dot {
-    opacity: 0;
-  }
+/* Antes do JS rodar a entrada, letras e pingo ficam escondidos */
+.wm--intro .wm__l,
+.wm--intro .wm__dot {
+  opacity: 0;
 }
 
 .wm__i {
@@ -321,12 +319,6 @@ img, svg {
   100% {
     transform: scale(3);
     opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .wm.is-live .wm__drop::after {
-    animation: none;
   }
 }
 
@@ -980,17 +972,6 @@ img, svg {
   animation: nav-in 0.6s var(--ease) both;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero .eyebrow,
-  .hero h1 .word,
-  .hero__sub,
-  .hero__actions,
-  .window--chip,
-  .nav {
-    animation: none;
-  }
-}
-
 /* Título em 2 linhas no computador; no celular cada trecho vira uma linha */
 .hero__copy {
   container-type: inline-size;
@@ -1181,10 +1162,6 @@ img, svg {
 /* -50% − metade do gap: o fim da primeira cópia encaixa exatamente no começo da segunda */
 @keyframes marquee {
   to { transform: translateX(calc(-50% - 28px)); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee__track { animation: none; }
 }
 
 .marquee__item {
@@ -2802,10 +2779,6 @@ html[data-nav-hidden] .nav {
   height: 100%;
   z-index: 0;
   pointer-events: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cta { animation: none; }
 }
 
 .cta h2 {

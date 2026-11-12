@@ -18,8 +18,7 @@ export default function ThemeToggle() {
       flushSync(() => setTheme(next))
     }
 
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (!document.startViewTransition || reduced) return apply()
+    if (!document.startViewTransition) return apply()
 
     // Revelação circular a partir do botão
     const x = e.clientX

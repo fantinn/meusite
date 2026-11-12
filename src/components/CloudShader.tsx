@@ -4,7 +4,8 @@ import { useEffect, useRef } from 'react'
 // WebGL puro, sem bibliotecas. Nuvens em camadas atravessando o céu.
 // - Céu de dia no modo claro e céu noturno no escuro (troca junto com o tema)
 // - Em telas em pé (celular) as nuvens encolhem para não ficarem gigantes e esticadas
-// - Pausa quando sai da tela e anda mais devagar com "reduzir movimento" do sistema
+// - Pausa quando sai da tela; roda sempre, inclusive com "reduzir movimento" do sistema
+// - Sem placa de vídeo (renderização por software) entra em modo leve, em vez de ficar parado
 const SKIES = {
   light: { cloud: [0.98, 0.98, 0.99], top: [0.2, 0.46, 0.76], bottom: [0.58, 0.78, 0.94], sun: 0.28 },
   dark: { cloud: [0.55, 0.64, 0.78], top: [0.02, 0.07, 0.17], bottom: [0.09, 0.2, 0.36], sun: 0.06 },
@@ -184,10 +185,14 @@ export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
   function start() {
     const canvas = ref.current
     if (!canvas) return
-    // failIfMajorPerformanceCaveat: sem placa de vídeo (renderização por software) a página inteira já roda
-    // a poucos quadros por segundo e as nuvens andariam aos pulos; fica o quadro parado do fundo do .hero.
-    const gl = canvas.getContext('webgl', { alpha: false, antialias: false, failIfMajorPerformanceCaveat: true, powerPreference: 'low-power' })
+    // Primeiro tenta com placa de vídeo (failIfMajorPerformanceCaveat). Sem ela, o navegador desenha o
+    // WebGL pelo processador (comum em PC de empresa): na resolução cheia cada quadro levaria ~0,1s,
+    // então as nuvens entram em "modo leve" (ver run): imagem bem menor e menos quadros por segundo.
+    const opts: WebGLContextAttributes = { alpha: false, antialias: false, powerPreference: 'low-power' }
+    const accelerated = canvas.getContext('webgl', { ...opts, failIfMajorPerformanceCaveat: true })
+    const gl = accelerated ?? canvas.getContext('webgl', opts)
     if (!gl) return
+    const lite = !accelerated
     const vert = compile(gl, gl.VERTEX_SHADER, VERT)
     const frag = compile(gl, gl.FRAGMENT_SHADER, FRAG)
     const program = gl.createProgram()
@@ -208,7 +213,7 @@ export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
         return
       }
       if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return
-      stop = run(canvas, gl, program)
+      stop = run(canvas, gl, program, lite)
     }
     ready()
 
@@ -221,7 +226,7 @@ export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
     }
   }
 
-  function run(canvas: HTMLCanvasElement, gl: WebGLRenderingContext, program: WebGLProgram) {
+  function run(canvas: HTMLCanvasElement, gl: WebGLRenderingContext, program: WebGLProgram, lite: boolean) {
     gl.useProgram(program)
 
     // Um triângulo que cobre a tela toda.
@@ -241,9 +246,8 @@ export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
       sun: gl.getUniformLocation(program, 'u_sun'),
     }
 
-    // "Reduzir movimento" (comum em PC de empresa, com as animações do Windows desligadas): as nuvens
-    // continuam andando, só que bem mais devagar.
-    const rate = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? speed * 0.35 : speed
+    // Modo leve (sem placa de vídeo): 24 quadros por segundo bastam para nuvens, que andam devagar.
+    const minGap = lite ? 1000 / 24 : 0
     let raf = 0
     let visible = false
     let t = 40 // começa "adiantado" para as nuvens já estarem espalhadas pelo céu
@@ -251,7 +255,11 @@ export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
 
     const resize = () => {
       // Resolução um pouco reduzida: as nuvens são suaves e assim o shader roda leve até no celular.
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.25)
+      // No modo leve o lado maior fica com no máximo 640px (uns 12ms por quadro no processador)
+      // e o navegador amplia; como as nuvens são difusas, quase não se nota.
+      const dpr = lite
+        ? Math.min(1, 640 / Math.max(canvas.clientWidth, canvas.clientHeight, 1))
+        : Math.min(window.devicePixelRatio || 1, 1.25)
       const w = Math.max(1, Math.floor(canvas.clientWidth * dpr))
       const h = Math.max(1, Math.floor(canvas.clientHeight * dpr))
       canvas.width = w
@@ -273,16 +281,34 @@ export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
     }
 
     const loop = (now: number) => {
-      t += Math.min((now - last) / 1000, 0.1) * rate
+      if (visible) raf = requestAnimationFrame(loop)
+      if (now - last < minGap) return
+      t += Math.min((now - last) / 1000, 0.1) * speed
       last = now
       draw()
-      if (visible) raf = requestAnimationFrame(loop)
     }
 
-    const ro = new ResizeObserver(() => { resize(); draw() })
-    ro.observe(canvas)
     resize()
     draw()
+    if (lite) {
+      // Processador fraco demais até para o modo leve: fica o quadro parado do fundo do .hero.
+      // readPixels obriga o desenho a terminar, para o tempo medido ser o real. O primeiro quadro
+      // não conta (inclui preparar o shader); vale o mais rápido dos dois seguintes.
+      const px = new Uint8Array(4)
+      const timed = () => {
+        const t0 = performance.now()
+        draw()
+        gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px)
+        return performance.now() - t0
+      }
+      timed()
+      if (Math.min(timed(), timed()) > 50) {
+        gl.deleteBuffer(buffer)
+        return () => {}
+      }
+    }
+    const ro = new ResizeObserver(() => { resize(); draw() })
+    ro.observe(canvas)
     canvas.classList.add('is-ready')
 
     const io = new IntersectionObserver(([entry]) => {
@@ -295,7 +321,7 @@ export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
     })
     io.observe(canvas)
 
-    // Redesenha na hora quando o tema muda (inclusive com movimento reduzido).
+    // Redesenha na hora quando o tema muda.
     const mo = new MutationObserver(draw)
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
 
