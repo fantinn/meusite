@@ -8,7 +8,7 @@ import { brand } from '../content'
 // Depois o pingo pulsa de leve, como status de site no ar. No hover ele dá um pulinho.
 
 // Ajuste fino do espaço entre cada letra (em em), para o desenho ficar equilibrado
-const LETTERS: [string, number][] = [['f', -0.02], ['a', -0.01], ['n', 0], ['t', -0.015], ['ı', 0.005], ['n', 0]]
+export const LETTERS: [string, number][] =[['f', -0.02], ['a', -0.01], ['n', 0], ['t', -0.015], ['ı', 0.005], ['n', 0]]
 
 const fall = [0.55, 0, 1, 0.45] as const // acelera ao cair, como gravidade
 const out = [0.22, 1, 0.36, 1] as const
@@ -27,6 +27,12 @@ export default function Logo({ intro = true }: { intro?: boolean }) {
 
   useEffect(() => {
     if (!intro || reduce) return
+    // Com a abertura do site (index.html) a queda do pingo já aconteceu em tamanho grande:
+    // o logo do menu chega pronto, só com o pulso.
+    if (document.documentElement.hasAttribute('data-splash')) {
+      scope.current?.classList.add('is-live')
+      return
+    }
     busy.current = true
     const run = async () => {
       animate('.wm__l', { opacity: [0, 1], y: ['0.5em', '0em'], filter: ['blur(6px)', 'blur(0px)'] }, { duration: 0.75, delay: stagger(0.06, { startDelay: 0.35 }), ease: out })

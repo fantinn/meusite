@@ -107,8 +107,42 @@
       // O site sempre abre no modo claro; o botão de tema troca para o escuro só durante a visita.
       document.documentElement.dataset.theme = 'light'
     </script>
+    <script>
+      // Animações do logo (abertura e rodapé, ver ".bw" em global.css).
+      // data-fx: "full" = completas; "soft" = a pessoa pediu menos movimento no sistema.
+      //   Para forçar: /?fx=full ou /?fx=soft
+      // data-splash: toca a abertura. Só na primeira página da visita, e nunca quando o link
+      //   já aponta para uma seção (/#planos) ou traz outros parâmetros (retorno de pagamento).
+      ;(function () {
+        var d = document.documentElement
+        var q = new URLSearchParams(location.search).get('fx')
+        var full = q === 'full' || (q !== 'soft' && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+        var seen = 1
+        d.dataset.fx = full ? 'full' : 'soft'
+        try {
+          seen = sessionStorage.getItem('splash')
+          sessionStorage.setItem('splash', '1')
+        } catch (e) {}
+        if (full && !location.hash && (q === 'full' || (!seen && !location.search))) d.dataset.splash = ''
+        // Terminou: tira a abertura da página
+        addEventListener('animationend', function (e) {
+          if (e.animationName === 'splash-out') e.target.remove()
+        })
+      })()
+    </script>
   </head>
   <body>
+    <!-- Abertura: logo grande, o pingo cai no ı e vira o céu do site. Só CSS (global.css, ".splash"). -->
+    <div class="splash" hidden aria-hidden="true">
+      <span class="bw is-play">
+        <span class="bw__l" style="margin-right: -0.02em; --i: 0; --d: 4"><span class="bw__m"><span class="bw__g">f</span></span></span>
+        <span class="bw__l" style="margin-right: -0.01em; --i: 1; --d: 3"><span class="bw__m"><span class="bw__g">a</span></span></span>
+        <span class="bw__l" style="--i: 2; --d: 2"><span class="bw__m"><span class="bw__g">n</span></span></span>
+        <span class="bw__l" style="margin-right: -0.015em; --i: 3; --d: 1"><span class="bw__m"><span class="bw__g">t</span></span></span>
+        <span class="bw__l bw__i" style="margin-right: 0.005em; --i: 4; --d: 0"><span class="bw__m"><span class="bw__g">ı</span></span><span class="bw__drop"><span class="bw__ripple"></span><span class="bw__dot"></span><span class="splash__flood"></span></span></span>
+        <span class="bw__l" style="--i: 5; --d: 1"><span class="bw__m"><span class="bw__g">n</span></span></span>
+      </span>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

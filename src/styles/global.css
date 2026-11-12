@@ -330,6 +330,259 @@ img, svg {
   }
 }
 
+/* ---------- Logo grande animado: abertura (index.html) e fim do site (BigMark.tsx) ----------
+   Mesma coreografia nos dois: as letras sobem de trás de uma linha, o pingo cai do alto,
+   amassa ao tocar no ı, solta uma onda e as letras respondem.
+   O index.html decide o nível de movimento em <html data-fx>: "full" ou "soft" (quem pediu
+   menos movimento no sistema vê o logo parado e não vê a abertura). */
+.bw {
+  --bw-t: 0s; /* instante em que a coreografia começa */
+  --wm-dot: var(--accent);
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  font-family: 'Fantin Logo', var(--font);
+  font-weight: 700;
+  letter-spacing: -0.035em; /* um pouco mais aberto que o logo do menu: neste tamanho o t, o ı e o n grudavam */
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Letra em 3 camadas: .bw__l (onda e hover) > .bw__m (linha que esconde) > .bw__g (o desenho, que sobe) */
+.bw__l {
+  position: relative;
+  display: inline-block;
+  translate: 0 calc(var(--lift, 0) * -0.07em);
+  transition: translate 0.4s var(--ease);
+}
+
+.bw__i {
+  z-index: 1; /* o pingo (e a mancha azul da abertura) passa por cima das letras vizinhas */
+}
+
+/* clip-path esconde a letra abaixo da linha; overflow-y: clip faz o mesmo para a rolagem
+   (sem ele, a letra escondida lá embaixo aumentaria a altura da página) */
+.bw__m {
+  display: inline-block;
+  padding-top: 0.5em;
+  margin-top: -0.5em;
+  overflow-y: clip;
+  clip-path: inset(0 -0.3em 0 -0.3em);
+}
+
+/* A folga (padding + margem negativa) dá espaço para o preenchimento de céu cobrir a letra inteira */
+.bw__g {
+  display: inline-block;
+  padding: 0.1em 0.07em;
+  margin: -0.1em -0.07em;
+  transform-origin: 0 100%;
+}
+
+.bw__drop {
+  position: absolute;
+  left: 50%;
+  top: 0.07em;
+  width: 0.19em;
+  height: 0.19em;
+  margin-left: -0.095em;
+}
+
+.bw__dot,
+.bw__ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--wm-dot);
+}
+
+.bw__dot {
+  transform-origin: 50% 100%;
+}
+
+.bw__ripple {
+  opacity: 0;
+}
+
+/* Esperando entrar na tela */
+.bw.is-wait .bw__g {
+  transform: translateY(115%) rotate(8deg);
+}
+
+.bw.is-wait .bw__dot {
+  opacity: 0;
+}
+
+.bw.is-play .bw__g {
+  animation: bw-rise 0.7s cubic-bezier(0.2, 0.85, 0.25, 1) both;
+  animation-delay: calc(var(--bw-t) + var(--i, 0) * 0.05s);
+}
+
+.bw.is-play .bw__dot {
+  animation: bw-drop 0.9s linear calc(var(--bw-t) + 0.4s) both;
+}
+
+/* O pingo toca no ı a 62% da queda: 0,4s + 0,9s x 0,62 = 0,96s */
+.bw.is-play .bw__ripple {
+  animation: bw-ripple 0.9s ease-out calc(var(--bw-t) + 0.96s) forwards;
+}
+
+.bw.is-play .bw__l {
+  animation: bw-wave 0.44s ease-in-out both;
+  animation-delay: calc(var(--bw-t) + 0.96s + var(--d, 0) * 0.045s);
+}
+
+@keyframes bw-rise {
+  from { transform: translateY(115%) rotate(8deg); }
+}
+
+@keyframes bw-drop {
+  0% { transform: translateY(-1.5em) scale(0); animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+  16%, 28% { transform: translateY(-1.5em) scale(1); animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
+  62% { transform: translateY(0) scale(0.85, 1.25); animation-timing-function: ease-out; }
+  72% { transform: translateY(0) scale(1.55, 0.5); animation-timing-function: ease-out; }
+  86% { transform: translateY(0) scale(0.9, 1.14); animation-timing-function: ease-in-out; }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes bw-ripple {
+  from { transform: scale(0.6); opacity: 0.6; }
+  to { transform: scale(5); opacity: 0; }
+}
+
+@keyframes bw-wave {
+  50% { transform: translateY(-0.09em); }
+}
+
+/* ----- Abertura: logo no centro, o pingo cai e vira o céu do site -----
+   Fica fora do React (index.html), então aparece já na primeira pintura. O hero continua sendo
+   pintado por baixo normalmente (não atrasa o LCP) e "entra" de novo quando a tela azul some. */
+.splash {
+  display: none;
+}
+
+:root[data-splash] .splash {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  animation: splash-out 0.45s ease 1.85s forwards;
+}
+
+.splash .bw {
+  --bw-t: 0.05s;
+  font-size: clamp(72px, 27vw, 280px);
+}
+
+/* Círculo azul que nasce no pingo e toma a tela (maior que qualquer diagonal) */
+.splash__flood {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 230vmax;
+  height: 230vmax;
+  margin: -115vmax 0 0 -115vmax;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: scale(0);
+  animation: splash-flood 0.55s cubic-bezier(0.7, 0, 0.3, 1) 1.3s forwards;
+}
+
+@keyframes splash-flood {
+  to { transform: scale(1); }
+}
+
+@keyframes splash-out {
+  to { opacity: 0; visibility: hidden; }
+}
+
+@keyframes splash-rise {
+  from { opacity: 0; transform: translateY(28px) scale(0.985); }
+}
+
+/* Quando a tela azul está cheia (1,85s), menu e texto do hero entram de novo, por baixo dela.
+   Sem "fill": antes disso ficam no estado normal, já pintados, e a troca acontece escondida. */
+:root[data-splash] .nav {
+  animation-delay: 1.85s;
+}
+
+:root[data-splash] .hero__copy {
+  animation: splash-rise 0.9s var(--ease) 1.85s;
+}
+
+/* Com a abertura, o logo do menu já chega pronto (não repete a queda do pingo) */
+:root[data-splash] .wm--intro .wm__l,
+:root[data-splash] .wm--intro .wm__dot {
+  opacity: 1;
+}
+
+/* ----- Fim do site: o logo ocupa a largura toda e o céu do hero passa por dentro das letras ----- */
+.footer__big {
+  container-type: inline-size;
+  margin-top: 28px;
+}
+
+/* As letras entram inclinadas: sem isto, no celular a ponta delas criava rolagem para o lado */
+.footer {
+  overflow-x: clip;
+}
+
+.footer__mark {
+  font-size: 41cqw; /* a palavra mede 2,43em: 41cqw ocupa a largura toda */
+  margin-bottom: -0.12em;
+}
+
+/* Cada letra mostra o seu pedaço do mesmo céu: --x (posição da letra) e --w (largura da palavra)
+   vêm do BigMark.tsx. No claro vai um véu azul por cima do céu, para as nuvens brancas não
+   sumirem no fundo branco; no escuro o céu aparece puro. */
+.bw--sky .bw__g {
+  --bw-veil: rgba(0, 92, 175, 0.52);
+  background-color: #2b86e0;
+  background-image: linear-gradient(var(--bw-veil), var(--bw-veil)), url('/hero/sky-light.webp');
+  background-repeat: no-repeat;
+  background-size: 100% 100%, calc(var(--w, 300%) * 1.5) auto;
+  background-position: 0 0, calc(var(--x, 0px) * -1) 62%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+:root[data-theme='dark'] .bw--sky .bw__g {
+  --bw-veil: transparent;
+  background-color: #4cc2ff;
+}
+
+.bw--sky.is-play .bw__g {
+  animation:
+    bw-rise 0.7s cubic-bezier(0.2, 0.85, 0.25, 1) both,
+    bw-sky 36s ease-in-out infinite alternate;
+  animation-delay: calc(var(--bw-t) + var(--i, 0) * 0.05s), 0s;
+}
+
+@keyframes bw-sky {
+  to { background-position: 0 0, calc(var(--x, 0px) * -1 - var(--w, 300%) * 0.5) 62%; }
+}
+
+/* Depois de pousar, o pingo pulsa como no logo do menu */
+.bw--sky.is-play .bw__drop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--wm-dot);
+  opacity: 0;
+  animation: bw-pulse 3.4s ease-out 2.6s infinite;
+}
+
+@keyframes bw-pulse {
+  0% { transform: scale(1); opacity: 0.4; }
+  45%, 100% { transform: scale(2.1); opacity: 0; }
+}
+
 .nav__links {
   display: flex;
   gap: 4px;

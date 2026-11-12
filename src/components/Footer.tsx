@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { ArrowUp, Github, Linkedin, Mail } from 'lucide-react'
 import { brand, guides } from '../content'
-import Logo from './Logo'
+import BigMark from './BigMark'
 
 export default function Footer() {
   const social = [
@@ -12,7 +12,6 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="container footer__inner">
-        <Logo intro={false} />
         <nav className="footer__links" aria-label="Rodapé">
           {guides.map((g) => <a key={g.href} href={g.href}>{g.label}</a>)}
         </nav>
@@ -30,6 +29,10 @@ export default function Footer() {
         <span className="footer__copy" suppressHydrationWarning>
           {`© ${new Date().getFullYear()} ${brand.name} · Criação de sites, landing pages e lojas online.`}
         </span>
+      </div>
+      {/* O logo pequeno saiu daqui: quem fecha o site agora é o logo grande animado */}
+      <div className="container footer__big">
+        <BigMark />
       </div>
     </footer>
   )
