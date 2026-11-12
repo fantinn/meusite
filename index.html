@@ -109,21 +109,27 @@
     </script>
     <script>
       // Animações do logo (abertura e rodapé, ver ".bw" em global.css).
-      // data-fx: "full" = completas; "soft" = a pessoa pediu menos movimento no sistema.
-      //   Para forçar: /?fx=full ou /?fx=soft
+      // data-fx: "full" = animadas (padrão, inclusive com "movimento reduzido" do sistema, que é
+      //   comum no Windows com os efeitos desligados: mesma decisão das nuvens do hero);
+      //   "soft" = logo parado e sem abertura, só por /?fx=soft.
       // data-splash: toca a abertura. Só na primeira página da visita, e nunca quando o link
       //   já aponta para uma seção (/#planos) ou traz outros parâmetros (retorno de pagamento).
+      //   /?fx=full toca de novo.
       ;(function () {
         var d = document.documentElement
         var q = new URLSearchParams(location.search).get('fx')
-        var full = q === 'full' || (q !== 'soft' && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+        var full = q !== 'soft'
         var seen = 1
         d.dataset.fx = full ? 'full' : 'soft'
+        if (!full || location.hash) return
         try {
-          seen = sessionStorage.getItem('splash')
-          sessionStorage.setItem('splash', '1')
+          seen = sessionStorage.getItem('intro')
         } catch (e) {}
-        if (full && !location.hash && (q === 'full' || (!seen && !location.search))) d.dataset.splash = ''
+        if (q !== 'full' && (seen || location.search)) return
+        d.dataset.splash = ''
+        try {
+          sessionStorage.setItem('intro', '1')
+        } catch (e) {}
         // Terminou: tira a abertura da página
         addEventListener('animationend', function (e) {
           if (e.animationName === 'splash-out') e.target.remove()

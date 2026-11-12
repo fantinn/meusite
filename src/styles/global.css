@@ -333,8 +333,8 @@ img, svg {
 /* ---------- Logo grande animado: abertura (index.html) e fim do site (BigMark.tsx) ----------
    Mesma coreografia nos dois: as letras sobem de trás de uma linha, o pingo cai do alto,
    amassa ao tocar no ı, solta uma onda e as letras respondem.
-   O index.html decide o nível de movimento em <html data-fx>: "full" ou "soft" (quem pediu
-   menos movimento no sistema vê o logo parado e não vê a abertura). */
+   O index.html marca o nível de movimento em <html data-fx>: "full" (padrão, vale também com
+   "movimento reduzido" do sistema) ou "soft" (/?fx=soft: logo parado e sem abertura). */
 .bw {
   --bw-t: 0s; /* instante em que a coreografia começa */
   --wm-dot: var(--accent);
@@ -711,9 +711,16 @@ img, svg {
   overflow: hidden;
 }
 
-/* Céu com nuvens (SkyBackground / Vanta Clouds). Enquanto o 3D carrega, aparece o degradê de céu do .hero. */
+/* Céu com nuvens (CloudShader). Enquanto o shader não liga, ou se o aparelho não tiver WebGL com placa de vídeo,
+   aparece um quadro parado do próprio shader (public/hero/sky-*.webp, mesmo instante em que a animação começa). */
 .hero {
-  background: linear-gradient(180deg, #3d8fd1, #8fbbe2);
+  background: url('/hero/sky-light.webp') center / cover, linear-gradient(180deg, #3d8fd1, #8fbbe2);
+}
+
+@media (orientation: portrait) {
+  .hero {
+    background-image: url('/hero/sky-light-portrait.webp'), linear-gradient(180deg, #3d8fd1, #8fbbe2);
+  }
 }
 
 .hero h1 {
@@ -771,7 +778,13 @@ img, svg {
 }
 
 :root[data-theme='dark'] .hero {
-  background: linear-gradient(180deg, #0d3163, #1d3d66);
+  background: url('/hero/sky-dark.webp') center / cover, linear-gradient(180deg, #0d3163, #1d3d66);
+}
+
+@media (orientation: portrait) {
+  :root[data-theme='dark'] .hero {
+    background-image: url('/hero/sky-dark-portrait.webp'), linear-gradient(180deg, #0d3163, #1d3d66);
+  }
 }
 
 .sky-bg {

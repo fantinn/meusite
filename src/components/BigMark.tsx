@@ -7,7 +7,7 @@ import { LETTERS } from './Logo'
 // tocar no ı, solta uma onda e as letras respondem. Por dentro das letras passa o céu do hero,
 // bem devagar. Com o mouse, as letras perto do cursor levantam.
 // A coreografia é toda CSS (.bw em global.css); aqui só fica o que precisa de medida ou de rolagem.
-// Quem pediu menos movimento no sistema (<html data-fx="soft">) vê o logo pronto, parado.
+// Com <html data-fx="soft"> (/?fx=soft) o logo aparece pronto, parado.
 const I = LETTERS.findIndex(([ch]) => ch === 'ı')
 
 export default function BigMark() {

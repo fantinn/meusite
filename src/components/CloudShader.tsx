@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 // WebGL puro, sem bibliotecas. Nuvens em camadas atravessando o céu.
 // - Céu de dia no modo claro e céu noturno no escuro (troca junto com o tema)
 // - Em telas em pé (celular) as nuvens encolhem para não ficarem gigantes e esticadas
-// - Pausa quando sai da tela e respeita "reduzir movimento" do sistema
+// - Pausa quando sai da tela e anda mais devagar com "reduzir movimento" do sistema
 const SKIES = {
   light: { cloud: [0.98, 0.98, 0.99], top: [0.2, 0.46, 0.76], bottom: [0.58, 0.78, 0.94], sun: 0.28 },
   dark: { cloud: [0.55, 0.64, 0.78], top: [0.02, 0.07, 0.17], bottom: [0.09, 0.2, 0.36], sun: 0.06 },
@@ -184,8 +184,8 @@ export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
   function start() {
     const canvas = ref.current
     if (!canvas) return
-    // failIfMajorPerformanceCaveat: sem placa de vídeo (renderização por software) fica só o céu em degradê,
-    // em vez de um shader travando o aparelho
+    // failIfMajorPerformanceCaveat: sem placa de vídeo (renderização por software) a página inteira já roda
+    // a poucos quadros por segundo e as nuvens andariam aos pulos; fica o quadro parado do fundo do .hero.
     const gl = canvas.getContext('webgl', { alpha: false, antialias: false, failIfMajorPerformanceCaveat: true, powerPreference: 'low-power' })
     if (!gl) return
     const vert = compile(gl, gl.VERTEX_SHADER, VERT)
@@ -241,10 +241,9 @@ export default function CloudShader({ speed = 1.6 }: { speed?: number }) {
       sun: gl.getUniformLocation(program, 'u_sun'),
     }
 
-    // Com "movimento reduzido" (comum no Windows com efeitos de animação desligados) as nuvens não param:
-    // seguem numa deriva bem mais lenta, que não incomoda e não deixa o céu com cara de imagem travada.
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const rate = reduced ? speed * 0.35 : speed
+    // "Reduzir movimento" (comum em PC de empresa, com as animações do Windows desligadas): as nuvens
+    // continuam andando, só que bem mais devagar.
+    const rate = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? speed * 0.35 : speed
     let raf = 0
     let visible = false
     let t = 40 // começa "adiantado" para as nuvens já estarem espalhadas pelo céu
