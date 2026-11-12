@@ -1,104 +1,74 @@
-import { useEffect, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowUpRight, TrendingUp, X } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { projectSrcSet, projects, type Project } from '../content'
-import { SectionHead, ease } from './Reveal'
+import { SectionHead } from './Reveal'
 
-function Cover({ p }: { p: Project }) {
-  return (
-    <motion.div className="project__cover" layoutId={`cover-${p.id}`}>
-      <div className="project__cover-inner" style={{ background: p.gradient }} />
-      <motion.div className={`project__mock${p.image ? ' project__mock--image' : ''}`} whileHover={{ y: -8 }} transition={{ type: 'spring', stiffness: 260, damping: 22 }}>
-        {p.image ? (
-          <img
-            src={p.image}
-            srcSet={projectSrcSet(p.image)}
-            sizes="(max-width: 760px) calc(76vw - 24px), (max-width: 1200px) 38vw, 420px"
-            alt={`${p.category} ${p.title}, criada por Gabriel Fantin`}
-            width={800}
-            height={500}
-            loading="lazy"
-            decoding="async"
-          />
-        ) : (
-          <>
-            <div className="skeleton" />
-            <div className="skeleton" style={{ width: '80%' }} />
-            <div className="skeleton" style={{ width: '60%' }} />
-          </>
-        )}
-      </motion.div>
-    </motion.div>
+const host = (url: string) => new URL(url).host.replace(/^www\./, '')
+
+// Print do site dentro de uma janela de navegador, sobre a cor do projeto
+function Shot({ p }: { p: Project }) {
+  const inner = (
+    <div className="case__window">
+      <div className="case__bar" aria-hidden>
+        <i /><i /><i />
+        {p.url && <span className="case__url">{host(p.url)}</span>}
+      </div>
+      {p.image && (
+        <img
+          src={p.image}
+          srcSet={projectSrcSet(p.image)}
+          sizes="(max-width: 860px) calc(100vw - 64px), 600px"
+          alt={`${p.category} ${p.title}, criada por Gabriel Fantin`}
+          width={800}
+          height={500}
+          loading="lazy"
+          decoding="async"
+        />
+      )}
+    </div>
+  )
+  return p.url ? (
+    <a className="case__shot" style={{ background: p.gradient }} href={p.url} target="_blank" rel="noreferrer" aria-label={`Abrir o site ${p.title}`}>
+      {inner}
+    </a>
+  ) : (
+    <div className="case__shot" style={{ background: p.gradient }}>{inner}</div>
   )
 }
 
 export default function Work() {
-  const [active, setActive] = useState<Project | null>(null)
-
-  useEffect(() => {
-    if (!active) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setActive(null)
-    window.addEventListener('keydown', onKey)
-    document.body.style.overflow = 'hidden'
-    return () => {
-      window.removeEventListener('keydown', onKey)
-      document.body.style.overflow = ''
-    }
-  }, [active])
-
   return (
     <section id="projetos" className="section">
       <div className="container">
-        <SectionHead kicker="Projetos" title="Sites e landing pages que já estão no ar." text="Alguns trabalhos recentes. Clique para ver os detalhes." />
+        <SectionHead kicker="Projetos" title="Sites e landing pages que já estão no ar." text="Trabalhos recentes, todos publicados. Abra e navegue em cada um." />
         <div className="work">
-          {projects.map((p) => (
-            <motion.button
-              key={p.id}
-              className="project"
-              layoutId={`card-${p.id}`}
-              onClick={() => setActive(p)}
-              whileHover={{ y: -6, boxShadow: 'var(--shadow-28)' }}
-              transition={{ type: 'spring', stiffness: 300, damping: 26 }}
-            >
-              <Cover p={p} />
-              <div className="project__body">
-                <div>
-                  <div className="project__cat">{p.category}</div>
-                  <motion.h3 layoutId={`title-${p.id}`}>{p.title}</motion.h3>
+          {projects.map((p, i) => (
+            <article key={p.id} className="case">
+              <Shot p={p} />
+              <div className="case__body">
+                <div className="case__meta">
+                  <span className="case__num">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="case__cat">{p.category}</span>
                 </div>
-                <span className="project__arrow"><ArrowUpRight size={18} /></span>
+                <h3>{p.title}</h3>
+                <p>{p.text}</p>
+                {p.highlights && (
+                  <ul className="case__tags">
+                    {p.highlights.map((h) => <li key={h} className="tag">{h}</li>)}
+                  </ul>
+                )}
+                <div className="case__actions">
+                  {p.url && (
+                    <a className="btn btn--primary" href={p.url} target="_blank" rel="noreferrer">
+                      Ver site no ar <ArrowUpRight size={16} />
+                    </a>
+                  )}
+                  <a className="case__link" href="#contato">Quero um assim</a>
+                </div>
               </div>
-            </motion.button>
+            </article>
           ))}
         </div>
       </div>
-
-      <AnimatePresence>
-        {active && (
-          <>
-            <motion.div className="modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setActive(null)} />
-            <div className="modal-wrap">
-              <motion.div className="modal" layoutId={`card-${active.id}`} role="dialog" aria-modal aria-label={active.title} style={{ position: 'relative' }}>
-                <button className="modal__close" onClick={() => setActive(null)} aria-label="Fechar"><X size={18} /></button>
-                <Cover p={active} />
-                <motion.div className="modal__body" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.15, duration: 0.5, ease } }} exit={{ opacity: 0 }}>
-                  <div className="project__cat">{active.category}</div>
-                  <motion.h3 layoutId={`title-${active.id}`} style={{ fontSize: 28, fontWeight: 600 }}>{active.title}</motion.h3>
-                  <p>{active.text}</p>
-                  <div className="modal__actions">
-                    {active.result && <span className="modal__result"><TrendingUp size={16} /> {active.result}</span>}
-                    {active.url && (
-                      <a className="btn btn--primary" href={active.url} target="_blank" rel="noreferrer">
-                        Ver site no ar <ArrowUpRight size={16} />
-                      </a>
-                    )}
-                  </div>
-                </motion.div>
-              </motion.div>
-            </div>
-          </>
-        )}
-      </AnimatePresence>
     </section>
   )
 }

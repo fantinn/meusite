@@ -63,16 +63,17 @@ export type Project = {
   category: string
   text: string
   result?: string
+  highlights?: string[] // o que o site tem, em etiquetas curtas
   gradient: string
   image?: string // print do site, mostrado dentro da janela do card
   url?: string // link do site no ar
 }
 
 export const projects: Project[] = [
-  { id: 'p1', title: 'ListaJota', category: 'Página de Vendas', text: 'Página de vendas de uma lista de fornecedores de multimarcas: prova social, prévia da planilha de contatos, bônus, depoimentos, dúvidas frequentes e compra com acesso imediato.', gradient: 'linear-gradient(135deg,#4ade80,#16a34a 50%,#052e16)', image: '/projects/listajota.webp', url: 'https://fantinn.github.io/ListaJota/' },
-  { id: 'p2', title: 'Pedro Design', category: 'Site / Portfólio', text: 'Site para designer de posicionamento visual: apresentação dos serviços, planos mensais, projetos em destaque e contato direto pelo WhatsApp.', gradient: 'linear-gradient(135deg,#ff8a1f,#c2410c 55%,#1a0a02)', image: '/projects/pdrdesign.webp', url: 'https://pdrdesign.com.br' },
-  { id: 'p3', title: 'PryzeGear', category: 'Landing Page', text: 'Landing page de uma comunidade de periféricos e setups high-end: apresentação da marca, níveis de setup e chamada para o grupo VIP de ofertas no WhatsApp.', gradient: 'linear-gradient(135deg,#a78bfa,#7c3aed 50%,#1e0b3d)', image: '/projects/pryzegear.webp', url: 'https://www.pryzegear.com.br' },
-  { id: 'p4', title: 'LFNC', category: 'Página de Vendas', text: 'Página de vendas de lista de fornecedores com contador de oferta, bônus exclusivos, preço parcelado, perguntas frequentes e área de membros para liberar o acesso após a compra.', gradient: 'linear-gradient(135deg,#60a5fa,#1d4ed8 50%,#020617)', image: '/projects/listafnc.webp', url: 'https://listafnc.com.br' },
+  { id: 'p1', title: 'ListaJota', category: 'Página de Vendas', text: 'Página de vendas de uma lista de fornecedores de multimarcas: prova social, prévia da planilha de contatos, bônus, depoimentos, dúvidas frequentes e compra com acesso imediato.', highlights: ['Prova social', 'Prévia da planilha', 'Acesso imediato'], gradient: 'linear-gradient(135deg,#4ade80,#16a34a 50%,#052e16)', image: '/projects/listajota.webp', url: 'https://fantinn.github.io/ListaJota/' },
+  { id: 'p2', title: 'Pedro Design', category: 'Site / Portfólio', text: 'Site para designer de posicionamento visual: apresentação dos serviços, planos mensais, projetos em destaque e contato direto pelo WhatsApp.', highlights: ['Planos mensais', 'Portfólio', 'WhatsApp direto'], gradient: 'linear-gradient(135deg,#ff8a1f,#c2410c 55%,#1a0a02)', image: '/projects/pdrdesign.webp', url: 'https://pdrdesign.com.br' },
+  { id: 'p3', title: 'PryzeGear', category: 'Landing Page', text: 'Landing page de uma comunidade de periféricos e setups high-end: apresentação da marca, níveis de setup e chamada para o grupo VIP de ofertas no WhatsApp.', highlights: ['Níveis de setup', 'Grupo VIP', 'Visual gamer'], gradient: 'linear-gradient(135deg,#a78bfa,#7c3aed 50%,#1e0b3d)', image: '/projects/pryzegear.webp', url: 'https://www.pryzegear.com.br' },
+  { id: 'p4', title: 'LFNC', category: 'Página de Vendas', text: 'Página de vendas de lista de fornecedores com contador de oferta, bônus exclusivos, preço parcelado, perguntas frequentes e área de membros para liberar o acesso após a compra.', highlights: ['Contador de oferta', 'Preço parcelado', 'Área de membros'], gradient: 'linear-gradient(135deg,#60a5fa,#1d4ed8 50%,#020617)', image: '/projects/listafnc.webp', url: 'https://listafnc.com.br' },
 ]
 
 // Print do projeto em dois tamanhos (560 e 800px de largura): o navegador escolhe o menor que serve
