@@ -9,6 +9,7 @@ import LogosStrip from './components/LogosStrip'
 // pronto (pré-renderizado); cada uma é "hidratada" sozinha quando o arquivo dela carrega,
 // em vez de o navegador processar o site inteiro de uma vez.
 const Statement = lazy(() => import('./components/Statement'))
+const WhySite = lazy(() => import('./components/WhySite'))
 const Services = lazy(() => import('./components/Services'))
 const Work = lazy(() => import('./components/Work'))
 const ScrollMarquee = lazy(() => import('./components/ScrollMarquee'))
@@ -39,6 +40,7 @@ export default function App() {
         <Hero />
         <LogosStrip />
         <Later C={Statement} />
+        <Later C={WhySite} />
         <Later C={Services} />
         <Later C={Work} />
         <Later C={ScrollMarquee} />
