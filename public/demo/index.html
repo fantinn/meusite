@@ -126,6 +126,29 @@
   .aviso { margin: 14px 18px 0; font-size: .95rem; font-weight: 500; }
   .exemplo { margin-top: 26px; font-size: .95rem; opacity: .8; }
 
+  /* quando: dia e horário */
+  .rotulo { margin-top: 22px; font-weight: 700; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .chip { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 2px solid transparent; background: var(--fundo); color: var(--tinta); font: 600 .95rem var(--corpo); cursor: pointer; transition: transform .15s ease; }
+  .chip:active { transform: scale(.95); }
+  .chip[aria-pressed="true"] { background: var(--cor); color: var(--sobre-cor); }
+
+  /* prévia da busca no Google */
+  .google { padding-top: 56px; }
+  .busca-mock { margin-top: 26px; max-width: 460px; background: #fff; color: #202124; border-radius: 22px; padding: 16px; box-shadow: 0 18px 40px -24px rgba(0,0,0,.45); font-family: Arial, sans-serif; }
+  .busca-barra { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 999px; border: 1px solid #dfe1e5; font-size: 1rem; }
+  .busca-barra svg { width: 18px; height: 18px; fill: none; stroke: #5f6368; stroke-width: 2.2; flex: none; }
+  .busca-card { display: grid; gap: 4px; margin-top: 14px; padding: 16px; border-radius: 14px; border: 1px solid #ecedef; }
+  .busca-nome { font-size: 1.25rem; color: #1a0dab; }
+  .busca-meta { font-size: .92rem; color: #4d5156; }
+  .busca-meta b { color: #e37400; font-weight: 700; }
+  .busca-status { font-size: .92rem; color: #188038; }
+  .busca-botoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .busca-botoes i { font-style: normal; font-size: .88rem; padding: 7px 14px; border-radius: 999px; border: 1px solid #dadce0; color: #1a73e8; }
+  .busca-botoes i:nth-child(2) { background: #1a73e8; color: #fff; border-color: #1a73e8; animation: pulsar 2.4s ease-in-out infinite; }
+  @keyframes pulsar { 50% { box-shadow: 0 0 0 6px rgba(26,115,232,.18); } }
+  .google .obs { margin-top: 14px; font-size: .95rem; opacity: .8; }
+
   /* horário e endereço */
   .info { padding-block: 56px; display: grid; gap: 40px; }
   .info h2 { margin-bottom: 18px; }
@@ -170,7 +193,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .poste, .motivo > .poste, .hero h1, .hero .chamada, .hero .hero-acoes, .motivo, .motivo > *, .faixa, .balao.novo { animation: none; }
+    .poste, .motivo > .poste, .hero h1, .hero .chamada, .hero .hero-acoes, .motivo, .motivo > *, .faixa, .balao.novo, .busca-botoes i { animation: none; }
     .arcos path { animation: none; stroke-dashoffset: 0; }
     .revela { opacity: 1; transform: none; transition: none; }
   }
@@ -208,7 +231,12 @@
       <h2>O que você quer fazer?</h2>
       <p class="apoio">Toque nos serviços. A mensagem fica pronta e você só envia.</p>
       <div class="agendar-grade">
-        <ul class="servicos" id="servicos"></ul>
+        <div>
+          <ul class="servicos" id="servicos"></ul>
+          <p class="rotulo">Quando?</p>
+          <div class="chips" id="dias" role="group" aria-label="Dia"></div>
+          <div class="chips" id="horas" role="group" aria-label="Horário"></div>
+        </div>
         <div class="conversa">
           <div class="conversa-topo">
             <span class="conversa-foto" id="inicial" aria-hidden="true"></span>
@@ -222,8 +250,23 @@
           <p class="aviso" id="aviso" hidden></p>
         </div>
       </div>
-      <p class="exemplo">Serviços de exemplo. No site pronto entram os seus, com os seus preços.</p>
+      <p class="exemplo">Serviços e horários de exemplo. No site pronto entram os seus, com os seus preços.</p>
     </div>
+  </section>
+
+  <section class="google largura">
+    <h2>Quem procura no Google encontra um site de verdade</h2>
+    <p class="apoio">O site fica ligado ao seu perfil do Google, com botão de agendar e de como chegar.</p>
+    <div class="busca-mock" aria-hidden="true">
+      <div class="busca-barra"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg><span data-busca></span></div>
+      <div class="busca-card">
+        <span class="busca-nome" data-nome></span>
+        <span class="busca-meta"><span data-tipo-nome></span> · <span data-cidade></span></span>
+        <span class="busca-status">Aberto · Fecha às 19h</span>
+        <span class="busca-botoes"><i>Site</i><i>Agendar</i><i>Rotas</i><i>Ligar</i></span>
+      </div>
+    </div>
+    <p class="obs">Ilustração de como o perfil fica com o site ligado.</p>
   </section>
 
   <section class="info largura">
@@ -309,19 +352,19 @@
 
   const TIPOS = {
     salao: {
-      padrao: 'Seu Salão',
+      padrao: 'Seu Salão', busca: 'salão de beleza',
       chamada: 'Cabelo, cor e cuidado em {CIDADE}. Marque seu horário em um toque.',
       servicos: ['Corte', 'Escova', 'Coloração', 'Mechas', 'Hidratação', 'Penteado', 'Maquiagem', 'Progressiva'],
-      motivo: n => `<div class="espelho"><span>${n.replace(/^(studiio|studio|salão|salao|espaço|espaco)\s+/i, '').charAt(0).toUpperCase()}</span></div>`,
+      motivo: n => `<div class="espelho"><span>${n.replace(/^(studiio|studio|salão|salao|espaço|espaco|estúdio|estudio)\s+((da|do|de|das|dos)\s+)?/i, '').charAt(0).toUpperCase()}</span></div>`,
     },
     barbearia: {
-      padrao: 'Sua Barbearia',
+      padrao: 'Sua Barbearia', busca: 'barbearia',
       chamada: 'Corte e barba em {CIDADE}. Marque seu horário em um toque.',
       servicos: ['Corte', 'Barba', 'Corte e barba', 'Sobrancelha', 'Pezinho', 'Pigmentação'],
       motivo: () => '<div class="poste"></div>',
     },
     manicure: {
-      padrao: 'Seu Studio',
+      padrao: 'Seu Studio', busca: 'manicure',
       chamada: 'Unhas feitas com calma em {CIDADE}. Marque seu horário em um toque.',
       servicos: ['Manicure', 'Pedicure', 'Esmaltação em gel', 'Alongamento', 'Manutenção', 'Blindagem'],
       motivo: () => '<div class="esmaltes"><i></i><i></i><i></i><i></i><i></i></div>',
@@ -329,7 +372,7 @@
   };
 
   TIPOS.sobrancelha = {
-    padrao: 'Seu Studio',
+    padrao: 'Seu Studio', busca: 'design de sobrancelha',
     chamada: 'Sobrancelhas desenhadas para o seu rosto em {CIDADE}. Marque seu horário em um toque.',
     servicos: ['Design de sobrancelhas', 'Micropigmentação', 'Brow lamination', 'Design com henna', 'Lash lifting', 'Retoque'],
     motivo: () => '<svg class="arcos" viewBox="0 0 320 220"><path d="M30 120 Q95 40 160 96" stroke-width="16"/><path d="M178 96 Q238 44 296 118" stroke-width="16"/><path class="fino" d="M52 160 Q96 186 142 162" stroke-width="5"/><path class="fino" d="M190 162 Q236 186 280 160" stroke-width="5"/></svg>',
@@ -349,11 +392,16 @@
   document.title = nome + ' | modelo de site';
   document.querySelectorAll('[data-nome]').forEach(el => { el.textContent = nome; });
   const cidade = lead.c || params.get('c') || 'Jacareí';
+  // Estado: só as cidades do Vale são SP; o resto da prospecção é no Espírito Santo. ?uf= sobrepõe.
+  const VALE = ['jacareí', 'jacarei', 'são josé dos campos', 'sao jose dos campos', 'caçapava', 'taubaté', 'santa branca', 'guararema'];
+  const uf = (params.get('uf') || (VALE.includes(cidade.toLowerCase()) ? 'SP' : 'ES')).toUpperCase();
   document.getElementById('chamada').textContent = cfg.chamada.replace('{CIDADE}', cidade);
-  document.getElementById('cidade').textContent = cidade + ', SP';
-  document.getElementById('feito').textContent = cidade === 'Jacareí' ? 'de Jacareí' : 'aqui do Vale do Paraíba';
+  document.getElementById('cidade').textContent = cidade + ', ' + uf;
+  document.getElementById('feito').textContent = cidade === 'Jacareí' ? 'de Jacareí' : uf === 'SP' ? 'aqui do Vale do Paraíba' : 'aqui do Espírito Santo';
+  document.querySelectorAll('[data-cidade]').forEach(el => { el.textContent = cidade; });
+  document.querySelectorAll('[data-busca]').forEach(el => { el.textContent = cfg.busca + ' em ' + cidade; });
   document.getElementById('motivo').innerHTML = cfg.motivo(nome);
-  document.getElementById('inicial').textContent = nome.charAt(0).toUpperCase();
+  document.getElementById('inicial').textContent = nome.replace(/^(studiio|studio|salão|salao|espaço|espaco|estúdio|estudio|barbearia)\s+((da|do|de|das|dos)\s+)?/i, '').charAt(0).toUpperCase();
 
   if (lead.nota && lead.av >= 5) {
     const nota = document.getElementById('nota');
@@ -367,12 +415,46 @@
   const lista = document.getElementById('servicos');
   const balao = document.getElementById('balao');
   const escolhidos = new Set();
+  document.querySelectorAll('[data-tipo-nome]').forEach(el => { el.textContent = cfg.busca.charAt(0).toUpperCase() + cfg.busca.slice(1); });
+
+  // dia e horário: próximos dias abertos (sem domingo) e alguns horários de exemplo
+  const SEMANA = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
+  const dias = [];
+  for (let d = new Date(), i = 0; dias.length < 4 && i < 8; i++, d.setDate(d.getDate() + 1)) {
+    if (d.getDay() === 0) continue;
+    dias.push(i === 0 ? 'hoje' : i === 1 ? 'amanhã' : SEMANA[d.getDay()]);
+  }
+  const horas = ['9h', '10h30', '14h', '16h', '18h'];
+  let dia = '', hora = '';
+  function grupo(id, itens, aoEscolher) {
+    const box = document.getElementById(id);
+    itens.forEach(v => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'chip'; b.textContent = v.charAt(0).toUpperCase() + v.slice(1); b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', () => {
+        const on = b.getAttribute('aria-pressed') !== 'true';
+        box.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', 'false'));
+        b.setAttribute('aria-pressed', String(on));
+        aoEscolher(on ? v : '');
+        atualizar();
+      });
+      box.appendChild(b);
+    });
+  }
+
   function mensagem() {
     const itens = [...escolhidos];
-    if (!itens.length) return 'Olá! Quero agendar um horário.';
-    const texto = itens.length === 1 ? itens[0] : itens.slice(0, -1).join(', ') + ' e ' + itens[itens.length - 1];
-    return `Olá! Quero agendar: ${texto.toLowerCase()}. Tem horário essa semana?`;
+    const quando = dia && hora ? `${dia} às ${hora}` : dia ? dia : hora ? `às ${hora}` : '';
+    if (!itens.length && !quando) return 'Olá! Quero agendar um horário.';
+    const texto = !itens.length ? 'um horário' : itens.length === 1 ? itens[0].toLowerCase() : (itens.slice(0, -1).join(', ') + ' e ' + itens[itens.length - 1]).toLowerCase();
+    return quando ? `Olá! Quero agendar ${texto}. Pode ser ${quando}?` : `Olá! Quero agendar: ${texto}. Tem horário essa semana?`;
   }
+  function atualizar() {
+    balao.textContent = mensagem();
+    balao.classList.remove('novo'); void balao.offsetWidth; balao.classList.add('novo');
+  }
+  grupo('dias', dias, v => { dia = v; });
+  grupo('horas', horas, v => { hora = v; });
   cfg.servicos.forEach(s => {
     const li = document.createElement('li');
     const b = document.createElement('button');
@@ -382,8 +464,7 @@
       const on = b.getAttribute('aria-pressed') !== 'true';
       b.setAttribute('aria-pressed', String(on));
       on ? escolhidos.add(s) : escolhidos.delete(s);
-      balao.textContent = mensagem();
-      balao.classList.remove('novo'); void balao.offsetWidth; balao.classList.add('novo');
+      atualizar();
     });
     li.appendChild(b); lista.appendChild(li);
   });
@@ -393,7 +474,7 @@
     .map((legenda, i) => `<figure class="foto"><img src="/demo/img/${tipo}-${i + 1}.jpg" alt="" loading="lazy" width="900" height="1200"><figcaption>${legenda}</figcaption></figure>`).join('');
 
   // revelação ao rolar
-  const alvos = document.querySelectorAll('.agendar h2, .agendar .apoio, .servicos li, .conversa, .info > div, .fotos h2, .foto, .proposta h2, .proposta p, .proposta .btn');
+  const alvos = document.querySelectorAll('.agendar h2, .agendar .apoio, .servicos li, .conversa, .google h2, .google .apoio, .busca-mock, .info > div, .fotos h2, .foto, .proposta h2, .proposta p, .proposta .btn');
   alvos.forEach((el, i) => { el.classList.add('revela'); if (el.matches('.servicos li, .foto')) el.style.setProperty('--atraso', (i % 8) * 0.06 + 's'); });
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visivel'); io.unobserve(e.target); } }), { threshold: 0.15 });
