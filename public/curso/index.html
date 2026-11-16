@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Modelo de página de vendas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* Modelo de página de vendas para prospecção de quem vende curso, mentoria ou ebook.
+     Uso: /curso?n=PRODUTO&p=PESSOA&t=curso|mentoria|ebook&preco=97 */
+  :root {
+    --fundo: #0d1220; --fundo2: #141b2e; --tinta: #eef1f8; --suave: #9aa6c2; --cor: #7c5cff; --cor2: #22d3a6; --linha: rgba(255,255,255,.09);
+    --display: 'Bricolage Grotesque', system-ui, sans-serif; --corpo: 'Figtree', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--fundo); color: var(--tinta); font: 17px/1.6 var(--corpo); -webkit-font-smoothing: antialiased; padding-bottom: 84px; }
+  h1, h2, h3, p, ul { margin: 0; }
+  ul { padding: 0; list-style: none; }
+  a { color: inherit; }
+  .largura { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 56px; padding: 0 28px; border-radius: 14px; border: 0; font: 700 1.05rem var(--corpo); text-decoration: none; cursor: pointer; }
+  .btn-compra { background: linear-gradient(135deg, var(--cor2), #10b981); color: #062019; box-shadow: 0 14px 34px -14px rgba(34,211,166,.7); width: 100%; max-width: 420px; }
+  .selo { display: inline-block; padding: 6px 14px; border-radius: 999px; background: rgba(124,92,255,.16); color: #c4b5ff; font-size: .85rem; font-weight: 600; letter-spacing: .02em; }
+
+  @keyframes subir { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+  @keyframes brilho { 50% { box-shadow: 0 14px 44px -10px rgba(34,211,166,.95); } }
+  .hero > * { animation: subir .8s cubic-bezier(.2,.7,.2,1) both; }
+  .hero > *:nth-child(2) { animation-delay: .1s; } .hero > *:nth-child(3) { animation-delay: .2s; } .hero > *:nth-child(4) { animation-delay: .3s; } .hero > *:nth-child(5) { animation-delay: .4s; }
+  .btn-compra { animation: brilho 2.6s ease-in-out infinite; }
+  .revela { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+  .revela.visivel { opacity: 1; transform: none; }
+
+  .hero { padding: 54px 20px 48px; text-align: center; display: grid; justify-items: center; gap: 18px; background: radial-gradient(80% 60% at 50% 0%, rgba(124,92,255,.28), transparent 70%); }
+  .hero h1 { font: 800 clamp(2.3rem, 9vw, 4.2rem)/1.02 var(--display); letter-spacing: -.03em; text-wrap: balance; max-width: 16ch; }
+  .hero h1 em { font-style: normal; background: linear-gradient(90deg, #a78bfa, var(--cor2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero .sub { color: var(--suave); font-size: 1.15rem; max-width: 34ch; }
+  .preco { font-size: .95rem; color: var(--suave); }
+  .preco b { display: block; color: var(--tinta); font: 800 2.2rem/1.1 var(--display); }
+
+  section { padding: 56px 0; border-top: 1px solid var(--linha); }
+  h2 { font: 800 clamp(1.8rem, 6vw, 2.6rem)/1.08 var(--display); letter-spacing: -.02em; text-wrap: balance; }
+  .apoio { color: var(--suave); margin-top: 10px; max-width: 46ch; }
+  .grade { display: grid; gap: 12px; margin-top: 26px; }
+  .card { background: var(--fundo2); border: 1px solid var(--linha); border-radius: 18px; padding: 18px 20px; }
+  .card h3 { font: 700 1.08rem var(--corpo); }
+  .card p { color: var(--suave); margin-top: 4px; font-size: .97rem; }
+  .num { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: rgba(124,92,255,.18); color: #c4b5ff; font-weight: 700; margin-bottom: 10px; }
+  .check li { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--linha); }
+  .check li::before { content: ''; flex: none; width: 22px; height: 22px; margin-top: 3px; border-radius: 50%; background: var(--cor2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23062019' stroke-width='3.5'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/14px no-repeat; }
+  .prova { border: 2px dashed rgba(255,255,255,.18); background: transparent; display: grid; place-items: center; text-align: center; min-height: 120px; color: var(--suave); font-size: .95rem; }
+  .garantia { display: grid; gap: 16px; align-items: center; }
+  .escudo { width: 84px; height: 84px; border-radius: 24px; background: rgba(34,211,166,.14); display: grid; place-items: center; font: 800 1.6rem var(--display); color: var(--cor2); }
+  details { border-bottom: 1px solid var(--linha); padding: 16px 0; }
+  summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  summary::after { content: '+'; color: var(--cor2); font-weight: 700; }
+  details[open] summary::after { content: '–'; }
+  details p { color: var(--suave); margin-top: 8px; }
+  .final { text-align: center; display: grid; justify-items: center; gap: 18px; }
+  .nota { margin-top: 18px; font-size: .9rem; color: var(--suave); }
+
+  .proposta { background: #f4f1ff; color: #1a1336; padding: 56px 0 64px; }
+  .proposta h2 { color: #1a1336; }
+  .proposta p { margin-top: 14px; max-width: 48ch; }
+  .proposta .btn { margin-top: 24px; background: #1a1336; color: #fff; }
+  .proposta small { display: block; margin-top: 18px; opacity: .7; }
+
+  .faixa { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 8px 8px 18px; border-radius: 999px; background: #f4f1ff; color: #1a1336; box-shadow: 0 10px 30px -10px rgba(0,0,0,.6); font-size: .9rem; font-weight: 600; animation: subir .6s 1.2s both; }
+  .faixa a { min-height: 44px; padding: 0 18px; border-radius: 999px; background: #1a1336; color: #fff; display: inline-flex; align-items: center; text-decoration: none; font-weight: 700; white-space: nowrap; }
+  :focus-visible { outline: 3px solid var(--cor2); outline-offset: 3px; }
+
+  @media (min-width: 820px) {
+    .grade.tres { grid-template-columns: repeat(3, 1fr); }
+    .grade.dois { grid-template-columns: repeat(2, 1fr); }
+    .garantia { grid-template-columns: auto 1fr; }
+    .faixa { left: auto; right: 20px; bottom: 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .hero > *, .btn-compra, .faixa { animation: none; } .revela { opacity: 1; transform: none; transition: none; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<header class="hero">
+  <span class="selo" id="selo"></span>
+  <h1 id="titulo"></h1>
+  <p class="sub" id="sub"></p>
+  <p class="preco" id="preco" hidden></p>
+  <a class="btn btn-compra" href="#comprar">Quero entrar agora</a>
+</header>
+
+<main>
+  <section>
+    <div class="largura">
+      <h2>Pra quem é</h2>
+      <ul class="check" id="pra-quem" style="margin-top:18px"></ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="largura">
+      <h2 id="h-conteudo"></h2>
+      <p class="apoio">Módulos de exemplo. Na página pronta entra o conteúdo real, do jeito que você apresenta.</p>
+      <div class="grade tres" id="modulos"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="largura">
+      <h2>Quem já passou por aqui</h2>
+      <p class="apoio">Na página pronta entram prints e depoimentos reais dos seus alunos. Nada inventado.</p>
+      <div class="grade tres">
+        <div class="card prova">Print real de aluno</div>
+        <div class="card prova">Resultado real de aluno</div>
+        <div class="card prova">Depoimento em vídeo</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="largura garantia">
+      <div class="escudo">7 dias</div>
+      <div>
+        <h2>Garantia de 7 dias</h2>
+        <p class="apoio">Entrou e não era o que esperava? Pede o reembolso em até 7 dias pela própria plataforma de pagamento.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="largura">
+      <h2>Perguntas frequentes</h2>
+      <div style="margin-top:14px" id="faq"></div>
+      <p class="nota">Perguntas de exemplo. Na página pronta entram as que seus seguidores mais mandam no direct.</p>
+    </div>
+  </section>
+
+  <section id="comprar">
+    <div class="largura final">
+      <h2 id="h-final"></h2>
+      <p class="preco" id="preco2" hidden></p>
+      <a class="btn btn-compra" href="#comprar" id="btn-final">Quero entrar agora</a>
+      <p class="nota">Este botão leva para o seu checkout (Hotmart, Kiwify ou outro).</p>
+    </div>
+  </section>
+</main>
+
+<footer class="proposta">
+  <div class="largura">
+    <h2>Este é um modelo feito para <span data-produto></span>.</h2>
+    <p>Hoje quem clica no seu link cai direto na tela de pagamento. Com uma página assim antes do checkout, a pessoa entende o que vai levar, vê a prova e tira as dúvidas sem precisar te chamar. Fica no ar em até 7 dias, sem você mexer em nada técnico.</p>
+    <a class="btn" data-quero href="https://wa.me/5527992864820">Quero essa página</a>
+    <small>Feito por Gabriel Fantin · <a href="https://fantin.tech">fantin.tech</a></small>
+  </div>
+</footer>
+
+<div class="faixa"><span>Modelo feito para você</span><a data-quero href="https://wa.me/5527992864820">Quero essa página</a></div>
+
+<script>
+  const q = new URLSearchParams(location.search);
+  const TIPOS = {
+    curso:    { selo: 'Curso online', conteudo: 'O que você vai aprender', modulos: [['Fundamentos', 'A base que ninguém te explicou direito.'], ['Na prática', 'Passo a passo, aula por aula.'], ['Próximo nível', 'O que separa o iniciante de quem domina.']], final: 'Pronto pra começar?' },
+    mentoria: { selo: 'Mentoria', conteudo: 'Como funciona a mentoria', modulos: [['Diagnóstico', 'Onde você está e o que falta.'], ['Plano', 'O caminho certo pro seu objetivo.'], ['Acompanhamento', 'Encontros e suporte até o resultado.']], final: 'Garanta sua vaga' },
+    ebook:    { selo: 'E-book', conteudo: 'O que tem no material', modulos: [['Parte 1', 'O essencial, direto ao ponto.'], ['Parte 2', 'Exemplos e modelos prontos.'], ['Parte 3', 'Checklist pra aplicar hoje.']], final: 'Baixe agora' },
+  };
+  const tipo = TIPOS[q.get('t')] ? q.get('t') : 'curso';
+  const cfg = TIPOS[tipo];
+  const produto = q.get('n') || 'Seu Curso';
+  const pessoa = q.get('p') || '';
+  const preco = q.get('preco');
+
+  document.title = produto + ' | modelo de página de vendas';
+  document.getElementById('selo').textContent = cfg.selo + (pessoa ? ' com ' + pessoa : '');
+  document.getElementById('titulo').innerHTML = produto.replace(/(\S+)$/, '<em>$1</em>');
+  document.getElementById('sub').textContent = q.get('s') || 'Tudo o que você precisa, organizado do jeito certo, pra sair do zero e chegar no resultado.';
+  document.getElementById('h-conteudo').textContent = cfg.conteudo;
+  document.getElementById('h-final').textContent = cfg.final;
+  document.querySelectorAll('[data-produto]').forEach(e => e.textContent = produto);
+  if (preco) for (const id of ['preco', 'preco2']) { const el = document.getElementById(id); el.innerHTML = 'Acesso completo por<b>R$ ' + preco.replace('.', ',') + '</b>'; el.hidden = false; }
+
+  document.getElementById('pra-quem').innerHTML = ['Pra quem quer aprender com quem faz isso na prática', 'Pra quem já tentou sozinho e não saiu do lugar', 'Pra quem quer um passo a passo claro, sem enrolação']
+    .map(t => `<li>${t}</li>`).join('');
+  document.getElementById('modulos').innerHTML = cfg.modulos.map(([h, p], i) => `<div class="card"><span class="num">${i + 1}</span><h3>${h}</h3><p>${p}</p></div>`).join('');
+  document.getElementById('faq').innerHTML = [['Como recebo o acesso?', 'Na hora, no seu e-mail, logo depois da compra.'], ['Por quanto tempo tenho acesso?', 'Aqui entra o prazo real do seu produto.'], ['Tem certificado?', 'Aqui entra a resposta real.'], ['E se eu não gostar?', 'Você tem 7 dias de garantia pela plataforma de pagamento.']]
+    .map(([p, r]) => `<details><summary>${p}</summary><p>${r}</p></details>`).join('');
+
+  const quero = 'https://wa.me/5527992864820?text=' + encodeURIComponent(`Oi, Gabriel! Vi o modelo de página de vendas de ${produto} e quero saber mais.`);
+  document.querySelectorAll('[data-quero]').forEach(a => a.href = quero);
+
+  const alvos = document.querySelectorAll('section h2, section .apoio, .card, .check li, details, .escudo');
+  alvos.forEach(el => el.classList.add('revela'));
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visivel'); io.unobserve(e.target); } }), { threshold: 0.12 });
+    alvos.forEach(el => io.observe(el));
+  } else alvos.forEach(el => el.classList.add('visivel'));
+</script>
+</body>
+</html>
