@@ -470,7 +470,8 @@
   const slug = params.get('s') || partes[1] || '';
   const lead = LEADS[slug] || {};
   const CIDADES = { marataizes: 'Marataízes', piuma: 'Piúma', vitoria: 'Vitória', jacarei: 'Jacareí', 'sao-mateus': 'São Mateus', 'cachoeiro-de-itapemirim': 'Cachoeiro de Itapemirim', 'sao-jose-dos-campos': 'São José dos Campos', 'domingos-martins': 'Domingos Martins', 'conceicao-da-barra': 'Conceição da Barra', 'joao-neiva': 'João Neiva' };
-  const deSlug = s => { s = decodeURIComponent(s).toLowerCase(); return CIDADES[s] || s.replace(/[-_]+/g, ' ').trim().split(' ').map((w, i) => i && /^(de|da|do|das|dos|e)$/.test(w) ? w : w.charAt(0).toUpperCase() + w.slice(1)).join(' '); };
+  const ACENTOS = { salao: 'salão', espaco: 'espaço', estudio: 'estúdio', cilios: 'cílios', estetica: 'estética', sao: 'são', jose: 'josé', ze: 'zé', joao: 'joão', fabio: 'fábio', vitoria: 'vitória', leticia: 'letícia', patricia: 'patrícia', julia: 'júlia', marcia: 'márcia', lucia: 'lúcia', claudia: 'cláudia', barbara: 'bárbara', belissima: 'belíssima', unhas: 'unhas' };
+  const deSlug = s => { s = decodeURIComponent(s).toLowerCase(); return CIDADES[s] || s.replace(/[-_]+/g, ' ').trim().split(' ').map(w => ACENTOS[w] || w).map((w, i) => i && /^(de|da|do|das|dos|e)$/.test(w) ? w : w.charAt(0).toUpperCase() + w.slice(1)).join(' '); };
   const nomeLink = !LEADS[slug] && partes[1] ? deSlug(partes[1]) : '';
   const adivinha = n => /barb|barber/i.test(n) ? 'barbearia' : /nail|unha|esmalt|manicure/i.test(n) ? 'manicure' : /sobrancelh|c[ií]lio|lash|brow|micropig/i.test(n) ? 'sobrancelha' : 'salao';
   const pedido = lead.t || params.get('t') || (nomeLink && adivinha(nomeLink));
