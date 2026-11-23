@@ -21,6 +21,10 @@
     {
       "source": "/para/:slug",
       "destination": "/demo"
+    },
+    {
+      "source": "/:slug((?!assets|projects|hero|fonts|video|ig|gabriel|checkout|curso|demo|para|api)[a-z0-9-]+)/:cidade([a-z0-9-]+)",
+      "destination": "/demo"
     }
   ],
   "headers": [

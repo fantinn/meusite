@@ -466,7 +466,7 @@
 
   const params = new URLSearchParams(location.search);
   // Link curto sem cadastro: /para/nome-do-negocio/cidade (o nicho sai do nome; ?t= força outro)
-  const partes = location.pathname.match(/^\/para\/([^/]+)(?:\/([^/]+))?/) || [];
+  const partes = location.pathname.match(/^\/para\/([^/]+)(?:\/([^/]+))?/) || location.pathname.match(/^\/(?!demo\b)([a-z0-9-]+)\/([a-z0-9-]+)\/?$/) || [];
   const slug = params.get('s') || partes[1] || '';
   const lead = LEADS[slug] || {};
   const CIDADES = { marataizes: 'Marataízes', piuma: 'Piúma', vitoria: 'Vitória', jacarei: 'Jacareí', 'sao-mateus': 'São Mateus', 'cachoeiro-de-itapemirim': 'Cachoeiro de Itapemirim', 'sao-jose-dos-campos': 'São José dos Campos', 'domingos-martins': 'Domingos Martins', 'conceicao-da-barra': 'Conceição da Barra', 'joao-neiva': 'João Neiva' };
