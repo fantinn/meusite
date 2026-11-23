@@ -2,384 +2,467 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#0e0d0c" />
 <title>Modelo de site</title>
+<link rel="preconnect" href="https://images.unsplash.com" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;1,6..96,500&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
-  /* Modelo de site para prospecção. Um arquivo só, três temas: salao, barbearia, manicure.
-     Uso: /demo?s=slug (ou /para/slug em produção). Leads ficam no objeto LEADS, no fim do arquivo. */
+  /* Modelo de site para prospecção (salao | barbearia | manicure | sobrancelha).
+     Uso: /demo?n=NOME&t=TIPO&c=CIDADE  (ou ?s=slug de LEADS). Fotos: Unsplash (licença livre), servidas pelo CDN deles no tamanho certo. */
   :root {
-    --fundo: #fbf3f5; --tinta: #2b1528; --cor: #b4235f; --sobre-cor: #fff; --suave: #f1d3dd;
-    --zap: #12824a;
-    --display: 'Bodoni Moda', Georgia, serif;
-    --corpo: 'Figtree', system-ui, sans-serif;
-    --peso-display: 500; --aperto: -0.035em;
+    --fundo: #f7f1ec; --fundo2: #efe5dc; --tinta: #231a17; --suave: #6f625c; --cor: #a8644a; --sobre-cor: #fff; --linha: rgba(35,26,23,.12);
+    --zap: #128c4f;
+    --display: 'Cormorant Garamond', Georgia, serif; --peso: 500; --caixa: none; --aperto: -0.01em; --italico: italic;
+    --corpo: 'Manrope', system-ui, sans-serif;
+    --raio: 22px;
   }
   body[data-tipo="barbearia"] {
-    --fundo: #10292d; --tinta: #f1f5f2; --cor: #e3a72f; --sobre-cor: #10292d; --suave: #1c3f44;
-    --display: 'Archivo Black', 'Arial Black', sans-serif;
-    --peso-display: 400; --aperto: -0.02em;
+    --fundo: #0e0d0c; --fundo2: #171513; --tinta: #f3ede4; --suave: #a79e92; --cor: #c9a063; --sobre-cor: #0e0d0c; --linha: rgba(243,237,228,.12);
+    --display: 'Bebas Neue', Impact, sans-serif; --peso: 400; --caixa: uppercase; --aperto: .01em; --italico: normal;
+    --raio: 14px;
   }
-  body[data-tipo="manicure"] {
-    --fundo: #f3f5ff; --tinta: #1c1a4a; --cor: #d92c68; --sobre-cor: #fff; --suave: #dde2ff;
-  }
-
-  body[data-tipo="sobrancelha"] {
-    --fundo: #eef3ee; --tinta: #2a2320; --cor: #8a4b2f; --sobre-cor: #fff; --suave: #d9e5da;
-  }
-
-  /* sobrancelha: dois arcos que se desenham */
-  .arcos { width: 100%; height: auto; display: block; }
-  .arcos path { fill: none; stroke: var(--cor); stroke-linecap: round; stroke-dasharray: 400; stroke-dashoffset: 400; animation: desenhar 1.4s .5s cubic-bezier(.6,0,.2,1) forwards; }
-  .arcos path:nth-child(2) { animation-delay: .8s; }
-  .arcos path.fino { stroke: var(--tinta); opacity: .5; animation-delay: 1.5s; }
-  @keyframes desenhar { to { stroke-dashoffset: 0; } }
-
-  /* animações: uma entrada no topo, revelação ao rolar, resposta ao toque */
-  @keyframes subir { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
-  @keyframes flutuar { 50% { transform: translateY(-10px); } }
-  @keyframes estalar { 0% { transform: scale(.94); } 60% { transform: scale(1.03); } 100% { transform: scale(1); } }
-  .hero h1 { animation: subir .8s cubic-bezier(.2,.7,.2,1) both; }
-  .hero .chamada { animation: subir .8s .15s cubic-bezier(.2,.7,.2,1) both; }
-  .hero .hero-acoes { animation: subir .8s .3s cubic-bezier(.2,.7,.2,1) both; }
-  .motivo { animation: subir .9s .25s cubic-bezier(.2,.7,.2,1) both; }
-  .motivo > * { animation: flutuar 6s 1.2s ease-in-out infinite; }
-  .motivo > .poste { animation: girar 5s linear infinite; }
-  .revela { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); transition-delay: var(--atraso, 0s); }
-  .revela.visivel { opacity: 1; transform: none; }
-  .balao.novo { animation: estalar .35s ease; }
-  .servico { transition: transform .15s ease, border-color .15s ease; }
-  .servico:active { transform: scale(.97); }
-  .foto img { transition: transform .6s cubic-bezier(.2,.7,.2,1); }
-  .foto:hover img { transform: scale(1.05); }
-  .faixa { animation: subir .6s 1.2s cubic-bezier(.2,.7,.2,1) both; }
+  body[data-tipo="manicure"] { --fundo: #fbf3f2; --fundo2: #f4e4e2; --tinta: #2a1a1e; --suave: #77636a; --cor: #b8476b; --linha: rgba(42,26,30,.12); }
+  body[data-tipo="sobrancelha"] { --fundo: #f6f1ea; --fundo2: #ebe2d6; --tinta: #2a211b; --suave: #74685e; --cor: #8b5a3c; --linha: rgba(42,33,27,.12); }
 
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body { margin: 0; background: var(--fundo); color: var(--tinta); font-family: var(--corpo); font-size: 17px; line-height: 1.55; padding-bottom: 76px; -webkit-font-smoothing: antialiased; }
-  h1, h2, p, ul, dl, dd { margin: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--fundo); color: var(--tinta); font: 400 17px/1.6 var(--corpo); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, p, ul, figure, dl, dd { margin: 0; }
   ul { padding: 0; list-style: none; }
   a { color: inherit; }
-  :focus-visible { outline: 3px solid var(--cor); outline-offset: 3px; border-radius: 6px; }
-  .largura { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  img { display: block; max-width: 100%; }
+  :focus-visible { outline: 2px solid var(--cor); outline-offset: 3px; border-radius: 6px; }
+  .largura { width: min(1180px, 100% - 40px); margin-inline: auto; }
+  .titulo { font: var(--peso) clamp(2.3rem, 7vw, 4.4rem)/1 var(--display); text-transform: var(--caixa); letter-spacing: var(--aperto); text-wrap: balance; }
+  .titulo em { font-style: var(--italico); color: var(--cor); }
+  .sobre-titulo { display: inline-flex; align-items: center; gap: 12px; font: 600 .78rem/1 var(--corpo); letter-spacing: .22em; text-transform: uppercase; color: var(--cor); margin-bottom: 18px; }
+  .sobre-titulo::before { content: ''; width: 28px; height: 1px; background: currentColor; }
+  .apoio { color: var(--suave); max-width: 52ch; margin-top: 16px; }
+  .obs { font-size: .85rem; color: var(--suave); margin-top: 18px; }
+  section { padding-block: clamp(72px, 11vw, 140px); scroll-margin-top: 40px; }
 
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 26px; border: 0; border-radius: 999px; font: 600 1rem var(--corpo); text-decoration: none; cursor: pointer; }
-  .btn-zap { background: var(--zap); color: #fff; }
-  .btn-zap svg { width: 20px; height: 20px; fill: currentColor; flex: none; }
+  .btn { position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 54px; padding: 0 28px; border: 0; border-radius: 999px; font: 700 .98rem var(--corpo); letter-spacing: .01em; text-decoration: none; cursor: pointer; transition: transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s, background .25s; }
+  .btn svg { width: 20px; height: 20px; fill: currentColor; flex: none; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn::after { content: ''; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%); transform: translateX(-120%); transition: transform .8s; }
+  .btn:hover::after { transform: translateX(120%); }
+  .btn-zap { background: var(--zap); color: #fff; box-shadow: 0 14px 30px -14px rgba(18,140,79,.8); }
   .btn-cor { background: var(--cor); color: var(--sobre-cor); }
+  .btn-vidro { background: rgba(255,255,255,.1); color: #fff; border: 1px solid rgba(255,255,255,.35); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 
   /* topo */
-  .topo { display: none; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; max-width: 1080px; margin: 0 auto; }
-  .topo-marca { font: var(--peso-display) 1.15rem/1.1 var(--display); letter-spacing: var(--aperto); }
-  .topo nav { display: none; gap: 28px; font-weight: 500; }
-  .topo nav a { text-decoration: none; }
-  .topo nav a:hover { text-decoration: underline; text-underline-offset: 5px; }
+  .topo { position: fixed; inset: 0 0 auto; z-index: 20; transition: background .35s, box-shadow .35s, color .35s; color: #fff; }
+  .topo .largura { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 72px; }
+  .topo-marca { font: var(--peso) 1.45rem/1 var(--display); text-transform: var(--caixa); letter-spacing: var(--aperto); text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topo nav { display: none; gap: 32px; font-size: .92rem; font-weight: 600; }
+  .topo nav a { text-decoration: none; opacity: .85; position: relative; }
+  .topo nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform .3s; }
+  .topo nav a:hover::after { transform: scaleX(1); }
+  .topo .btn { min-height: 42px; padding: 0 18px; font-size: .88rem; }
+  .topo.solido { background: color-mix(in srgb, var(--fundo) 86%, transparent); color: var(--tinta); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--linha); }
 
-  /* hero */
-  .hero { display: grid; gap: 36px; padding-top: 48px; padding-bottom: 56px; align-items: center; }
-  .hero h1 { font: var(--peso-display) clamp(2.9rem, 13vw, 6.6rem)/0.94 var(--display); letter-spacing: var(--aperto); text-wrap: balance; overflow-wrap: anywhere; }
-  .chamada { margin-top: 22px; font-size: 1.2rem; line-height: 1.45; max-width: 30ch; }
-  .hero-acoes { margin-top: 28px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; }
-  .nota-google { font-weight: 500; }
-  .nota-google b { color: var(--cor); font-weight: 700; }
+  /* capa */
+  .capa { position: relative; min-height: 100svh; display: grid; align-items: end; color: #fff; overflow: hidden; padding: 0; isolation: isolate; }
+  .capa-foto { position: absolute; inset: -6% 0; z-index: -2; will-change: transform; }
+  .capa-foto img { width: 100%; height: 100%; object-fit: cover; animation: kenburns 18s ease-out both; }
+  .capa::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(10,8,7,.55) 0%, rgba(10,8,7,.15) 35%, rgba(10,8,7,.82) 100%); }
+  .capa-conteudo { padding-block: 120px 56px; }
+  .capa .sobre-titulo { color: #fff; opacity: .9; }
+  .capa h1 { font: var(--peso) clamp(3.4rem, 15vw, 9.5rem)/.9 var(--display); text-transform: var(--caixa); letter-spacing: var(--aperto); text-wrap: balance; max-width: 14ch; overflow-wrap: anywhere; }
+  .capa h1 .p { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .06em; }
+  .capa h1 .p > span { display: inline-block; transform: translateY(105%); animation: subir-palavra 1s cubic-bezier(.2,.8,.2,1) forwards; animation-delay: calc(.25s + var(--i) * .09s); }
+  .capa-sub { margin-top: 22px; font-size: clamp(1.05rem, 2.6vw, 1.3rem); max-width: 40ch; opacity: .92; }
+  .capa-acoes { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .capa-rodape { margin-top: 42px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; font-size: .9rem; opacity: .9; }
+  .estrelas { color: #f5c451; letter-spacing: 2px; }
+  .rolar { display: none; }
+  .anim { opacity: 0; animation: surgir .9s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: var(--d, .6s); }
+  @keyframes kenburns { from { transform: scale(1.14); } to { transform: scale(1); } }
+  @keyframes subir-palavra { to { transform: none; } }
+  @keyframes surgir { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
 
-  /* motivo de cada tema */
-  .motivo { justify-self: center; width: min(74vw, 340px); }
-  /* salão: espelho em arco com a inicial */
-  .espelho { aspect-ratio: 4 / 5; border-radius: 999px 999px 18px 18px; background: linear-gradient(155deg, #fff 0%, var(--suave) 38%, #e3a9bd 100%); box-shadow: 0 0 0 10px var(--fundo), 0 0 0 12px var(--tinta); display: grid; place-items: center; position: relative; overflow: hidden; }
-  .espelho::before { content: ''; position: absolute; inset: -20% 55% -20% -10%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent); transform: rotate(18deg); }
-  .espelho span { font: italic 500 clamp(8rem, 38vw, 13rem)/1 var(--display); color: var(--cor); position: relative; }
-  /* barbearia: poste listrado */
-  .poste { height: 320px; width: 96px; margin: 0 auto; border-radius: 48px; border: 5px solid var(--tinta); background: repeating-linear-gradient(-38deg, var(--tinta) 0 26px, #c8372d 26px 52px, var(--tinta) 52px 78px, #2f6fb5 78px 104px); background-size: 100% 133px; animation: girar 5s linear infinite; }
-  @keyframes girar { to { background-position: 0 133px; } }
-  /* manicure: leque de esmaltes */
-  .esmaltes { display: flex; justify-content: center; align-items: flex-end; gap: 10px; height: 190px; }
-  .esmaltes i { width: 46px; height: 132px; border-radius: 23px 23px 9px 9px; transform-origin: 50% 100%; box-shadow: inset 8px 0 0 rgba(255,255,255,.28); }
-  .esmaltes i:nth-child(1) { background: #7a1f4b; transform: translateY(26px) rotate(-14deg); }
-  .esmaltes i:nth-child(2) { background: #d92c68; transform: translateY(8px) rotate(-7deg); }
-  .esmaltes i:nth-child(3) { background: #ff9db7; }
-  .esmaltes i:nth-child(4) { background: #f3c9a8; transform: translateY(8px) rotate(7deg); }
-  .esmaltes i:nth-child(5) { background: #5b5bd6; transform: translateY(26px) rotate(14deg); }
+  /* faixa corrida */
+  .corrida { overflow: hidden; border-block: 1px solid var(--linha); padding: 22px 0; background: var(--fundo); }
+  .corrida-trilho { display: flex; width: max-content; animation: correr 32s linear infinite; }
+  .corrida span { font: var(--peso) clamp(1.6rem, 4vw, 2.4rem)/1 var(--display); text-transform: var(--caixa); letter-spacing: var(--aperto); padding-inline: 28px; white-space: nowrap; display: flex; align-items: center; gap: 56px; }
+  .corrida span::after { content: '✦'; font-size: .5em; color: var(--cor); }
+  @keyframes correr { to { transform: translateX(-50%); } }
+
+  /* sobre */
+  .sobre-grade { display: grid; gap: 44px; align-items: center; }
+  .sobre-foto { position: relative; border-radius: var(--raio); overflow: hidden; aspect-ratio: 4 / 5; }
+  .sobre-foto img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.12); transition: transform 1.6s cubic-bezier(.2,.7,.2,1); }
+  .sobre-foto.visivel img { transform: scale(1); }
+  .selo { position: absolute; right: 16px; bottom: 16px; background: var(--fundo); color: var(--tinta); border-radius: 16px; padding: 14px 18px; font-size: .85rem; line-height: 1.35; box-shadow: 0 20px 40px -20px rgba(0,0,0,.5); max-width: 220px; }
+  .selo b { display: block; font: var(--peso) 1.6rem/1 var(--display); color: var(--cor); text-transform: var(--caixa); margin-bottom: 4px; }
+  .pilares { display: grid; gap: 18px; margin-top: 34px; }
+  .pilar { display: flex; gap: 16px; align-items: flex-start; }
+  .pilar i { flex: none; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--linha); display: grid; place-items: center; color: var(--cor); font-style: normal; font-size: 1.1rem; }
+  .pilar b { display: block; font-weight: 700; }
+  .pilar span { color: var(--suave); font-size: .95rem; }
+
+  /* serviços */
+  .servicos-sec { background: var(--fundo2); }
+  .servicos-topo { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 20px; }
+  .servicos { display: grid; gap: 12px; margin-top: 40px; }
+  .servico { width: 100%; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 18px; padding: 22px 22px; border-radius: var(--raio); border: 1px solid var(--linha); background: var(--fundo); color: var(--tinta); font: inherit; text-align: left; cursor: pointer; transition: border-color .25s, transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s; }
+  .servico:hover { transform: translateY(-3px); box-shadow: 0 22px 40px -28px rgba(0,0,0,.45); }
+  .servico-nome { font: var(--peso) 1.55rem/1.1 var(--display); text-transform: var(--caixa); letter-spacing: var(--aperto); }
+  .servico-preco { font-weight: 700; white-space: nowrap; }
+  .servico-preco small { font-weight: 500; color: var(--suave); font-size: .75rem; display: block; text-align: right; }
+  .servico-info { color: var(--suave); font-size: .9rem; display: flex; align-items: center; gap: 10px; }
+  .servico-marca { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--linha); display: grid; place-items: center; transition: background .25s, border-color .25s; }
+  .servico[aria-pressed="true"] { border-color: var(--cor); box-shadow: 0 0 0 1px var(--cor); }
+  .servico[aria-pressed="true"] .servico-marca { background: var(--cor); border-color: var(--cor); }
+  .servico[aria-pressed="true"] .servico-marca::after { content: ''; width: 9px; height: 5px; border-left: 2px solid var(--sobre-cor); border-bottom: 2px solid var(--sobre-cor); transform: rotate(-45deg) translate(1px,-1px); }
+
+  /* galeria */
+  .galeria-grade { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 44vw; gap: 10px; margin-top: 40px; }
+  .gal { position: relative; overflow: hidden; border-radius: calc(var(--raio) - 4px); background: var(--fundo2); cursor: zoom-in; border: 0; padding: 0; clip-path: inset(14% 14% 14% 14% round 18px); transition: clip-path 1.1s cubic-bezier(.2,.7,.2,1); }
+  .gal.visivel { clip-path: inset(0 0 0 0 round 18px); }
+  .gal img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.25); transition: transform 1.4s cubic-bezier(.2,.7,.2,1); }
+  .gal.visivel img { transform: scale(1); }
+  .gal:hover img { transform: scale(1.06); }
+  .gal:nth-child(1) { grid-row: span 2; }
+  .gal:nth-child(4) { grid-column: span 2; }
+
+  .caixa-luz { position: fixed; inset: 0; z-index: 50; background: rgba(8,7,6,.92); display: grid; place-items: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .3s; }
+  .caixa-luz.aberta { opacity: 1; pointer-events: auto; }
+  .caixa-luz img { max-height: 86vh; max-width: 100%; border-radius: 14px; transform: scale(.94); transition: transform .35s cubic-bezier(.2,.7,.2,1); }
+  .caixa-luz.aberta img { transform: none; }
+  .caixa-luz button { position: absolute; top: 16px; right: 16px; width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(255,255,255,.3); background: transparent; color: #fff; font-size: 1.4rem; cursor: pointer; }
 
   /* agendar */
-  .agendar { background: var(--suave); padding: 56px 0 44px; }
-  h2 { font: var(--peso-display) clamp(1.9rem, 6.5vw, 3rem)/1.05 var(--display); letter-spacing: var(--aperto); text-wrap: balance; }
-  .apoio { margin-top: 12px; max-width: 44ch; }
-  .agendar-grade { display: grid; gap: 28px; margin-top: 30px; }
-  .servicos { display: grid; gap: 10px; align-content: start; }
-  .servico { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 58px; padding: 0 20px; border-radius: 16px; border: 2px solid transparent; background: var(--fundo); color: var(--tinta); font: 600 1.05rem var(--corpo); text-align: left; cursor: pointer; }
-  .servico .marca { width: 24px; height: 24px; border-radius: 50%; border: 2px solid currentColor; opacity: .35; flex: none; display: grid; place-items: center; }
-  .servico[aria-pressed="true"] { border-color: var(--cor); }
-  .servico[aria-pressed="true"] .marca { opacity: 1; background: var(--cor); border-color: var(--cor); }
-  .servico[aria-pressed="true"] .marca::after { content: ''; width: 9px; height: 5px; border-left: 2.5px solid var(--sobre-cor); border-bottom: 2.5px solid var(--sobre-cor); transform: rotate(-45deg) translate(1px, -1px); }
+  .agendar-sec { background: var(--tinta); color: var(--fundo); }
+  .agendar-sec .apoio, .agendar-sec .obs { color: color-mix(in srgb, var(--fundo) 70%, transparent); }
+  .agendar-grade { display: grid; gap: 40px; margin-top: 40px; align-items: start; }
+  .rotulo { font: 600 .78rem/1 var(--corpo); letter-spacing: .2em; text-transform: uppercase; opacity: .7; margin: 0 0 14px; }
+  .rotulo + .chips { margin-bottom: 28px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { min-height: 46px; padding: 0 18px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--fundo) 25%, transparent); background: transparent; color: inherit; font: 600 .95rem var(--corpo); cursor: pointer; transition: background .2s, color .2s, transform .2s; }
+  .chip:hover { transform: translateY(-2px); }
+  .chip[aria-pressed="true"] { background: var(--cor); border-color: var(--cor); color: var(--sobre-cor); }
+  .escolhidos { font-size: .95rem; opacity: .8; margin-bottom: 28px; }
+  .celular { background: #efe7de; color: #1c2b21; border-radius: 34px; padding: 10px; box-shadow: 0 40px 80px -40px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.08); max-width: 380px; width: 100%; justify-self: center; }
+  .celular-tela { border-radius: 26px; overflow: hidden; background: #e9dfd3 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23000' opacity='.05'/%3E%3C/svg%3E"); padding-bottom: 16px; }
+  .zap-topo { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #075e54; color: #fff; }
+  .zap-foto { width: 40px; height: 40px; border-radius: 50%; background: var(--cor); color: var(--sobre-cor); display: grid; place-items: center; font-weight: 700; flex: none; }
+  .zap-nome { font-weight: 700; line-height: 1.2; font-size: .98rem; }
+  .zap-status { font-size: .8rem; opacity: .8; }
+  .balao { margin: 20px 14px 0 56px; padding: 12px 14px 20px; background: #d9fdd3; border-radius: 12px 2px 12px 12px; font-size: .98rem; line-height: 1.45; position: relative; min-height: 3.6em; box-shadow: 0 1px 1px rgba(0,0,0,.08); }
+  .balao::after { content: '✓✓'; position: absolute; right: 10px; bottom: 4px; font-size: .7rem; color: #53bdeb; letter-spacing: -2px; }
+  .balao.novo { animation: estalar .35s ease; }
+  @keyframes estalar { 0% { transform: scale(.95); } 60% { transform: scale(1.02); } 100% { transform: none; } }
+  .celular .btn { margin: 16px 14px 0; width: calc(100% - 28px); }
+  .aviso { margin: 12px 16px 0; font-size: .88rem; font-weight: 600; }
 
-  .conversa { background: #e9e2d8; color: #1c2b21; border-radius: 26px; padding: 0 0 18px; overflow: hidden; align-self: start; box-shadow: 0 18px 40px -22px rgba(0,0,0,.45); }
-  .conversa-topo { display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: #0e5a3f; color: #fff; }
-  .conversa-foto { width: 40px; height: 40px; border-radius: 50%; background: var(--cor); color: var(--sobre-cor); display: grid; place-items: center; font: 600 1.1rem var(--corpo); flex: none; }
-  .conversa-nome { font-weight: 600; line-height: 1.2; }
-  .conversa-status { font-size: .85rem; opacity: .8; }
-  .balao { margin: 22px 18px 0 54px; padding: 12px 14px; background: #d6f6c7; border-radius: 14px 4px 14px 14px; font-size: 1rem; line-height: 1.4; min-height: 3.4em; }
-  .conversa .btn { margin: 18px 18px 0; width: calc(100% - 36px); }
-  .aviso { margin: 14px 18px 0; font-size: .95rem; font-weight: 500; }
-  .exemplo { margin-top: 26px; font-size: .95rem; opacity: .8; }
-
-  /* quando: dia e horário */
-  .rotulo { margin-top: 22px; font-weight: 700; }
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-  .chip { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 2px solid transparent; background: var(--fundo); color: var(--tinta); font: 600 .95rem var(--corpo); cursor: pointer; transition: transform .15s ease; }
-  .chip:active { transform: scale(.95); }
-  .chip[aria-pressed="true"] { background: var(--cor); color: var(--sobre-cor); }
-
-  /* prévia da busca no Google */
-  .google { padding-top: 56px; }
-  .busca-mock { margin-top: 26px; max-width: 460px; background: #fff; color: #202124; border-radius: 22px; padding: 16px; box-shadow: 0 18px 40px -24px rgba(0,0,0,.45); font-family: Arial, sans-serif; }
+  /* google + onde */
+  .local-grade { display: grid; gap: 40px; align-items: start; }
+  .busca-mock { margin-top: 30px; background: #fff; color: #202124; border-radius: 22px; padding: 16px; box-shadow: 0 30px 60px -36px rgba(0,0,0,.45); font-family: Arial, sans-serif; max-width: 480px; }
   .busca-barra { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 999px; border: 1px solid #dfe1e5; font-size: 1rem; }
   .busca-barra svg { width: 18px; height: 18px; fill: none; stroke: #5f6368; stroke-width: 2.2; flex: none; }
   .busca-card { display: grid; gap: 4px; margin-top: 14px; padding: 16px; border-radius: 14px; border: 1px solid #ecedef; }
   .busca-nome { font-size: 1.25rem; color: #1a0dab; }
   .busca-meta { font-size: .92rem; color: #4d5156; }
-  .busca-meta b { color: #e37400; font-weight: 700; }
   .busca-status { font-size: .92rem; color: #188038; }
   .busca-botoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
   .busca-botoes i { font-style: normal; font-size: .88rem; padding: 7px 14px; border-radius: 999px; border: 1px solid #dadce0; color: #1a73e8; }
-  .busca-botoes i:nth-child(2) { background: #1a73e8; color: #fff; border-color: #1a73e8; animation: pulsar 2.4s ease-in-out infinite; }
+  .busca-botoes i:first-child { background: #1a73e8; color: #fff; border-color: #1a73e8; animation: pulsar 2.4s ease-in-out infinite; }
   @keyframes pulsar { 50% { box-shadow: 0 0 0 6px rgba(26,115,232,.18); } }
-  .google .obs { margin-top: 14px; font-size: .95rem; opacity: .8; }
-
-  /* horário e endereço */
-  .info { padding-block: 56px; display: grid; gap: 40px; }
-  .info h2 { margin-bottom: 18px; }
-  .horarios div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid color-mix(in srgb, var(--tinta) 18%, transparent); max-width: 380px; }
+  .mapa { border-radius: var(--raio); overflow: hidden; aspect-ratio: 4 / 3; background: var(--fundo2); border: 1px solid var(--linha); }
+  .mapa iframe { width: 100%; height: 100%; border: 0; filter: grayscale(.35) contrast(1.05); }
+  body[data-tipo="barbearia"] .mapa iframe { filter: grayscale(1) invert(.92) contrast(.9); }
+  .horarios { margin-top: 26px; }
+  .horarios div { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--linha); }
   .horarios dt { font-weight: 600; }
-  .onde p + p { margin-top: 8px; }
-  .info .obs { opacity: .8; font-size: .95rem; }
-  .horarios + .obs { margin-top: 14px; }
+  .horarios dd { color: var(--suave); }
 
-  /* fotos */
-  .fotos { padding-bottom: 64px; }
-  .fotos-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
-  .foto { min-width: 0; aspect-ratio: 3 / 4; border-radius: 18px; background: var(--suave); position: relative; overflow: hidden; margin: 0; }
-  .foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .foto:first-child img { object-position: 50% 12%; }
-  .foto figcaption { position: absolute; left: 12px; bottom: 12px; padding: 6px 12px; border-radius: 999px; background: var(--fundo); color: var(--tinta); font-size: .85rem; font-weight: 600; }
-  .fotos .obs { margin-top: 16px; font-size: .95rem; opacity: .8; }
-  .foto:first-child { grid-column: 1 / -1; aspect-ratio: 16 / 10; }
+  /* proposta */
+  .proposta { background: var(--fundo2); text-align: center; }
+  .proposta .titulo { max-width: 18ch; margin-inline: auto; }
+  .proposta p { margin: 20px auto 0; max-width: 48ch; color: var(--suave); }
+  .proposta .btn { margin-top: 32px; }
+  .proposta small { display: block; margin-top: 26px; font-size: .9rem; color: var(--suave); }
 
-  /* proposta (quem fez) */
-  .proposta { background: var(--tinta); color: var(--fundo); padding: 56px 0 64px; }
-  .proposta h2 { max-width: 18ch; }
-  .proposta p { margin-top: 16px; max-width: 46ch; }
-  .proposta .btn { margin-top: 26px; }
-  .proposta small { display: block; margin-top: 22px; font-size: .95rem; opacity: .8; }
+  .faixa { position: fixed; left: 12px; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); z-index: 30; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 8px 8px 20px; border-radius: 999px; background: color-mix(in srgb, var(--tinta) 92%, transparent); color: var(--fundo); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 18px 40px -16px rgba(0,0,0,.6); font-size: .9rem; font-weight: 600; transform: translateY(140%); transition: transform .5s cubic-bezier(.2,.7,.2,1); }
+  .faixa.mostra { transform: none; }
+  .faixa .btn { min-height: 44px; padding: 0 18px; font-size: .9rem; white-space: nowrap; }
+  footer { padding-bottom: 90px; }
 
-  .faixa { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 8px 8px 18px; border-radius: 999px; background: var(--tinta); color: var(--fundo); box-shadow: 0 10px 30px -10px rgba(0,0,0,.55); font-size: .92rem; font-weight: 500; line-height: 1.25; }
-  .faixa .btn { min-height: 44px; padding: 0 18px; font-size: .95rem; white-space: nowrap; }
+  /* revelação ao rolar */
+  .revela { opacity: 0; transform: translateY(34px); transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1); transition-delay: var(--atraso, 0s); }
+  .revela.visivel { opacity: 1; transform: none; }
 
   @media (min-width: 820px) {
     body { font-size: 18px; }
-    .topo, .topo nav { display: flex; }
-    .hero { grid-template-columns: 1.25fr .75fr; padding-top: 48px; padding-bottom: 88px; }
-    .agendar { padding: 88px 0 64px; }
-    .agendar-grade { grid-template-columns: 1fr 380px; gap: 44px; }
-    .servicos { grid-template-columns: 1fr 1fr; }
-    .info { grid-template-columns: 1fr 1fr; padding-block: 88px; }
-    .fotos-grade { grid-template-columns: repeat(3, 1fr); }
-    .foto, .foto:first-child { grid-column: auto; aspect-ratio: 3 / 4; }
-    .proposta { padding: 88px 0 110px; }
-    .faixa { left: auto; right: 20px; bottom: 20px; }
+    .topo nav { display: flex; }
+    .capa-conteudo { padding-block: 160px 80px; }
+    .rolar { display: flex; align-items: center; gap: 12px; font-size: .78rem; letter-spacing: .2em; text-transform: uppercase; }
+    .rolar::before { content: ''; width: 1px; height: 44px; background: linear-gradient(#fff, transparent); animation: linha 2.2s ease-in-out infinite; transform-origin: top; }
+    @keyframes linha { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+    .sobre-grade { grid-template-columns: 1fr 1.1fr; gap: 80px; }
+    .servicos { grid-template-columns: 1fr 1fr; gap: 16px; }
+    .galeria-grade { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 260px; gap: 14px; }
+    .gal:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+    .gal:nth-child(4) { grid-column: span 1; grid-row: span 2; }
+    .gal:nth-child(5) { grid-column: span 2; }
+    .agendar-grade { grid-template-columns: 1fr 380px; gap: 72px; }
+    .local-grade { grid-template-columns: 1fr 1fr; gap: 72px; }
+    .faixa { left: auto; right: 24px; bottom: 24px; }
   }
   @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
     html { scroll-behavior: auto; }
-    .poste, .motivo > .poste, .hero h1, .hero .chamada, .hero .hero-acoes, .motivo, .motivo > *, .faixa, .balao.novo, .busca-botoes i { animation: none; }
-    .arcos path { animation: none; stroke-dashoffset: 0; }
-    .revela { opacity: 1; transform: none; transition: none; }
+    .capa h1 .p > span { transform: none; }
+    .anim, .revela { opacity: 1; transform: none; }
+    .gal { clip-path: none; }
   }
 </style>
 </head>
 <body data-tipo="salao">
 
-<header class="topo">
-  <span class="topo-marca" data-nome></span>
-  <nav aria-label="Seções">
-    <a href="#agendar">Serviços</a>
-    <a href="#horario">Horário</a>
-    <a href="#onde">Onde fica</a>
-  </nav>
+<header class="topo" id="topo">
+  <div class="largura">
+    <a class="topo-marca" href="#" data-nome></a>
+    <nav aria-label="Seções">
+      <a href="#servicos">Serviços</a>
+      <a href="#galeria">Trabalhos</a>
+      <a href="#agendar">Agendar</a>
+      <a href="#onde">Onde fica</a>
+    </nav>
+    <a class="btn btn-zap" href="#agendar">Agendar</a>
+  </div>
 </header>
 
 <main>
-  <section class="hero largura">
-    <div>
-      <h1 data-nome></h1>
-      <p class="chamada" id="chamada"></p>
-      <div class="hero-acoes">
+  <section class="capa" id="inicio">
+    <div class="capa-foto" id="capa-foto"><img id="capa-img" alt="" fetchpriority="high" decoding="async" /></div>
+    <div class="capa-conteudo largura">
+      <p class="sobre-titulo anim" style="--d:.15s" id="capa-tipo"></p>
+      <h1 id="capa-nome"></h1>
+      <p class="capa-sub anim" style="--d:.75s" id="capa-sub"></p>
+      <div class="capa-acoes anim" style="--d:.9s">
         <a class="btn btn-zap" href="#agendar">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.800 13.500L3 21l4.700-1.200A9 9 0 1 0 12 3Z"/></svg>
-          Agendar pelo WhatsApp
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.7 14.9L2 22l5.3-1.3A10 10 0 1 0 12 2Zm5.4 14.1c-.2.6-1.3 1.2-1.8 1.3-.5 0-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 1-2.3.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.4 1.8 2.2 1.2 1.1 2.2 1.4 2.5 1.6.3.1.5.1.7-.1l1-1.2c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
+          Agendar horário
         </a>
-        <span class="nota-google" id="nota" hidden></span>
+        <a class="btn btn-vidro" href="#servicos">Ver serviços</a>
+      </div>
+      <div class="capa-rodape anim" style="--d:1.1s">
+        <span id="nota" hidden></span>
+        <span class="rolar">Role para ver</span>
       </div>
     </div>
-    <div class="motivo" id="motivo" aria-hidden="true"></div>
   </section>
 
-  <section class="agendar" id="agendar">
+  <div class="corrida" aria-hidden="true"><div class="corrida-trilho" id="corrida"></div></div>
+
+  <section class="sobre largura" id="sobre">
+    <div class="sobre-grade">
+      <figure class="sobre-foto" id="sobre-foto">
+        <img id="sobre-img" alt="" loading="lazy" decoding="async" />
+        <figcaption class="selo"><b>Hora marcada</b>Você escolhe o horário pelo WhatsApp e chega sem espera.</figcaption>
+      </figure>
+      <div>
+        <p class="sobre-titulo">Sobre</p>
+        <h2 class="titulo" id="sobre-titulo"></h2>
+        <p class="apoio" id="sobre-texto"></p>
+        <ul class="pilares" id="pilares"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="servicos-sec" id="servicos">
     <div class="largura">
-      <h2>O que você quer fazer?</h2>
-      <p class="apoio">Toque nos serviços. A mensagem fica pronta e você só envia.</p>
+      <div class="servicos-topo">
+        <div>
+          <p class="sobre-titulo">Serviços</p>
+          <h2 class="titulo">Escolha o seu <em>e agende</em></h2>
+        </div>
+        <p class="apoio">Toque nos serviços que você quer. A mensagem de agendamento já sai pronta.</p>
+      </div>
+      <ul class="servicos" id="servicos-lista"></ul>
+      <p class="obs">Serviços e valores de exemplo. No site pronto entram os seus.</p>
+    </div>
+  </section>
+
+  <section class="galeria largura" id="galeria">
+    <p class="sobre-titulo">Trabalhos</p>
+    <h2 class="titulo">O resultado <em>fala por si</em></h2>
+    <div class="galeria-grade" id="galeria-grade"></div>
+    <p class="obs">Fotos ilustrativas de banco de imagens. No site pronto entram as fotos do seu trabalho.</p>
+  </section>
+
+  <section class="agendar-sec" id="agendar">
+    <div class="largura">
+      <p class="sobre-titulo">Agendamento</p>
+      <h2 class="titulo">Marque em <em>um toque</em></h2>
+      <p class="apoio">Escolha o dia e o horário. A mensagem vai direto pro WhatsApp, sem cadastro e sem aplicativo.</p>
       <div class="agendar-grade">
         <div>
-          <ul class="servicos" id="servicos"></ul>
-          <p class="rotulo">Quando?</p>
+          <p class="rotulo">Dia</p>
           <div class="chips" id="dias" role="group" aria-label="Dia"></div>
+          <p class="rotulo">Horário</p>
           <div class="chips" id="horas" role="group" aria-label="Horário"></div>
+          <p class="escolhidos" id="escolhidos">Nenhum serviço escolhido ainda. <a href="#servicos">Escolher serviços</a></p>
         </div>
-        <div class="conversa">
-          <div class="conversa-topo">
-            <span class="conversa-foto" id="inicial" aria-hidden="true"></span>
-            <span>
-              <span class="conversa-nome" data-nome></span><br />
-              <span class="conversa-status">responde pelo WhatsApp</span>
-            </span>
+        <div class="celular">
+          <div class="celular-tela">
+            <div class="zap-topo">
+              <span class="zap-foto" id="inicial" aria-hidden="true"></span>
+              <span><span class="zap-nome" data-nome></span><br /><span class="zap-status">online</span></span>
+            </div>
+            <p class="balao" id="balao" aria-live="polite"></p>
+            <button class="btn btn-zap" id="enviar" type="button">Enviar no WhatsApp</button>
+            <p class="aviso" id="aviso" hidden></p>
           </div>
-          <p class="balao" id="balao" aria-live="polite"></p>
-          <button class="btn btn-zap" id="enviar" type="button">Enviar no WhatsApp</button>
-          <p class="aviso" id="aviso" hidden></p>
         </div>
       </div>
-      <p class="exemplo">Serviços e horários de exemplo. No site pronto entram os seus, com os seus preços.</p>
     </div>
   </section>
 
-  <section class="google largura">
-    <h2>Quem procura no Google encontra um site de verdade</h2>
-    <p class="apoio">O site fica ligado ao seu perfil do Google, com botão de agendar e de como chegar.</p>
-    <div class="busca-mock" aria-hidden="true">
-      <div class="busca-barra"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg><span data-busca></span></div>
-      <div class="busca-card">
-        <span class="busca-nome" data-nome></span>
-        <span class="busca-meta"><span data-tipo-nome></span> · <span data-cidade></span></span>
-        <span class="busca-status">Aberto · Fecha às 19h</span>
-        <span class="busca-botoes"><i>Site</i><i>Agendar</i><i>Rotas</i><i>Ligar</i></span>
+  <section class="local largura" id="onde">
+    <div class="local-grade">
+      <div>
+        <p class="sobre-titulo">No Google</p>
+        <h2 class="titulo">Quem procura, <em>encontra</em></h2>
+        <p class="apoio">O site fica ligado ao seu perfil do Google, com botão de site, de agendar e de como chegar.</p>
+        <div class="busca-mock revela" aria-hidden="true">
+          <div class="busca-barra"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg><span data-busca></span></div>
+          <div class="busca-card">
+            <span class="busca-nome" data-nome></span>
+            <span class="busca-meta"><span data-tipo-nome></span> · <span data-cidade></span></span>
+            <span class="busca-status">Aberto · Fecha às 19h</span>
+            <span class="busca-botoes"><i>Site</i><i>Agendar</i><i>Rotas</i><i>Ligar</i></span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="sobre-titulo">Onde fica</p>
+        <div class="mapa revela"><iframe id="mapa" title="Mapa" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+        <dl class="horarios">
+          <div><dt>Segunda a sexta</dt><dd>9h às 19h</dd></div>
+          <div><dt>Sábado</dt><dd>8h às 17h</dd></div>
+          <div><dt>Domingo</dt><dd>Fechado</dd></div>
+        </dl>
+        <p class="obs">Horário de exemplo. No site pronto entram o seu endereço e o seu horário.</p>
       </div>
     </div>
-    <p class="obs">Ilustração de como o perfil fica com o site ligado.</p>
-  </section>
-
-  <section class="info largura">
-    <div id="horario">
-      <h2>Horário</h2>
-      <dl class="horarios">
-        <div><dt>Segunda a sexta</dt><dd>9h às 19h</dd></div>
-        <div><dt>Sábado</dt><dd>8h às 17h</dd></div>
-        <div><dt>Domingo</dt><dd>Fechado</dd></div>
-      </dl>
-      <p class="obs">Horário de exemplo. No site pronto entra o seu.</p>
-    </div>
-    <div class="onde" id="onde">
-      <h2>Onde fica</h2>
-      <p id="cidade">Jacareí, SP</p>
-      <p class="obs">No site pronto entram o seu endereço, o mapa do Google e o botão de como chegar.</p>
-    </div>
-  </section>
-
-  <section class="fotos largura">
-    <h2>Seu trabalho em destaque</h2>
-    <div class="fotos-grade" id="fotos"></div>
-    <p class="obs">Fotos de exemplo, de banco de imagens. No site pronto entram as fotos do seu trabalho.</p>
   </section>
 </main>
 
 <footer class="proposta">
   <div class="largura">
-    <h2>Este é um modelo feito para <span data-nome></span>.</h2>
-    <p>O site pronto vai ao ar em até 5 dias, com os seus serviços, as suas fotos e o seu WhatsApp. Ele também aparece no Google quando alguém procura pelo seu negócio.</p>
+    <p class="sobre-titulo">Modelo exclusivo</p>
+    <h2 class="titulo">Este site foi feito para <em data-nome></em></h2>
+    <p>O site pronto vai ao ar em até 7 dias, com os seus serviços, as suas fotos e o seu WhatsApp, e aparece no Google quando alguém procura pelo seu negócio.</p>
     <a class="btn btn-cor" data-quero href="https://wa.me/5527992864820">Quero esse site</a>
-    <small>Feito por Gabriel Fantin, <span id="feito">de Jacareí</span>. <a href="https://fantin.tech">fantin.tech</a></small>
+    <small>Feito por Gabriel Fantin, <span id="feito">do Espírito Santo</span>. <a href="https://fantin.tech">fantin.tech</a></small>
   </div>
 </footer>
 
-<div class="faixa">
+<div class="faixa" id="faixa">
   <span>Modelo feito para você</span>
   <a class="btn btn-cor" data-quero href="https://wa.me/5527992864820">Quero esse site</a>
 </div>
 
+<div class="caixa-luz" id="caixa-luz" role="dialog" aria-modal="true" aria-label="Foto ampliada">
+  <img alt="" id="caixa-img" />
+  <button type="button" id="caixa-fechar" aria-label="Fechar">✕</button>
+</div>
+
 <script>
-  // Leads: slug -> nome, tipo (salao | barbearia | manicure), nota e avaliações reais do Google Maps.
+  // Leads antigos por slug (/demo?s=slug). Para os novos, use ?n=NOME&t=TIPO&c=CIDADE.
   const SJC = 'São José dos Campos';
   const LEADS = {
-    'diego-werner':    { n: 'Studiio Diego Werner', t: 'salao', nota: '5,0', av: 325 },
-    'ju-passos':       { n: 'Ju Passos Arte & Beleza', t: 'salao', nota: '5,0', av: 126 },
-    'cafune-na-juba':  { n: 'Cafune na Juba', t: 'salao', nota: '5,0', av: 82 },
-    'pablo-rebello':   { n: 'Make and Hair by Pablo Rebello', t: 'salao', nota: '4,9', av: 15 },
+    'diego-werner': { n: 'Studiio Diego Werner', t: 'salao', nota: '5,0', av: 325 },
+    'ju-passos': { n: 'Ju Passos Arte & Beleza', t: 'salao', nota: '5,0', av: 126 },
+    'cafune-na-juba': { n: 'Cafune na Juba', t: 'salao', nota: '5,0', av: 82 },
+    'pablo-rebello': { n: 'Make and Hair by Pablo Rebello', t: 'salao', nota: '4,9', av: 15 },
     'thuany-de-paula': { n: 'Studio Thuany de Paula', t: 'salao', nota: '5,0', av: 13 },
-    'tais-dias':       { n: 'Studio Tais Dias', t: 'manicure', nota: '5,0', av: 12 },
-    'studio-divas':    { n: "Studio Diva's", t: 'salao', nota: '4,9', av: 12 },
-    'rei-do-corte':    { n: 'Rei do Corte Hair Style', t: 'barbearia', nota: '5,0', av: 11 },
-    'julia-portugal':  { n: 'Studio Júlia Portugal', t: 'sobrancelha', c: 'Viana' },
-    'dg-cortes':       { n: 'DG Cortes', t: 'barbearia', c: 'Viana' },
-    'ponto-hair':      { n: 'Ponto Hair', t: 'salao', nota: '4,4', av: 150 },
-    'studio-pires':    { n: 'Studio Pires Beauty Center', t: 'salao', nota: '5,0', av: 61 },
-    // São José dos Campos (c = cidade; sem c, vale Jacareí)
-    'a-experiencia':     { n: 'A Experiência', t: 'manicure', nota: '4,8', av: 353, c: SJC },
+    'tais-dias': { n: 'Studio Tais Dias', t: 'manicure', nota: '5,0', av: 12 },
+    'studio-divas': { n: "Studio Diva's", t: 'salao', nota: '4,9', av: 12 },
+    'rei-do-corte': { n: 'Rei do Corte Hair Style', t: 'barbearia', nota: '5,0', av: 11 },
+    'julia-portugal': { n: 'Studio Júlia Portugal', t: 'sobrancelha', c: 'Viana' },
+    'dg-cortes': { n: 'DG Cortes', t: 'barbearia', c: 'Viana' },
+    'ponto-hair': { n: 'Ponto Hair', t: 'salao', nota: '4,4', av: 150 },
+    'studio-pires': { n: 'Studio Pires Beauty Center', t: 'salao', nota: '5,0', av: 61 },
+    'a-experiencia': { n: 'A Experiência', t: 'manicure', nota: '4,8', av: 353, c: SJC },
     'mih-nail-designer': { n: 'Mih Nail Designer', t: 'manicure', nota: '4,8', av: 102, c: SJC },
-    'studio-tal':        { n: 'Studio Tal', t: 'manicure', nota: '5,0', av: 92, c: SJC },
-    'beatriz-amelia':    { n: 'Espaço Beatriz Amélia Nails', t: 'manicure', nota: '4,9', av: 81, c: SJC },
-    'nakamura-studio':   { n: 'Nakamura Studio', t: 'manicure', nota: '5,0', av: 79, c: SJC },
-    'joyce-larissa':     { n: 'Studio Joyce Larissa', t: 'manicure', nota: '5,0', av: 68, c: SJC },
-    'nathalia-cardial':  { n: 'Nathalia Cardial Nails', t: 'manicure', nota: '5,0', av: 53, c: SJC },
-    'top-nails':         { n: 'Studio Top Nails', t: 'manicure', nota: '4,9', av: 51, c: SJC },
-    'camila-santos':     { n: 'Camila Santos Manicure e Pedicure', t: 'manicure', nota: '5,0', av: 34, c: SJC },
-    'ana-nogueira':      { n: 'Studio Ana Nogueira', t: 'manicure', nota: '5,0', av: 30, c: SJC },
-    'moni':              { n: 'Moni Alongamento de Unhas', t: 'manicure', nota: '5,0', av: 24, c: SJC },
-    'mari-silva':        { n: 'Mari Silva Nails', t: 'manicure', nota: '5,0', av: 24, c: SJC },
-    'tais-roberta':      { n: 'Tais Roberta Nail Designer', t: 'manicure', nota: '5,0', av: 22, c: SJC },
-    'sttefany-nails':    { n: 'Sttefany Nails', t: 'manicure', nota: '5,0', av: 22, c: SJC },
-    'amanda-demetrio':   { n: 'Amanda Demétrio', t: 'manicure', nota: '5,0', av: 20, c: SJC },
+    'studio-tal': { n: 'Studio Tal', t: 'manicure', nota: '5,0', av: 92, c: SJC },
+    'beatriz-amelia': { n: 'Espaço Beatriz Amélia Nails', t: 'manicure', nota: '4,9', av: 81, c: SJC },
+    'nakamura-studio': { n: 'Nakamura Studio', t: 'manicure', nota: '5,0', av: 79, c: SJC },
+    'joyce-larissa': { n: 'Studio Joyce Larissa', t: 'manicure', nota: '5,0', av: 68, c: SJC },
+    'nathalia-cardial': { n: 'Nathalia Cardial Nails', t: 'manicure', nota: '5,0', av: 53, c: SJC },
+    'top-nails': { n: 'Studio Top Nails', t: 'manicure', nota: '4,9', av: 51, c: SJC },
+    'camila-santos': { n: 'Camila Santos Manicure e Pedicure', t: 'manicure', nota: '5,0', av: 34, c: SJC },
+    'ana-nogueira': { n: 'Studio Ana Nogueira', t: 'manicure', nota: '5,0', av: 30, c: SJC },
+    'moni': { n: 'Moni Alongamento de Unhas', t: 'manicure', nota: '5,0', av: 24, c: SJC },
+    'mari-silva': { n: 'Mari Silva Nails', t: 'manicure', nota: '5,0', av: 24, c: SJC },
+    'tais-roberta': { n: 'Tais Roberta Nail Designer', t: 'manicure', nota: '5,0', av: 22, c: SJC },
+    'sttefany-nails': { n: 'Sttefany Nails', t: 'manicure', nota: '5,0', av: 22, c: SJC },
+    'amanda-demetrio': { n: 'Amanda Demétrio', t: 'manicure', nota: '5,0', av: 20, c: SJC },
     'gabriela-oliveira': { n: 'Gabriela Oliveira Nail Designer', t: 'manicure', nota: '4,9', av: 19, c: SJC },
-    'taina-martins':     { n: 'Tainá Martins Studio de Unhas', t: 'manicure', nota: '5,0', av: 16, c: SJC },
-    'carla-santos':      { n: 'Studio Carla Santos', t: 'manicure', nota: '5,0', av: 13, c: SJC },
-    'suzam-nails':       { n: 'Suzam Nails', t: 'manicure', nota: '5,0', av: 12, c: SJC },
-    'roman-barbearia':   { n: 'Roman Barbearia', t: 'barbearia', nota: '5,0', av: 401, c: SJC },
-    'mardukbarber':      { n: 'Barbearia Mardukbarber', t: 'barbearia', nota: '4,9', av: 260, c: SJC },
-    'braga-barbearia':   { n: 'Braga Barbearia Visagista', t: 'barbearia', nota: '4,9', av: 212, c: SJC },
-    'thiago-valle':      { n: 'Thiago Valle Barbearia', t: 'barbearia', nota: '5,0', av: 211, c: SJC },
-    'caio-barbershop':   { n: 'Caio Barbershop', t: 'barbearia', nota: '5,0', av: 59, c: SJC },
+    'taina-martins': { n: 'Tainá Martins Studio de Unhas', t: 'manicure', nota: '5,0', av: 16, c: SJC },
+    'carla-santos': { n: 'Studio Carla Santos', t: 'manicure', nota: '5,0', av: 13, c: SJC },
+    'suzam-nails': { n: 'Suzam Nails', t: 'manicure', nota: '5,0', av: 12, c: SJC },
+    'roman-barbearia': { n: 'Roman Barbearia', t: 'barbearia', nota: '5,0', av: 401, c: SJC },
+    'mardukbarber': { n: 'Barbearia Mardukbarber', t: 'barbearia', nota: '4,9', av: 260, c: SJC },
+    'braga-barbearia': { n: 'Braga Barbearia Visagista', t: 'barbearia', nota: '4,9', av: 212, c: SJC },
+    'thiago-valle': { n: 'Thiago Valle Barbearia', t: 'barbearia', nota: '5,0', av: 211, c: SJC },
+    'caio-barbershop': { n: 'Caio Barbershop', t: 'barbearia', nota: '5,0', av: 59, c: SJC },
   };
 
+  // Fotos: IDs do Unsplash (licença Unsplash, uso comercial livre). capa, sobre e 6 da galeria.
   const TIPOS = {
-    salao: {
-      padrao: 'Seu Salão', busca: 'salão de beleza',
-      chamada: 'Cabelo, cor e cuidado em {CIDADE}. Marque seu horário em um toque.',
-      servicos: ['Corte', 'Escova', 'Coloração', 'Mechas', 'Hidratação', 'Penteado', 'Maquiagem', 'Progressiva'],
-      motivo: n => `<div class="espelho"><span>${n.replace(/^(studiio|studio|salão|salao|espaço|espaco|estúdio|estudio)\s+((da|do|de|das|dos)\s+)?/i, '').charAt(0).toUpperCase()}</span></div>`,
-    },
     barbearia: {
-      padrao: 'Sua Barbearia', busca: 'barbearia',
-      chamada: 'Corte e barba em {CIDADE}. Marque seu horário em um toque.',
-      servicos: ['Corte', 'Barba', 'Corte e barba', 'Sobrancelha', 'Pezinho', 'Pigmentação'],
-      motivo: () => '<div class="poste"></div>',
+      rotulo: 'Barbearia', busca: 'barbearia', padrao: 'Sua Barbearia', cor: '#0e0d0c',
+      sub: 'Corte na régua, barba alinhada e hora marcada em {CIDADE}.',
+      sobreTitulo: 'Estilo de <em>respeito</em>', sobreTexto: 'Aqui o corte é feito com calma, do jeito que você pediu. Você marca o horário pelo WhatsApp, chega e já senta na cadeira.',
+      pilares: [['✂', 'Corte e barba', 'Do degradê na navalha à barba desenhada.'], ['◷', 'Hora marcada', 'Sem fila e sem espera.'], ['✦', 'Ambiente de respeito', 'Lugar pra relaxar enquanto o trabalho é feito.']],
+      corrida: ['Corte', 'Barba', 'Degradê', 'Navalha', 'Pigmentação', 'Sobrancelha'],
+      servicos: [['Corte', '40 min', 40], ['Barba', '30 min', 30], ['Corte + barba', '1h', 60], ['Degradê na navalha', '50 min', 45], ['Pigmentação', '30 min', 35], ['Sobrancelha', '10 min', 15]],
+      capa: '1585747860715-2ba37e788b70', sobre: '1503951914875-452162b0f3f1',
+      galeria: ['1599351431202-1e0f0137899a', '1647140655214-e4a2d914971f', '1621605815971-fbc98d665033', '1517832606299-7ae9b720a186', '1773904215697-e6c21fc27ac2', '1593702275687-f8b402bf1fb5'],
+    },
+    salao: {
+      rotulo: 'Salão de beleza', busca: 'salão de beleza', padrao: 'Seu Salão', cor: '#f7f1ec',
+      sub: 'Cabelo, cor e cuidado em {CIDADE}. Marque seu horário em um toque.',
+      sobreTitulo: 'Beleza com <em>cuidado</em>', sobreTexto: 'Cada atendimento começa ouvindo o que você quer. Do corte à cor, tudo feito com calma e produtos profissionais.',
+      pilares: [['✂', 'Corte e cor', 'Do corte à mecha, feito pra você.'], ['◷', 'Hora marcada', 'Você escolhe o horário pelo WhatsApp.'], ['✦', 'Produtos profissionais', 'Tratamento de salão, resultado que dura.']],
+      corrida: ['Corte', 'Coloração', 'Mechas', 'Escova', 'Hidratação', 'Penteado'],
+      servicos: [['Corte feminino', '1h', 70], ['Escova', '45 min', 50], ['Coloração', '2h', 150], ['Mechas', '3h', 250], ['Hidratação', '1h', 80], ['Penteado', '1h', 120]],
+      capa: '1633681926022-84c23e8cb2d6', sobre: '1560869713-7d0a29430803',
+      galeria: ['1580618672591-eb180b1a973f', '1634449571010-02389ed0f9b0', '1562322140-8baeececf3df', '1554519934-e32b1629d9ee', '1774660810725-fb04e002003d', '1595475884562-073c30d45670'],
     },
     manicure: {
-      padrao: 'Seu Studio', busca: 'manicure',
-      chamada: 'Unhas feitas com calma em {CIDADE}. Marque seu horário em um toque.',
-      servicos: ['Manicure', 'Pedicure', 'Esmaltação em gel', 'Alongamento', 'Manutenção', 'Blindagem'],
-      motivo: () => '<div class="esmaltes"><i></i><i></i><i></i><i></i><i></i></div>',
+      rotulo: 'Nail designer', busca: 'manicure', padrao: 'Seu Studio', cor: '#fbf3f2',
+      sub: 'Unhas impecáveis, feitas com calma em {CIDADE}. Agende em um toque.',
+      sobreTitulo: 'Detalhe que <em>faz diferença</em>', sobreTexto: 'Esmaltação, alongamento e cuidado com acabamento de verdade. Você marca pelo WhatsApp e é atendida no horário.',
+      pilares: [['✦', 'Acabamento perfeito', 'Cutícula, formato e brilho no detalhe.'], ['◷', 'Hora marcada', 'Sem espera, no seu horário.'], ['✓', 'Material esterilizado', 'Cuidado com você do início ao fim.']],
+      corrida: ['Manicure', 'Pedicure', 'Gel', 'Alongamento', 'Blindagem', 'Nail art'],
+      servicos: [['Manicure', '45 min', 35], ['Pedicure', '45 min', 40], ['Esmaltação em gel', '1h', 70], ['Alongamento em gel', '2h', 150], ['Manutenção', '1h30', 90], ['Blindagem', '1h', 60]],
+      capa: '1619607146034-5a05296c8f9a', sobre: '1632345031435-8727f6897d53',
+      galeria: ['1604654894610-df63bc536371', '1607779097040-26e80aa78e66', '1519014816548-bf5fe059798b', '1772322586785-3a34772cbc61', '1612887390768-fb02affea7a6', '1775500835259-d3b3f6d6e2f2'],
+    },
+    sobrancelha: {
+      rotulo: 'Design de sobrancelha', busca: 'design de sobrancelha', padrao: 'Seu Studio', cor: '#f6f1ea',
+      sub: 'Sobrancelhas e cílios desenhados para o seu rosto em {CIDADE}.',
+      sobreTitulo: 'Olhar <em>marcante</em>', sobreTexto: 'O desenho respeita o formato do seu rosto. Natural, alinhado e feito com técnica, do design ao lash lifting.',
+      pilares: [['✦', 'Design personalizado', 'Feito para o formato do seu rosto.'], ['◷', 'Hora marcada', 'Agende pelo WhatsApp em segundos.'], ['✓', 'Técnica e cuidado', 'Resultado natural e duradouro.']],
+      corrida: ['Design', 'Henna', 'Brow lamination', 'Micropigmentação', 'Lash lifting', 'Cílios'],
+      servicos: [['Design de sobrancelha', '40 min', 40], ['Design com henna', '50 min', 55], ['Brow lamination', '1h', 120], ['Micropigmentação', '2h', 350], ['Lash lifting', '1h', 120], ['Extensão de cílios', '2h', 150]],
+      capa: '1595550912256-b24059bb08e8', sobre: '1589710751893-f9a6770ad71b',
+      galeria: ['1581003250898-36050e78fcd3', '1674049406467-824ea37c7184', '1519415387722-a1c3bbef716c', '1633346152343-5486573d3d50', '1709477542153-5bedab2b5657', '1651839633408-3fccd671b832'],
     },
   };
 
-  TIPOS.sobrancelha = {
-    padrao: 'Seu Studio', busca: 'design de sobrancelha',
-    chamada: 'Sobrancelhas desenhadas para o seu rosto em {CIDADE}. Marque seu horário em um toque.',
-    servicos: ['Design de sobrancelhas', 'Micropigmentação', 'Brow lamination', 'Design com henna', 'Lash lifting', 'Retoque'],
-    motivo: () => '<svg class="arcos" viewBox="0 0 320 220"><path d="M30 120 Q95 40 160 96" stroke-width="16"/><path d="M178 96 Q238 44 296 118" stroke-width="16"/><path class="fino" d="M52 160 Q96 186 142 162" stroke-width="5"/><path class="fino" d="M190 162 Q236 186 280 160" stroke-width="5"/></svg>',
-  };
-
-  // Fotos de exemplo: banco gratuito Pexels (licença livre para uso comercial), em /demo/img.
-  const LEGENDAS = { salao: ['O resultado', 'O espaço', 'Os produtos'], barbearia: ['O resultado', 'O espaço', 'O balcão'], manicure: ['O resultado', 'O atendimento', 'O cuidado'], sobrancelha: ['O resultado', 'O espaço', 'O atendimento'] };
+  const foto = (id, w, h) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&q=70&w=${w}${h ? '&h=' + h : ''}`;
+  const srcset = (id, larguras, prop) => larguras.map(w => `${foto(id, w, prop ? Math.round(w * prop) : 0)} ${w}w`).join(', ');
 
   const params = new URLSearchParams(location.search);
   const slug = params.get('s') || (location.pathname.match(/^\/para\/([^/]+)/) || [])[1] || '';
@@ -387,105 +470,122 @@
   const tipo = TIPOS[lead.t || params.get('t')] ? (lead.t || params.get('t')) : 'salao';
   const cfg = TIPOS[tipo];
   const nome = lead.n || params.get('n') || cfg.padrao;
-
-  document.body.dataset.tipo = tipo;
-  document.title = nome + ' | modelo de site';
-  document.querySelectorAll('[data-nome]').forEach(el => { el.textContent = nome; });
   const cidade = lead.c || params.get('c') || 'Jacareí';
-  // Estado: só as cidades do Vale são SP; o resto da prospecção é no Espírito Santo. ?uf= sobrepõe.
   const VALE = ['jacareí', 'jacarei', 'são josé dos campos', 'sao jose dos campos', 'caçapava', 'taubaté', 'santa branca', 'guararema'];
   const uf = (params.get('uf') || (VALE.includes(cidade.toLowerCase()) ? 'SP' : 'ES')).toUpperCase();
-  document.getElementById('chamada').textContent = cfg.chamada.replace('{CIDADE}', cidade);
-  document.getElementById('cidade').textContent = cidade + ', ' + uf;
-  document.getElementById('feito').textContent = cidade === 'Jacareí' ? 'de Jacareí' : uf === 'SP' ? 'aqui do Vale do Paraíba' : 'aqui do Espírito Santo';
+  const $ = id => document.getElementById(id);
+
+  document.body.dataset.tipo = tipo;
+  document.title = nome + ' | ' + cfg.rotulo + ' em ' + cidade;
+  document.querySelector('meta[name="theme-color"]').content = cfg.cor;
+  document.querySelectorAll('[data-nome]').forEach(el => { el.textContent = nome; });
   document.querySelectorAll('[data-cidade]').forEach(el => { el.textContent = cidade; });
   document.querySelectorAll('[data-busca]').forEach(el => { el.textContent = cfg.busca + ' em ' + cidade; });
-  document.getElementById('motivo').innerHTML = cfg.motivo(nome);
-  document.getElementById('inicial').textContent = nome.replace(/^(studiio|studio|salão|salao|espaço|espaco|estúdio|estudio|barbearia)\s+((da|do|de|das|dos)\s+)?/i, '').charAt(0).toUpperCase();
+  document.querySelectorAll('[data-tipo-nome]').forEach(el => { el.textContent = cfg.rotulo; });
 
-  if (lead.nota && lead.av >= 5) {
-    const nota = document.getElementById('nota');
-    nota.innerHTML = `<b>★ ${lead.nota}</b> no Google, com ${lead.av} avaliações`;
-    nota.hidden = false;
-  }
+  // capa: foto no tamanho da tela, título palavra por palavra
+  const capa = $('capa-img');
+  capa.sizes = '100vw';
+  capa.srcset = srcset(cfg.capa, [640, 960, 1400, 2000]);
+  capa.src = foto(cfg.capa, 1400);
+  $('capa-tipo').textContent = cfg.rotulo + ' · ' + cidade + ', ' + uf;
+  $('capa-nome').innerHTML = nome.split(/\s+/).map((p, i) => `<span class="p"><span style="--i:${i}">${p.replace(/[<>&]/g, '')}</span></span>`).join(' ');
+  $('capa-sub').textContent = cfg.sub.replace('{CIDADE}', cidade);
+  if (lead.nota && lead.av >= 5) { const n = $('nota'); n.innerHTML = `<span class="estrelas">★★★★★</span> ${lead.nota} no Google · ${lead.av} avaliações`; n.hidden = false; }
 
-  const quero = 'https://wa.me/5527992864820?text=' + encodeURIComponent(`Oi, Gabriel! Vi o modelo de site de ${nome} e quero saber mais.`);
-  document.querySelectorAll('[data-quero]').forEach(a => { a.href = quero; });
+  // faixa corrida (duplicada para o loop)
+  const itens = cfg.corrida.map(t => `<span>${t}</span>`).join('');
+  $('corrida').innerHTML = itens + itens;
 
-  const lista = document.getElementById('servicos');
-  const balao = document.getElementById('balao');
+  // sobre
+  const sobre = $('sobre-img');
+  sobre.sizes = '(min-width: 820px) 45vw, 100vw'; sobre.srcset = srcset(cfg.sobre, [480, 800, 1200], 1.25); sobre.src = foto(cfg.sobre, 800, 1000);
+  $('sobre-titulo').innerHTML = cfg.sobreTitulo;
+  $('sobre-texto').textContent = cfg.sobreTexto;
+  $('pilares').innerHTML = cfg.pilares.map(([i, t, s]) => `<li class="pilar"><i aria-hidden="true">${i}</i><div><b>${t}</b><span>${s}</span></div></li>`).join('');
+
+  // galeria + ampliação
+  $('galeria-grade').innerHTML = cfg.galeria.map((id, i) => `<button class="gal" type="button" data-id="${id}" aria-label="Ampliar foto ${i + 1}"><img alt="" loading="lazy" decoding="async" sizes="(min-width: 820px) 33vw, 50vw" srcset="${srcset(id, [400, 700, 1000])}" src="${foto(id, 700)}"></button>`).join('');
+  const caixa = $('caixa-luz'), caixaImg = $('caixa-img');
+  $('galeria-grade').addEventListener('click', e => { const b = e.target.closest('.gal'); if (!b) return; caixaImg.src = foto(b.dataset.id, 1600); caixa.classList.add('aberta'); $('caixa-fechar').focus(); });
+  const fechar = () => caixa.classList.remove('aberta');
+  caixa.addEventListener('click', e => { if (e.target !== caixaImg) fechar(); });
+  addEventListener('keydown', e => { if (e.key === 'Escape') fechar(); });
+
+  // mapa real da cidade
+  $('mapa').src = 'https://maps.google.com/maps?q=' + encodeURIComponent(cidade + ', ' + uf) + '&z=13&output=embed';
+
+  // serviços + agendamento
   const escolhidos = new Set();
-  document.querySelectorAll('[data-tipo-nome]').forEach(el => { el.textContent = cfg.busca.charAt(0).toUpperCase() + cfg.busca.slice(1); });
-
-  // dia e horário: próximos dias abertos (sem domingo) e alguns horários de exemplo
+  $('servicos-lista').innerHTML = cfg.servicos.map(([s, t, p]) => `<li class="revela"><button class="servico" type="button" aria-pressed="false" data-s="${s}"><span class="servico-nome">${s}</span><span class="servico-preco"><small>a partir de</small>R$ ${p}</span><span class="servico-info"><span class="servico-marca" aria-hidden="true"></span>${t}</span></button></li>`).join('');
+  $('servicos-lista').addEventListener('click', e => {
+    const b = e.target.closest('.servico'); if (!b) return;
+    const on = b.getAttribute('aria-pressed') !== 'true';
+    b.setAttribute('aria-pressed', String(on));
+    on ? escolhidos.add(b.dataset.s) : escolhidos.delete(b.dataset.s);
+    atualizar();
+  });
   const SEMANA = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
   const dias = [];
-  for (let d = new Date(), i = 0; dias.length < 4 && i < 8; i++, d.setDate(d.getDate() + 1)) {
-    if (d.getDay() === 0) continue;
-    dias.push(i === 0 ? 'hoje' : i === 1 ? 'amanhã' : SEMANA[d.getDay()]);
-  }
-  const horas = ['9h', '10h30', '14h', '16h', '18h'];
+  for (let d = new Date(), i = 0; dias.length < 5 && i < 9; i++, d.setDate(d.getDate() + 1)) { if (d.getDay() === 0) continue; dias.push(i === 0 ? 'hoje' : i === 1 ? 'amanhã' : SEMANA[d.getDay()]); }
   let dia = '', hora = '';
-  function grupo(id, itens, aoEscolher) {
-    const box = document.getElementById(id);
-    itens.forEach(v => {
+  function grupo(id, lista, cb) {
+    const box = $(id);
+    lista.forEach(v => {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'chip'; b.textContent = v.charAt(0).toUpperCase() + v.slice(1); b.setAttribute('aria-pressed', 'false');
-      b.addEventListener('click', () => {
-        const on = b.getAttribute('aria-pressed') !== 'true';
-        box.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', 'false'));
-        b.setAttribute('aria-pressed', String(on));
-        aoEscolher(on ? v : '');
-        atualizar();
-      });
+      b.addEventListener('click', () => { const on = b.getAttribute('aria-pressed') !== 'true'; box.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', String(on)); cb(on ? v : ''); atualizar(); });
       box.appendChild(b);
     });
   }
-
+  grupo('dias', dias, v => { dia = v; });
+  grupo('horas', ['9h', '10h30', '14h', '16h', '18h'], v => { hora = v; });
   function mensagem() {
-    const itens = [...escolhidos];
-    const quando = dia && hora ? `${dia} às ${hora}` : dia ? dia : hora ? `às ${hora}` : '';
-    if (!itens.length && !quando) return 'Olá! Quero agendar um horário.';
-    const texto = !itens.length ? 'um horário' : itens.length === 1 ? itens[0].toLowerCase() : (itens.slice(0, -1).join(', ') + ' e ' + itens[itens.length - 1]).toLowerCase();
+    const it = [...escolhidos];
+    const quando = dia && hora ? `${dia} às ${hora}` : dia || (hora ? `às ${hora}` : '');
+    if (!it.length && !quando) return 'Olá! Quero agendar um horário.';
+    const texto = !it.length ? 'um horário' : it.length === 1 ? it[0].toLowerCase() : (it.slice(0, -1).join(', ') + ' e ' + it[it.length - 1]).toLowerCase();
     return quando ? `Olá! Quero agendar ${texto}. Pode ser ${quando}?` : `Olá! Quero agendar: ${texto}. Tem horário essa semana?`;
   }
+  const balao = $('balao');
   function atualizar() {
     balao.textContent = mensagem();
     balao.classList.remove('novo'); void balao.offsetWidth; balao.classList.add('novo');
+    const it = [...escolhidos];
+    $('escolhidos').innerHTML = it.length ? 'Escolhido: <b>' + it.join(', ') + '</b>' : 'Nenhum serviço escolhido ainda. <a href="#servicos">Escolher serviços</a>';
   }
-  grupo('dias', dias, v => { dia = v; });
-  grupo('horas', horas, v => { hora = v; });
-  cfg.servicos.forEach(s => {
-    const li = document.createElement('li');
-    const b = document.createElement('button');
-    b.type = 'button'; b.className = 'servico'; b.setAttribute('aria-pressed', 'false');
-    b.innerHTML = `<span>${s}</span><span class="marca" aria-hidden="true"></span>`;
-    b.addEventListener('click', () => {
-      const on = b.getAttribute('aria-pressed') !== 'true';
-      b.setAttribute('aria-pressed', String(on));
-      on ? escolhidos.add(s) : escolhidos.delete(s);
-      atualizar();
-    });
-    li.appendChild(b); lista.appendChild(li);
-  });
   balao.textContent = mensagem();
+  $('inicial').textContent = nome.replace(/^(studiio|studio|salão|salao|espaço|espaco|estúdio|estudio|barbearia|barber)\s+((da|do|de|das|dos)\s+)?/i, '').charAt(0).toUpperCase();
+  $('enviar').addEventListener('click', () => { const a = $('aviso'); a.textContent = `No site pronto, essa mensagem chega direto no WhatsApp de ${nome}.`; a.hidden = false; });
 
-  document.getElementById('fotos').innerHTML = LEGENDAS[tipo]
-    .map((legenda, i) => `<figure class="foto"><img src="/demo/img/${tipo}-${i + 1}.jpg" alt="" loading="lazy" width="900" height="1200"><figcaption>${legenda}</figcaption></figure>`).join('');
+  // proposta
+  $('feito').textContent = uf === 'SP' ? 'do Vale do Paraíba' : 'do Espírito Santo';
+  const quero = 'https://wa.me/5527992864820?text=' + encodeURIComponent(`Oi, Gabriel! Vi o modelo de site de ${nome} e quero saber mais.`);
+  document.querySelectorAll('[data-quero]').forEach(a => { a.href = quero; });
 
-  // revelação ao rolar
-  const alvos = document.querySelectorAll('.agendar h2, .agendar .apoio, .servicos li, .conversa, .google h2, .google .apoio, .busca-mock, .info > div, .fotos h2, .foto, .proposta h2, .proposta p, .proposta .btn');
-  alvos.forEach((el, i) => { el.classList.add('revela'); if (el.matches('.servicos li, .foto')) el.style.setProperty('--atraso', (i % 8) * 0.06 + 's'); });
+  // revelação ao rolar (com atraso em cascata)
+  const alvos = document.querySelectorAll('.sobre-titulo:not(.anim), .titulo, .apoio, .pilar, .servicos li, .sobre-foto, .gal, .celular, .chips, .horarios, .proposta p, .proposta .btn');
+  alvos.forEach(el => { if (!el.classList.contains('gal') && !el.classList.contains('sobre-foto')) el.classList.add('revela'); });
+  document.querySelectorAll('.pilar, .servicos li, .gal').forEach((el, i, all) => el.style.setProperty('--atraso', (([...el.parentElement.children].indexOf(el)) * 0.08) + 's'));
+  const todos = document.querySelectorAll('.revela, .gal, .sobre-foto');
   if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visivel'); io.unobserve(e.target); } }), { threshold: 0.15 });
-    alvos.forEach(el => io.observe(el));
-  } else alvos.forEach(el => el.classList.add('visivel'));
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visivel'); io.unobserve(e.target); } }), { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    todos.forEach(el => io.observe(el));
+  } else todos.forEach(el => el.classList.add('visivel'));
 
-  document.getElementById('enviar').addEventListener('click', () => {
-    const aviso = document.getElementById('aviso');
-    aviso.textContent = `No site pronto, essa mensagem chega direto no WhatsApp de ${nome}.`;
-    aviso.hidden = false;
-  });
+  // topo sólido, faixa e parallax da capa (um rAF só)
+  const topo = $('topo'), faixa = $('faixa'), capaFoto = $('capa-foto');
+  const calma = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let pendente = false;
+  function aoRolar() {
+    pendente = false;
+    const y = scrollY, h = innerHeight;
+    topo.classList.toggle('solido', y > h * 0.75);
+    faixa.classList.toggle('mostra', y > h * 0.6);
+    if (!calma && y < h * 1.2) capaFoto.style.transform = `translate3d(0, ${y * 0.28}px, 0)`;
+  }
+  addEventListener('scroll', () => { if (!pendente) { pendente = true; requestAnimationFrame(aoRolar); } }, { passive: true });
+  aoRolar();
 </script>
 </body>
 </html>
