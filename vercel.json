@@ -3,20 +3,44 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "www.fantin.tech" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.fantin.tech"
+        }
+      ],
       "destination": "https://fantin.tech/$1",
       "permanent": true
     }
   ],
-  "rewrites": [{ "source": "/para/:slug", "destination": "/demo" }],
+  "rewrites": [
+    {
+      "source": "/para/:slug/:cidade",
+      "destination": "/demo"
+    },
+    {
+      "source": "/para/:slug",
+      "destination": "/demo"
+    }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     },
     {
       "source": "/(hero|projects)/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
+        }
+      ]
     }
   ]
 }
