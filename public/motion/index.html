@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Motion com IA | Treinamento Fantin</title>
+<meta name="description" content="Guia em PDF, treinamento, mentoria e acompanhamento passo a passo para criar motions nível propaganda com IA, sem After Effects. Com Gabriel Fantin." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<style>
+:root {
+  --bg:#05070d; --bg2:#0a0f1d; --card:#0d1426; --line:#1a2440; --text:#e9eefb; --muted:#8a96b6;
+  --blue:#3fa2ff; --violet:#a77bff; --coral:#ff5c3d; --green:#2fd27a;
+  --grad:linear-gradient(90deg,var(--blue),var(--violet));
+  --hf:"Space Grotesk", system-ui, sans-serif; --bf:"Inter", system-ui, sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--text); font-family:var(--bf); font-size:17px; line-height:1.6; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+img, video { display:block; max-width:100%; }
+a { color:inherit; text-decoration:none; }
+.wrap { width:min(1160px, 100% - 40px); margin:0 auto; }
+h1, h2, h3 { font-family:var(--hf); line-height:1.02; letter-spacing:-.02em; }
+.grad { background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.eyebrow { font-family:var(--hf); font-size:13px; letter-spacing:.22em; text-transform:uppercase; color:var(--blue); }
+.btn { display:inline-flex; align-items:center; gap:10px; padding:17px 30px; border-radius:999px; font-weight:600; font-size:16px; cursor:pointer; border:0; transition:box-shadow .3s, background .3s; will-change:transform; }
+.btn-main { background:var(--grad); color:#05070d; box-shadow:0 10px 40px -10px #3fa2ffaa; }
+.btn-main:hover { box-shadow:0 14px 60px -8px #a77bffcc; }
+.btn-ghost { border:1px solid var(--line); color:var(--text); background:#ffffff08; }
+.btn-ghost:hover { background:#ffffff12; }
+.btn svg { width:18px; height:18px; }
+
+/* grão e cursor */
+.grain { position:fixed; inset:-50%; pointer-events:none; z-index:90; opacity:.06; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); animation:grain 1s steps(6) infinite; }
+@keyframes grain { 0%{transform:translate(0,0)} 33%{transform:translate(-3%,2%)} 66%{transform:translate(2%,-3%)} 100%{transform:translate(0,0)} }
+.cursor { position:fixed; left:0; top:0; width:420px; height:420px; margin:-210px 0 0 -210px; border-radius:50%; pointer-events:none; z-index:1; background:radial-gradient(circle, #3fa2ff22, transparent 65%); }
+
+/* nav */
+nav { position:fixed; top:0; left:0; right:0; z-index:50; transition:background .3s, border-color .3s; border-bottom:1px solid transparent; }
+nav.solid { background:#05070dcc; backdrop-filter:blur(14px); border-color:var(--line); }
+nav .wrap { display:flex; align-items:center; justify-content:space-between; height:72px; }
+.logo { font-family:var(--hf); font-weight:700; font-size:22px; letter-spacing:.04em; }
+.logo i { font-style:normal; color:var(--blue); }
+nav .btn { padding:11px 20px; font-size:14px; }
+
+/* hero */
+.hero { position:relative; min-height:100vh; display:flex; align-items:center; padding:120px 0 80px; overflow:hidden; }
+#floor { position:absolute; inset:0; width:100%; height:100%; z-index:0; }
+.hero .wrap { position:relative; z-index:2; display:grid; grid-template-columns:1.05fr .95fr; gap:40px; align-items:center; }
+.hero h1 { font-size:clamp(46px, 7vw, 92px); margin:18px 0 22px; }
+.hero h1 .w { display:inline-block; overflow:hidden; vertical-align:top; padding-bottom:.06em; }
+.hero h1 .w > span { display:inline-block; }
+.hero p.lead { font-size:clamp(17px, 1.6vw, 20px); color:var(--muted); max-width:520px; margin-bottom:34px; }
+.hero .ctas { display:flex; gap:14px; flex-wrap:wrap; }
+.hero .note { margin-top:22px; font-size:14px; color:var(--muted); display:flex; gap:18px; flex-wrap:wrap; }
+.hero .note b { color:var(--text); font-weight:600; }
+.phones { position:relative; height:640px; perspective:1400px; }
+.phone { position:absolute; width:250px; aspect-ratio:9/19.5; border-radius:40px; padding:10px; background:linear-gradient(145deg,#2a3352,#0b0f1c); box-shadow:0 40px 90px -20px #000, inset 0 0 0 1px #ffffff22, 0 0 80px -30px var(--glow, #3fa2ff); transform-style:preserve-3d; }
+.phone video, .phone img { width:100%; height:100%; object-fit:cover; border-radius:31px; background:#000; }
+.phone::after { content:""; position:absolute; top:18px; left:50%; width:74px; height:20px; margin-left:-37px; border-radius:20px; background:#05070d; }
+.p1 { left:6%; top:70px; --glow:#ff5c3d; }
+.p2 { left:34%; top:0; z-index:2; width:270px; --glow:#3fa2ff; }
+.p3 { left:63%; top:110px; --glow:#a77bff; }
+
+/* marquee */
+.marquee { border-block:1px solid var(--line); background:var(--bg2); overflow:hidden; padding:22px 0; }
+.track { display:flex; gap:48px; width:max-content; animation:mq 28s linear infinite; }
+.track span { font-family:var(--hf); font-weight:700; font-size:clamp(26px,3.6vw,44px); white-space:nowrap; color:#1e2a4a; -webkit-text-stroke:1px #3a4a78; }
+.track span.on { color:var(--text); -webkit-text-stroke:0; }
+.track span em { font-style:normal; color:var(--blue); -webkit-text-stroke:0; margin-left:48px; }
+@keyframes mq { to { transform:translateX(-50%); } }
+
+/* seções */
+section.block { padding:clamp(90px, 12vw, 150px) 0; position:relative; }
+.head { max-width:760px; margin-bottom:56px; }
+.head h2 { font-size:clamp(36px, 5vw, 64px); margin:14px 0 18px; }
+.head p { color:var(--muted); font-size:18px; }
+.reveal { opacity:0; transform:translateY(40px); }
+
+/* vitrine horizontal */
+.showcase { overflow:hidden; }
+.rail { display:flex; gap:28px; width:max-content; padding-right:20px; }
+.card { width:340px; flex:none; border-radius:28px; padding:14px; background:var(--card); border:1px solid var(--line); position:relative; transition:border-color .3s; }
+.card:hover { border-color:#3fa2ff66; }
+.card .media { aspect-ratio:9/16; border-radius:18px; overflow:hidden; background:#000; }
+.card .media video { width:100%; height:100%; object-fit:cover; }
+.card h3 { font-size:24px; margin:18px 6px 6px; }
+.card p { color:var(--muted); font-size:15px; margin:0 6px 8px; }
+.railbox { width:100%; overflow:hidden; cursor:grab; touch-action:pan-y; -webkit-mask-image:linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image:linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.railbox.dragging { cursor:grabbing; user-select:none; }
+.rail { will-change:transform; }
+.card img { width:100%; height:100%; object-fit:cover; pointer-events:none; }
+.card .media { position:relative; }
+.card .media .ig { position:absolute; left:50%; bottom:16px; transform:translateX(-50%); white-space:nowrap; padding:9px 16px; border-radius:99px; background:#05070dcc; border:1px solid #ffffff2a; font-size:13px; font-weight:600; backdrop-filter:blur(8px); }
+a.card { display:block; color:inherit; }
+.card .media a.ig { color:inherit; text-decoration:none; }
+.card .media a.ig:hover { border-color:#3fa2ff99; }
+.arrows { display:flex; justify-content:flex-end; gap:12px; margin-top:-28px; margin-bottom:22px; }
+.arrows button { width:54px; height:54px; border-radius:50%; border:1px solid var(--line); background:#ffffff0a; color:var(--text); font-size:22px; cursor:pointer; transition:background .25s, border-color .25s; }
+.arrows button:hover { background:#3fa2ff22; border-color:#3fa2ff88; }
+.tagline { display:inline-block; margin:0 6px 6px; font-size:12px; font-family:var(--hf); letter-spacing:.14em; text-transform:uppercase; padding:5px 10px; border-radius:99px; border:1px solid var(--line); color:var(--blue); }
+
+/* passos */
+.steps { position:relative; display:grid; gap:26px; max-width:860px; }
+.steps .line { position:absolute; left:31px; top:30px; bottom:30px; width:2px; background:var(--line); }
+.steps .line i { position:absolute; inset:0; background:var(--grad); transform-origin:top; transform:scaleY(0); }
+.step { position:relative; display:grid; grid-template-columns:64px 1fr; gap:26px; align-items:start; }
+.step .n { width:64px; height:64px; border-radius:50%; display:grid; place-items:center; font-family:var(--hf); font-weight:700; font-size:22px; background:var(--bg); border:1px solid var(--line); position:relative; z-index:1; }
+.step h3 { font-size:28px; margin:10px 0 8px; }
+.step p { color:var(--muted); }
+.step code { font-size:14px; padding:2px 8px; border-radius:6px; background:#ffffff0d; color:#bfe6ff; }
+
+/* texto que preenche */
+.fill { font-family:var(--hf); font-weight:700; font-size:clamp(44px, 9vw, 130px); line-height:.98; letter-spacing:-.03em; background:linear-gradient(90deg, var(--text) 0 50%, #1a2442 50% 100%); background-size:200% 100%; background-position:100% 0; -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+/* guia */
+.guide { display:grid; grid-template-columns:.9fr 1.1fr; gap:70px; align-items:center; }
+.book { perspective:1600px; display:grid; place-items:center; }
+.book .cover { width:min(380px, 80vw); border-radius:6px 14px 14px 6px; box-shadow:30px 40px 80px -20px #000, -2px 0 0 #2a3352, inset 0 0 0 1px #ffffff14; transform:rotateY(-24deg) rotateX(6deg); transform-style:preserve-3d; }
+.chapters { display:grid; gap:14px; }
+.ch { display:grid; grid-template-columns:48px 1fr; gap:16px; padding:18px 20px; border-radius:18px; background:var(--card); border:1px solid var(--line); }
+.ch b { font-family:var(--hf); font-size:15px; color:var(--blue); padding-top:2px; }
+.ch h4 { font-family:var(--hf); font-size:19px; margin-bottom:2px; }
+.ch p { color:var(--muted); font-size:15px; }
+
+/* pra quem */
+.for { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.for div { padding:30px; border-radius:22px; background:linear-gradient(180deg,#0e1630,#0a0f1d); border:1px solid var(--line); }
+.for svg { width:34px; height:34px; color:var(--blue); margin-bottom:16px; }
+.for h3 { font-size:22px; margin-bottom:8px; }
+.for p { color:var(--muted); font-size:15px; }
+
+/* oferta */
+.offer { display:grid; place-items:center; }
+.price { position:relative; width:min(560px, 100%); border-radius:32px; padding:2px; overflow:hidden; }
+.price::before { content:""; position:absolute; inset:-60%; background:conic-gradient(from 0deg, var(--blue), var(--violet), var(--coral), var(--blue)); animation:spin 6s linear infinite; }
+@keyframes spin { to { transform:rotate(1turn); } }
+.price .in { position:relative; border-radius:30px; background:#080c18; padding:46px 40px; text-align:center; }
+.price h3 { font-size:30px; margin:10px 0 6px; }
+.price .val { font-family:var(--hf); font-weight:700; font-size:68px; margin:18px 0 4px; }
+.price .sub { color:var(--muted); font-size:14px; margin-bottom:26px; }
+.price ul { list-style:none; text-align:left; display:grid; gap:12px; margin:0 auto 32px; max-width:380px; }
+.price li { display:flex; gap:12px; align-items:flex-start; }
+.price li svg { flex:none; width:22px; height:22px; color:var(--green); margin-top:2px; }
+.price .btn { width:100%; justify-content:center; font-size:18px; padding:20px; }
+.price .legal { margin-top:16px; font-size:13px; color:var(--muted); }
+
+/* mentoria */
+.mentor { display:flex; align-items:center; justify-content:space-between; gap:30px; padding:44px; border-radius:30px; background:radial-gradient(120% 140% at 0% 0%, #17306a 0%, #0b1020 55%); border:1px solid var(--line); }
+.mentor h2 { font-size:clamp(30px, 4vw, 46px); margin:10px 0 10px; }
+.mentor p { color:var(--muted); max-width:560px; }
+
+/* faq */
+.faq { max-width:820px; display:grid; gap:12px; }
+details { border:1px solid var(--line); border-radius:18px; background:var(--card); padding:4px 24px; }
+summary { cursor:pointer; list-style:none; padding:18px 0; font-family:var(--hf); font-weight:500; font-size:19px; display:flex; justify-content:space-between; gap:20px; }
+summary::-webkit-details-marker { display:none; }
+summary::after { content:"+"; color:var(--blue); font-size:26px; line-height:1; transition:transform .3s; }
+details[open] summary::after { transform:rotate(45deg); }
+details p { color:var(--muted); padding:0 0 20px; }
+
+footer { border-top:1px solid var(--line); padding:40px 0; color:var(--muted); font-size:14px; }
+footer .wrap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+
+.float-cta { position:fixed; left:16px; right:16px; bottom:16px; z-index:60; display:none; }
+.float-cta .btn { width:100%; justify-content:center; }
+
+@media (max-width: 960px) {
+  .hero .wrap, .guide { grid-template-columns:1fr; }
+  .phones { height:520px; margin-top:20px; }
+  .phone { width:190px; } .p2 { width:210px; }
+  .for { grid-template-columns:1fr; }
+  .mentor { flex-direction:column; align-items:flex-start; padding:32px; }
+}
+@media (max-width: 640px) {
+  body { font-size:16px; }
+  .phones { height:440px; }
+  .phone { width:150px; border-radius:30px; padding:7px; } .phone video, .phone img { border-radius:24px; }
+  .p1 { left:0; top:60px; } .p2 { left:calc(50% - 85px); width:170px; } .p3 { left:auto; right:0; top:90px; }
+  .card { width:78vw; }
+  .price .in { padding:36px 22px; }
+  .float-cta { display:block; }
+  .cursor { display:none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .price::before, .grain { animation:none; }
+  .track { animation-duration:45s; }
+  .reveal { opacity:1; transform:none; }
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="cursor" id="cursor"></div>
+
+<nav id="nav"><div class="wrap">
+  <a class="logo" href="#">FAN<i>T</i>IN</a>
+  <a class="btn btn-main magnet" href="#oferta">Quero participar</a>
+</div></nav>
+
+<header class="hero">
+  <canvas id="floor"></canvas>
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Treinamento · Motion com IA</span>
+      <h1 id="title">Motion nível <span class="grad">propaganda</span>. Sem After Effects.</h1>
+      <p class="lead">Aprenda a criar vídeos com 3D, câmera, luz, partículas e som usando IA. Guia completo, treinamento e eu te acompanhando no passo a passo até o seu motion pronto.</p>
+      <div class="ctas">
+        <a class="btn btn-main magnet" href="#oferta">Quero participar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn-ghost magnet" href="#estilos">Ver os vídeos</a>
+      </div>
+      <div class="note"><span><b>Guia</b> em PDF</span><span><b>Treinamento</b> + mentoria</span><span><b>Acompanhamento</b> passo a passo</span></div>
+    </div>
+    <div class="phones" id="phones">
+      <div class="phone p1"><video src="assets/papel-3d.mp4" poster="assets/papel-3d.jpg" muted loop playsinline autoplay></video></div>
+      <div class="phone p2"><video src="assets/codigo.mp4" poster="assets/codigo.jpg" muted loop playsinline autoplay></video></div>
+      <div class="phone p3"><video src="assets/domino.mp4" poster="assets/domino.jpg" muted loop playsinline autoplay></video></div>
+    </div>
+  </div>
+</header>
+
+<div class="marquee"><div class="track" id="track"></div></div>
+
+<section class="block showcase" id="estilos">
+  <div class="wrap head">
+    <span class="eyebrow reveal">Feito com o método</span>
+    <h2 class="reveal">Quatro estilos. <span class="grad">Zero After Effects.</span></h2>
+    <p class="reveal">Cada vídeo foi feito com IA e renderizado num PC comum. No treinamento, você aprende a fazer os seus.</p>
+  </div>
+  <div class="wrap arrows"><button data-d="-1" aria-label="Vídeo anterior">←</button><button data-d="1" aria-label="Próximo vídeo">→</button></div>
+  <div class="wrap railbox"><div class="rail" id="rail">
+    <article class="card"><div class="media"><video src="assets/papel-3d.mp4" poster="assets/papel-3d.jpg" muted loop playsinline preload="none"></video></div><span class="tagline">2D + 3D</span><h3>Papel impresso</h3><p>Pôster com retícula e objetos 3D com contorno de quadrinho saindo do papel.</p></article>
+    <article class="card"><div class="media"><video src="assets/codigo.mp4" poster="assets/codigo.jpg" muted loop playsinline preload="none"></video></div><span class="tagline">Neon</span><h3>Planta técnica</h3><p>Linhas, massinha e cromo, camada por camada, com scanner e código na tela.</p></article>
+    <article class="card"><div class="media"><video src="assets/domino.mp4" poster="assets/domino.jpg" muted loop playsinline preload="none"></video></div><span class="tagline">Pastel</span><h3>Massinha 3D</h3><p>Dominós caindo com câmera acompanhando e uma revelação vista de cima.</p></article>
+    <article class="card"><div class="media"><video src="assets/cromo-liquido.mp4" poster="assets/cromo-liquido.jpg" muted loop playsinline preload="none"></video></div><span class="tagline">Partículas</span><h3>Cromo líquido</h3><p>Metal que explode em 90 mil partículas e vira celular, conversa e marca.</p></article>
+    <article class="card"><div class="media"><video src="assets/reel-6x1.mp4" poster="assets/reel-6x1.jpg" muted loop playsinline preload="none"></video><a class="ig" href="https://www.instagram.com/fantinsi/reel/DfIZhN6Cmxp/" target="_blank" rel="noopener">Ver no Instagram ↗</a></div><span class="tagline">@fantinsi</span><h3>Escala 6x1</h3><p>Cena isométrica 3D mostrando a loja aberta todos os dias.</p></article>
+    <article class="card"><div class="media"><video src="assets/reel-concorrente.mp4" poster="assets/reel-concorrente.jpg" muted loop playsinline preload="none"></video><a class="ig" href="https://www.instagram.com/fantinsi/reel/Dfj7y7kxz-R/" target="_blank" rel="noopener">Ver no Instagram ↗</a></div><span class="tagline">@fantinsi</span><h3>Concorrente</h3><p>Mapa animado com o pino lotado e o cliente passando direto.</p></article>
+    <article class="card"><div class="media"><video src="assets/reel-loja.mp4" poster="assets/reel-loja.jpg" muted loop playsinline preload="none"></video><a class="ig" href="https://www.instagram.com/fantinsi/reel/DeenwW2OBG3/" target="_blank" rel="noopener">Ver no Instagram ↗</a></div><span class="tagline">@fantinsi</span><h3>Loja online</h3><p>Tipografia e interface contando a loja que vende sozinha.</p></article>
+  </div></div>
+</section>
+
+<section class="block" style="padding-top:0">
+  <div class="wrap"><p class="fill" id="fill">Isso dá pra aprender.</p></div>
+</section>
+
+<section class="block" style="padding-top:0">
+  <div class="wrap">
+    <div class="head"><span class="eyebrow reveal">Como funciona</span><h2 class="reveal">Você dirige. <span class="grad">A IA escreve.</span></h2></div>
+    <div class="steps" id="steps">
+      <div class="line"><i id="lineFill"></i></div>
+      <div class="step reveal"><div class="n">01</div><div><h3>Ideia com gancho</h3><p>Uma ideia visual forte e um primeiro segundo que faz a pessoa parar de rolar. Você aprende a criar as suas.</p></div></div>
+      <div class="step reveal"><div class="n">02</div><div><h3>Cena em código</h3><p>A IA escreve o 3D, a câmera, a luz e o texto. Você confere os quadros e pede ajustes específicos, sem abrir programa pesado.</p></div></div>
+      <div class="step reveal"><div class="n">03</div><div><h3>Som e render</h3><p>Trilha criada do zero e sincronizada com cada movimento. Um comando e sai o MP4 vertical: <code>npx hyperframes render</code></p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" style="background:var(--bg2); border-block:1px solid var(--line)">
+  <div class="wrap guide">
+    <div class="book"><img class="cover" id="cover" src="assets/capa.jpg" alt="Guia Motion com IA" /></div>
+    <div>
+      <div class="head" style="margin-bottom:30px"><span class="eyebrow reveal">O que você recebe</span><h2 class="reveal">Tudo pra aprender, <span class="grad">comigo do lado.</span></h2></div>
+      <div class="chapters">
+        <div class="ch reveal"><b>01</b><div><h4>Guia em PDF</h4><p>Ensinando tudo direitinho, pra você consultar sempre que precisar.</p></div></div>
+        <div class="ch reveal"><b>02</b><div><h4>Treinamento</h4><p>Eu te ensino na prática, mostrando como os motions são feitos.</p></div></div>
+        <div class="ch reveal"><b>03</b><div><h4>Mentoria</h4><p>Direcionamento comigo pra você tirar dúvidas e evoluir mais rápido.</p></div></div>
+        <div class="ch reveal"><b>04</b><div><h4>Acompanhamento passo a passo</h4><p>Eu acompanho você fazendo, etapa por etapa, até o seu motion ficar pronto.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="head"><span class="eyebrow reveal">Pra quem é</span><h2 class="reveal">Pra quem quer <span class="grad">sair do slide animado.</span></h2></div>
+    <div class="for">
+      <div class="reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg><h3>Criadores de conteúdo</h3><p>Que querem vídeos que prendem no TikTok e no Reels.</p></div>
+      <div class="reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg><h3>Donos de negócio</h3><p>Que querem divulgar o próprio produto sem pagar uma produtora.</p></div>
+      <div class="reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 17l6-6-6-6M12 19h8"/></svg><h3>Designers e devs</h3><p>Que querem vender motion como serviço usando IA.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block offer" id="oferta" style="padding-top:0">
+  <div class="price reveal"><div class="in">
+    <span class="eyebrow">Pacote completo</span>
+    <h3>Motion com IA</h3>
+    <div class="val" id="preco">R$ 27</div>
+    <div class="sub">Guia + treinamento + mentoria + acompanhamento · pagamento único</div>
+    <ul>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12l5 5L20 7"/></svg>Guia em PDF ensinando tudo direitinho</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12l5 5L20 7"/></svg>Treinamento comigo</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12l5 5L20 7"/></svg>Mentoria</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12l5 5L20 7"/></svg>Acompanhamento do seu passo a passo</li>
+    </ul>
+    <a class="btn btn-main magnet" id="checkout" href="#">Quero participar</a>
+    <p class="legal">Compra online com direito de arrependimento em até 7 dias (art. 49 do CDC).</p>
+  </div></div>
+</section>
+
+<section class="block" style="padding-top:0">
+  <div class="wrap">
+    <div class="head"><span class="eyebrow reveal">Dúvidas</span><h2 class="reveal">Perguntas frequentes</h2></div>
+    <div class="faq">
+      <details class="reveal"><summary>Preciso saber programar?</summary><p>Não precisa saber escrever código. A IA escreve, você direciona, e eu te acompanho em cada etapa.</p></details>
+      <details class="reveal"><summary>Preciso do After Effects?</summary><p>Não. Todos os exemplos foram feitos com IA, sem After Effects.</p></details>
+      <details class="reveal"><summary>As ferramentas são pagas?</summary><p>A maior parte é gratuita. A ferramenta de IA normalmente exige um plano próprio; no treinamento eu te mostro as opções.</p></details>
+      <details class="reveal"><summary>Como funciona depois da compra?</summary><p>O guia em PDF é liberado na hora pra você, direto pela plataforma de pagamento, assim que o pagamento é aprovado. Depois eu entro em contato pra combinar o treinamento, a mentoria e o acompanhamento.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><span class="logo" style="font-size:18px">FAN<i>T</i>IN</span><span>Gabriel Fantin · fantin.tech · @fantinsi</span></div></footer>
+<div class="float-cta"><a class="btn btn-main" href="#oferta">Quero participar</a></div>
+
+<script>
+// CONFIGURE AQUI antes de publicar
+const CONFIG = {
+  preco: "R$ 27",
+  checkout: "https://pay.cakto.com.br/kpwr8a8_1370299",
+  whatsapp: "https://wa.me/5527992864820?text=Quero%20saber%20sobre%20o%20treinamento%20de%20motion",
+};
+document.getElementById("preco").textContent = CONFIG.preco;
+document.getElementById("checkout").href = CONFIG.checkout;
+
+
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches && !location.search.includes("motion=1");
+const fine = matchMedia("(pointer: fine)").matches;
+
+// marquee
+const words = ["PAPEL 2D + 3D", "PLANTA TÉCNICA", "MASSINHA 3D", "CROMO LÍQUIDO", "SEM AFTER EFFECTS", "FEITO COM IA"];
+const track = document.getElementById("track");
+track.innerHTML = [...words, ...words].map((w, i) => `<span class="${i % 2 ? "on" : ""}">${w}<em>✦</em></span>`).join("");
+
+// nav
+const nav = document.getElementById("nav");
+addEventListener("scroll", () => nav.classList.toggle("solid", scrollY > 30), { passive: true });
+
+// chao em perspectiva com pontos (hero)
+(() => {
+  const c = document.getElementById("floor"), x = c.getContext("2d");
+  let w, h, dpr, t0 = performance.now(), mx = .5, my = .5;
+  const size = () => { dpr = Math.min(devicePixelRatio, 2); w = c.clientWidth; h = c.clientHeight; c.width = w * dpr; c.height = h * dpr; x.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  size(); addEventListener("resize", size);
+  addEventListener("pointermove", (e) => { mx = e.clientX / innerWidth; my = e.clientY / innerHeight; });
+  function frame(now) {
+    const t = (now - t0) / 1000;
+    x.clearRect(0, 0, w, h);
+    const g = x.createRadialGradient(w * (.3 + mx * .4), h * .35, 0, w * .5, h * .4, Math.max(w, h) * .7);
+    g.addColorStop(0, "rgba(63,162,255,.16)"); g.addColorStop(.5, "rgba(167,123,255,.05)"); g.addColorStop(1, "rgba(5,7,13,0)");
+    x.fillStyle = g; x.fillRect(0, 0, w, h);
+    const hor = h * .58, cx = w * (.5 + (mx - .5) * .08);
+    for (let zi = 0; zi < 26; zi++) {
+      const z = ((zi + (reduce ? 0 : t * .9)) % 26) + 1, k = 1 / z;
+      const y = hor + (h - hor) * k * 3.2; if (y > h + 10) continue;
+      const a = Math.min(1, (26 - z) / 8) * Math.min(1, k * 6);
+      for (let xi = -14; xi <= 14; xi++) {
+        const px = cx + xi * w * .09 * k * 3.2;
+        if (px < -10 || px > w + 10) continue;
+        x.fillStyle = `rgba(${xi % 3 ? "90,150,255" : "167,123,255"},${a * .55})`;
+        x.beginPath(); x.arc(px, y, Math.max(.6, 2.6 * k * 3), 0, 6.283); x.fill();
+      }
+    }
+    if (!reduce) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+// cursor de luz
+if (fine && !reduce) {
+  const cur = document.getElementById("cursor");
+  const qx = gsap.quickTo(cur, "x", { duration: .6, ease: "power3" }), qy = gsap.quickTo(cur, "y", { duration: .6, ease: "power3" });
+  addEventListener("pointermove", (e) => { qx(e.clientX); qy(e.clientY); });
+  document.querySelectorAll(".magnet").forEach((b) => {
+    b.addEventListener("pointermove", (e) => { const r = b.getBoundingClientRect(); gsap.to(b, { x: (e.clientX - r.left - r.width / 2) * .25, y: (e.clientY - r.top - r.height / 2) * .35, duration: .4, ease: "power3" }); });
+    b.addEventListener("pointerleave", () => gsap.to(b, { x: 0, y: 0, duration: .6, ease: "elastic.out(1,.4)" }));
+  });
+}
+
+// titulo palavra por palavra
+const title = document.getElementById("title");
+const walk = (node) => [...node.childNodes].map((n) => {
+  if (n.nodeType === 3) return n.textContent.split(/(\s+)/).map((p) => (p.trim() ? `<span class="w"><span>${p}</span></span>` : p)).join("");
+  return `<span class="w"><span class="${n.className}">${n.textContent}</span></span>`;
+}).join("");
+title.innerHTML = walk(title);
+
+gsap.registerPlugin(ScrollTrigger);
+gsap.ticker.lagSmoothing(0); // em aparelho lento, a entrada termina no tempo certo em vez de travar
+// animacoes leves rodam sempre; as pesadas (vitrine travada, parallax, celulares flutuando) so sem "reduzir movimento"
+{
+  const intro = gsap.timeline({ defaults: { ease: "expo.out" } });
+  intro.from("#title .w > span", { yPercent: 110, rotate: 4, duration: 1.1, stagger: .07 })
+    .from(".hero .eyebrow, .hero .lead, .hero .ctas, .hero .note", { y: 30, opacity: 0, duration: .9, stagger: .1 }, "-=.8")
+    .from(".phone", { y: 160, rotateX: 40, opacity: 0, duration: 1.4, stagger: .12 }, "-=1.1");
+
+  // celulares flutuando + seguindo o mouse
+  if (!reduce) {
+    document.querySelectorAll(".phone").forEach((p, i) => gsap.to(p, { y: "+=18", duration: 2.4 + i * .4, yoyo: true, repeat: -1, ease: "sine.inOut", delay: i * .3 }));
+    if (fine) addEventListener("pointermove", (e) => {
+      const dx = e.clientX / innerWidth - .5, dy = e.clientY / innerHeight - .5;
+      gsap.to(".phone", { rotateY: dx * 26, rotateX: -dy * 18, duration: 1, ease: "power3" });
+    });
+    gsap.to("#phones", { yPercent: -18, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+  }
+
+  // revelar ao rolar
+  gsap.utils.toArray(".reveal").forEach((el) => gsap.to(el, { opacity: 1, y: 0, duration: 1, ease: "expo.out", scrollTrigger: { trigger: el, start: "top 88%" } }));
+
+  // vitrine: carrossel infinito que passa sozinho; pausa no mouse, arrasta com mouse ou dedo, setas avancam
+  const rail = document.getElementById("rail"), box = rail.parentElement;
+  rail.insertAdjacentHTML("beforeend", rail.innerHTML);
+  const st = { off: 0, hover: false, tween: false }, SPEED = 55;
+  let drag = null, moved = 0, last = performance.now();
+  const half = () => rail.scrollWidth / 2;
+  const wrapOff = () => { const h = half(); if (h > 0) { while (st.off <= -h) st.off += h; while (st.off > 0) st.off -= h; } };
+  (function tick(now) {
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    if (!st.hover && !drag && !st.tween) st.off -= (reduce ? SPEED * .6 : SPEED) * dt;
+    wrapOff(); rail.style.transform = `translate3d(${st.off}px,0,0)`;
+    requestAnimationFrame(tick);
+  })(last);
+  if (fine) { box.addEventListener("mouseenter", () => (st.hover = true)); box.addEventListener("mouseleave", () => (st.hover = false)); }
+  box.addEventListener("pointerdown", (e) => { drag = { x: e.clientX, o: st.off }; moved = 0; box.classList.add("dragging"); });
+  addEventListener("pointermove", (e) => { if (!drag) return; const dx = e.clientX - drag.x; moved = Math.max(moved, Math.abs(dx)); st.off = drag.o + dx; });
+  addEventListener("pointerup", () => { if (drag) { drag = null; box.classList.remove("dragging"); } });
+  addEventListener("pointercancel", () => { drag = null; box.classList.remove("dragging"); });
+  box.addEventListener("click", (e) => { if (moved > 6) { e.preventDefault(); e.stopPropagation(); } }, true);
+  const step = () => rail.children[0].getBoundingClientRect().width + 28;
+  document.querySelectorAll(".arrows button").forEach((b) => b.addEventListener("click", () => {
+    st.tween = true;
+    gsap.to(st, { off: st.off - +b.dataset.d * step(), duration: reduce ? 0 : .6, ease: "power3.out", onComplete: () => (st.tween = false) });
+  }));
+
+  // texto que preenche
+  gsap.to("#fill", { backgroundPosition: "0% 0", ease: "none", scrollTrigger: { trigger: "#fill", start: "top 85%", end: "bottom 40%", scrub: true } });
+  // linha dos passos
+  gsap.to("#lineFill", { scaleY: 1, ease: "none", scrollTrigger: { trigger: "#steps", start: "top 70%", end: "bottom 60%", scrub: true } });
+  // livro gira
+  gsap.fromTo("#cover", { rotateY: -38, rotateX: 10 }, { rotateY: 14, rotateX: -2, ease: "none", scrollTrigger: { trigger: "#cover", start: "top bottom", end: "bottom top", scrub: true } });
+}
+
+// esconde o botao flutuante no topo e na oferta
+const floatCta = document.querySelector(".float-cta");
+const offerIO = new IntersectionObserver((es) => es.forEach((e) => (floatCta.style.visibility = e.isIntersecting ? "hidden" : "")), { threshold: .2 });
+offerIO.observe(document.getElementById("oferta"));
+offerIO.observe(document.querySelector(".hero"));
+
+// so toca o video da vitrine quando aparece
+const io = new IntersectionObserver((es) => es.forEach((e) => { const v = e.target; if (e.isIntersecting) { v.preload = "auto"; v.play().catch(() => {}); } else v.pause(); }), { threshold: .35 });
+document.querySelectorAll(".card video").forEach((v) => io.observe(v));
+</script>
+</body>
+</html>
