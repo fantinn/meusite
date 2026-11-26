@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Fantin · links</title>
+<meta name="description" content="Sites e vídeos que fazem seu negócio aparecer. Site, curso de motion com IA e placas NFC da Fantin." />
+<meta name="theme-color" content="#062a55" />
+<meta property="og:title" content="Fantin · Gabriel Fantin" />
+<meta property="og:description" content="Sites e vídeos que fazem seu negócio aparecer." />
+<meta property="og:image" content="https://fantin.tech/og.jpg" />
+<meta property="og:url" content="https://fantin.tech/links" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* Página de links da bio do @fantinsi. Links com UTM para medir no Analytics. */
+  :root {
+    --navy: #062a55; --fundo: #041c3a; --azul: #0067b8; --azul-vivo: #409cec; --ceu: #9cc3e8; --tinta: #f2f7fd; --suave: #a9c2de;
+    --display: 'Bricolage Grotesque', system-ui, sans-serif; --corpo: 'Figtree', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; min-height: 100dvh; background: var(--fundo); color: var(--tinta);
+    font: 16px/1.5 var(--corpo); -webkit-font-smoothing: antialiased; overflow-x: hidden;
+    display: flex; justify-content: center;
+  }
+  canvas#fundo { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
+  .brilho {
+    position: fixed; inset: -20% -20% auto; height: 70vh; z-index: 0; pointer-events: none;
+    background: radial-gradient(50% 50% at 50% 30%, rgba(64,156,236,.35), transparent 70%);
+    animation: respira 7s ease-in-out infinite;
+  }
+  @keyframes respira { 50% { opacity: .55; transform: scale(1.08); } }
+
+  main {
+    position: relative; z-index: 1; width: 100%; max-width: 460px;
+    padding: max(48px, env(safe-area-inset-top)) 18px max(32px, env(safe-area-inset-bottom));
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+
+  .logo { width: 92px; height: 92px; border-radius: 26px; box-shadow: 0 18px 50px -16px rgba(64,156,236,.8), 0 0 0 1px rgba(255,255,255,.08); }
+  .logo .ponto { transform-origin: 460px 599px; animation: pulsa 2.4s ease-in-out infinite; }
+  @keyframes pulsa { 50% { transform: scale(1.25); } }
+  h1 { margin: 8px 0 0; font: 800 1.75rem/1.1 var(--display); letter-spacing: -.02em; }
+  .arroba { color: var(--ceu); font-weight: 600; font-size: .95rem; margin-top: -8px; }
+  .frase { margin: 0 0 14px; color: var(--suave); text-align: center; max-width: 30ch; text-wrap: balance; }
+
+  .links { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; gap: 12px; }
+  .links li { opacity: 0; transform: translateY(18px); animation: entra .7s cubic-bezier(.2,.7,.2,1) forwards; }
+  .links li:nth-child(1) { animation-delay: .15s; } .links li:nth-child(2) { animation-delay: .27s; }
+  .links li:nth-child(3) { animation-delay: .39s; } .links li:nth-child(4) { animation-delay: .51s; }
+  .topo > * { opacity: 0; animation: entra .7s cubic-bezier(.2,.7,.2,1) forwards; }
+  @keyframes entra { to { opacity: 1; transform: none; } }
+
+  .btn {
+    position: relative; display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 12px 16px;
+    border-radius: 18px; text-decoration: none; color: var(--tinta); overflow: hidden; isolation: isolate;
+    background: rgba(255,255,255,.06); border: 1px solid rgba(156,195,232,.18);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    transition: transform .25s cubic-bezier(.2,.7,.2,1), border-color .25s, background .25s;
+  }
+  .btn::after { /* faixa de luz que passa no hover */
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(110deg, transparent 30%, rgba(156,195,232,.22) 50%, transparent 70%);
+    transform: translateX(-120%); transition: transform .7s ease;
+  }
+  .btn:hover, .btn:focus-visible { transform: translateY(-2px) scale(1.015); border-color: rgba(156,195,232,.5); background: rgba(255,255,255,.1); }
+  .btn:hover::after, .btn:focus-visible::after { transform: translateX(120%); }
+  .btn:active { transform: scale(.98); }
+  .btn:focus-visible { outline: 2px solid var(--ceu); outline-offset: 3px; }
+
+  .icone { flex: none; width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: rgba(64,156,236,.16); color: var(--ceu); }
+  .icone svg { width: 22px; height: 22px; }
+  .texto { flex: 1; min-width: 0; display: grid; }
+  .texto b { font: 700 1.02rem/1.25 var(--corpo); display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+  .texto small { color: var(--suave); font-size: .84rem; line-height: 1.3; }
+  .seta { flex: none; width: 18px; height: 18px; color: var(--ceu); opacity: .7; transition: transform .25s; }
+  .btn:hover .seta { transform: translateX(3px); opacity: 1; }
+
+  .selo { display: inline-block; padding: 2px 8px; border-radius: 999px; font: 700 .68rem/1.5 var(--corpo); letter-spacing: .04em; text-transform: uppercase; }
+  .selo-curso { background: rgba(64,156,236,.25); color: #cfe5fb; }
+  .selo-breve { background: rgba(255,255,255,.1); color: var(--suave); }
+
+  .principal { min-height: 76px; background: linear-gradient(135deg, var(--azul), #0a4f93); border-color: rgba(156,195,232,.45); box-shadow: 0 18px 40px -18px rgba(0,103,184,.95); }
+  .principal:hover, .principal:focus-visible { background: linear-gradient(135deg, #0877cf, #0b5aa6); }
+  .principal .icone { background: rgba(255,255,255,.16); color: #fff; }
+  .principal .texto small { color: #d3e6fa; }
+  .principal .seta { color: #fff; }
+
+  footer { margin-top: 22px; color: var(--suave); font-size: .8rem; opacity: .75; }
+  footer a { color: inherit; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .links li, .topo > * { opacity: 1; transform: none; }
+    canvas#fundo { display: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="fundo" aria-hidden="true"></canvas>
+<div class="brilho" aria-hidden="true"></div>
+
+<main>
+  <div class="topo" style="display:contents">
+    <svg class="logo" viewBox="160 160 760 760" role="img" aria-label="Fantin">
+      <rect x="160" y="160" width="760" height="760" rx="150" fill="#062a55"/>
+      <path fill="#fff" fill-rule="evenodd" d="M216 299h132v59h-72v37h54v58h-54v67h-60zM428 299h66l57 221h-55l-12-48h-48l-11 48h-55zM460 378l-13 52h26zM216 559h132v59h-36v162h-60V618h-36zM590 299h81l134 332V299h59v481h-81L650 448v332h-60z"/>
+      <rect fill="#fff" x="431" y="669" width="59" height="111"/>
+      <circle class="ponto" fill="#409cec" cx="460" cy="599" r="39"/>
+    </svg>
+    <h1>Gabriel Fantin</h1>
+    <div class="arroba">@fantinsi</div>
+    <p class="frase">Sites e vídeos que fazem seu negócio aparecer.</p>
+  </div>
+
+  <ul class="links">
+    <li>
+      <a class="btn principal" href="https://fantin.tech/?utm_source=instagram&amp;utm_medium=bio&amp;utm_campaign=links">
+        <span class="icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 21h8M12 18v3"/></svg></span>
+        <span class="texto"><b>Quero um site pro meu negócio</b><small>Landing page, loja ou site com agendamento</small></span>
+        <svg class="seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+    </li>
+    <li>
+      <a class="btn" href="https://guia-motion-fantin.pages.dev/?utm_source=instagram&amp;utm_medium=bio&amp;utm_campaign=links">
+        <span class="icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg></span>
+        <span class="texto"><b>Aprenda motion com IA <span class="selo selo-curso">Curso</span></b><small>Faça vídeos animados que prendem a atenção</small></span>
+        <svg class="seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+    </li>
+    <li>
+      <a class="btn" href="https://wa.me/5527992864820?text=Oi%20Gabriel!%20Quero%20saber%20das%20placas%20NFC%20quando%20lan%C3%A7arem.">
+        <span class="icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9.5 9.5a3.5 3.5 0 0 1 0 5M12 8a6 6 0 0 1 0 8"/></svg></span>
+        <span class="texto"><b>Placas NFC inteligentes <span class="selo selo-breve">Em breve</span></b><small>Entre na lista de espera pelo WhatsApp</small></span>
+        <svg class="seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+    </li>
+    <li>
+      <a class="btn" href="https://wa.me/5527992864820?text=Oi%20Gabriel!%20Vim%20pelo%20Instagram.">
+        <span class="icone"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1.1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg></span>
+        <span class="texto"><b>Falar no WhatsApp</b><small>Orçamento em até 24h</small></span>
+        <svg class="seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+    </li>
+  </ul>
+
+  <footer>© Fantin · <a href="https://fantin.tech/?utm_source=instagram&amp;utm_medium=bio&amp;utm_campaign=links">fantin.tech</a></footer>
+</main>
+
+<script>
+  // Fundo: pontos azuis flutuando e ligados por linhas finas quando estão perto (leve, pausa quando a aba some).
+  (() => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const c = document.getElementById('fundo'), x = c.getContext('2d');
+    let w, h, pts = [], dpr = Math.min(devicePixelRatio || 1, 2), raf;
+    const montar = () => {
+      w = c.width = innerWidth * dpr; h = c.height = innerHeight * dpr;
+      const n = Math.round(Math.min(60, (innerWidth * innerHeight) / 14000));
+      pts = Array.from({ length: n }, () => ({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - .5) * .25 * dpr, vy: (Math.random() - .5) * .25 * dpr, r: (Math.random() * 1.6 + .6) * dpr }));
+    };
+    const quadro = () => {
+      x.clearRect(0, 0, w, h);
+      const lim = 120 * dpr;
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+        for (let j = i + 1; j < pts.length; j++) {
+          const q = pts[j], d = Math.hypot(p.x - q.x, p.y - q.y);
+          if (d < lim) { x.strokeStyle = `rgba(156,195,232,${(1 - d / lim) * .18})`; x.lineWidth = dpr * .7; x.beginPath(); x.moveTo(p.x, p.y); x.lineTo(q.x, q.y); x.stroke(); }
+        }
+        x.fillStyle = 'rgba(156,195,232,.55)'; x.beginPath(); x.arc(p.x, p.y, p.r, 0, 6.283); x.fill();
+      }
+      raf = requestAnimationFrame(quadro);
+    };
+    addEventListener('resize', montar);
+    document.addEventListener('visibilitychange', () => { cancelAnimationFrame(raf); if (!document.hidden) quadro(); });
+    montar(); quadro();
+  })();
+</script>
+</body>
+</html>
